@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-architecture-challenge-record.json",
+  "title": "Slice Orchestrator v4 Architecture Challenge",
+  "description": "Non-authoritative strategic concern. It cannot approve, reject, revise a plan, satisfy a gate, or commit.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "challenge_id",
+    "run_id",
+    "trigger",
+    "concern",
+    "evidence",
+    "product_impact",
+    "complexity_delta",
+    "alternatives",
+    "recommendation",
+    "plan_revision_proposal",
+    "authority_effect",
+    "created_by",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "challenge_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "trigger": {
+      "enum": [
+        "PRODUCT_VALUE_GAP",
+        "SCOPE_DRIFT",
+        "SEQUENCING_CONCERN",
+        "ARCHITECTURAL_DRIFT",
+        "COMPLEXITY_GUARD",
+        "PREMATURE_INFRASTRUCTURE",
+        "NEW_DEPENDENCY",
+        "REPEATED_REVIEW_FAILURE",
+        "OPERATOR_REQUEST"
+      ]
+    },
+    "concern": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "product_impact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "complexity_delta": {
+      "type": "object",
+      "required": [
+        "problem_solved",
+        "existing_architecture_sufficiency",
+        "introduced_costs",
+        "simpler_alternatives"
+      ],
+      "properties": {
+        "problem_solved": {
+          "type": "string",
+          "minLength": 1
+        },
+        "existing_architecture_sufficiency": {
+          "type": "string",
+          "minLength": 1
+        },
+        "introduced_costs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "simpler_alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "alternatives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "option",
+          "tradeoffs"
+        ],
+        "properties": {
+          "option": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tradeoffs": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan_revision_proposal": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authority_effect": {
+      "const": "ADVISORY_ONLY"
+    },
+    "created_by": {
+      "const": "ARCHITECTURE_CHALLENGER"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

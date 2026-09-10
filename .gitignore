@@ -1,0 +1,24 @@
+# Local runtime state
+.slice-orchestrator/
+**/.slice-orchestrator/
+.orchestrator_slice/
+**/.orchestrator_slice/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Build
+build/
+dist/
+
+# Temporary worker output
+.tmp/
+
+# Extraction bundles and archives
+orchestrator-extraction-bundle-*/
+*.tar.gz
+*.zip

@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-role-context.json",
+  "title": "Slice Orchestrator v4 Persistent Role Context",
+  "description": "Immutable versioned context capsule used to resume a role with any compatible worker backend. It contains no required chat-history reference.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "context_id",
+    "context_version",
+    "previous_context_digest",
+    "context_digest",
+    "project_id",
+    "slice",
+    "run_id",
+    "run_generation",
+    "role",
+    "checkpoint_event_sequence",
+    "plan_revision",
+    "plan_digest",
+    "scope_manifest_digest",
+    "test_plan_digest",
+    "base_commit_oid",
+    "workspace_tree_oid",
+    "workspace_revision_digest",
+    "open_remediation_packets",
+    "work_journal",
+    "decision_journal",
+    "artifact_references",
+    "last_worker_execution_id",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "context_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "context_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_context_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "context_digest": {
+      "$ref": "#/$defs/sha256",
+      "description": "Digest of canonical context content excluding this field."
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "role": {
+      "enum": [
+        "PLANNER",
+        "IMPLEMENTATION",
+        "GOVERNANCE"
+      ]
+    },
+    "checkpoint_event_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "plan_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "scope_manifest_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "test_plan_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "base_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "workspace_tree_oid": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/gitOid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "workspace_revision_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "open_remediation_packets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "work_journal": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "entry_id",
+          "summary",
+          "paths",
+          "evidence_references"
+        ],
+        "properties": {
+          "entry_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence_references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/recordRef"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "decision_journal": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "decision_id",
+          "decision",
+          "rationale",
+          "authority_reference"
+        ],
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authority_reference": {
+            "$ref": "#/$defs/recordRef"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "artifact_references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "last_worker_execution_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

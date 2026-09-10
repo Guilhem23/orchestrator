@@ -1,0 +1,5 @@
+[project]
+name = "dogfood-test-project"
+version = "0.1.0"
+description = "Tiny generic fixture for Slice Orchestrator dogfood"
+requires-python = ">=3.11"

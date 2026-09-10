@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-decision-required.json",
+  "title": "Slice Orchestrator v4 Decision Required",
+  "description": "Durable bounded human escalation. It preserves workflow state and grants no authority by itself.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "question_id",
+    "decision_key",
+    "run_id",
+    "context",
+    "question",
+    "options",
+    "recommendation",
+    "reason",
+    "impact",
+    "urgency",
+    "affected_objectives",
+    "affected_work_items",
+    "blocks_scope",
+    "exhaustion_evidence",
+    "autonomous_resolution_unsafe_reason",
+    "status",
+    "raised_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "question_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "decision_key": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "option_id",
+          "statement",
+          "impact"
+        ],
+        "properties": {
+          "option_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "impact": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "impact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "urgency": {
+      "enum": [
+        "REQUIRED",
+        "RECOMMENDED",
+        "OPTIONAL"
+      ]
+    },
+    "affected_objectives": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(PO-[A-Za-z0-9][A-Za-z0-9._-]*|S[0-9]+-O[0-9]+)$"
+      }
+    },
+    "affected_work_items": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]+-WI-[A-Za-z0-9-]+$"
+      }
+    },
+    "blocks_scope": {
+      "enum": [
+        "NONE",
+        "AFFECTED_WORK_ITEMS",
+        "RUN"
+      ]
+    },
+    "exhaustion_evidence": {
+      "type": "object",
+      "required": [
+        "repository_facts",
+        "approved_decisions",
+        "approved_plans",
+        "playbook",
+        "bounded_exploration",
+        "safe_alternatives"
+      ],
+      "properties": {
+        "repository_facts": {
+          "$ref": "#/$defs/check"
+        },
+        "approved_decisions": {
+          "$ref": "#/$defs/check"
+        },
+        "approved_plans": {
+          "$ref": "#/$defs/check"
+        },
+        "playbook": {
+          "$ref": "#/$defs/check"
+        },
+        "bounded_exploration": {
+          "$ref": "#/$defs/check"
+        },
+        "safe_alternatives": {
+          "$ref": "#/$defs/check"
+        }
+      },
+      "additionalProperties": false
+    },
+    "autonomous_resolution_unsafe_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "ANSWERED",
+        "SUPERSEDED",
+        "CANCELLED"
+      ]
+    },
+    "answer": {
+      "type": "object",
+      "required": [
+        "option_id",
+        "answered_by",
+        "answered_at",
+        "requires_plan_revision"
+      ],
+      "properties": {
+        "option_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "answered_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answered_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requires_plan_revision": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "raised_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "urgency": {
+            "const": "REQUIRED"
+          }
+        },
+        "required": [
+          "urgency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocks_scope": {
+            "enum": [
+              "AFFECTED_WORK_ITEMS",
+              "RUN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ANSWERED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "answer"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "required": [
+        "checked",
+        "result",
+        "evidence"
+      ],
+      "properties": {
+        "checked": {
+          "const": true
+        },
+        "result": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recordRef"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

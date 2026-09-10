@@ -1,0 +1,6 @@
+{
+  "name": "broken-service",
+  "enabled": true,
+  "timeout": -1,
+  "retries": 3
+}

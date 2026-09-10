@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-decision-answer.json",
+  "title": "Slice Orchestrator v4 Decision Answer",
+  "description": "Immutable authenticated answer to one durable Decision Required record.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "answer_id",
+    "question_id",
+    "option_id",
+    "answered_by",
+    "answered_at",
+    "requires_plan_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "answer_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "question_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "option_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "answered_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "answered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requires_plan_revision": {
+      "type": "boolean"
+    },
+    "rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

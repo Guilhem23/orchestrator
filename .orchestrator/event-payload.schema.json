@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-event-payload.json",
+  "title": "Slice Orchestrator v4 Event Payload",
+  "description": "Closed envelope for authority-bearing transition payloads. Event payload_type must equal the enclosing event_type.",
+  "type": "object",
+  "required": [
+    "payload_type"
+  ],
+  "properties": {
+    "payload_type": {
+      "enum": [
+        "RUN_OPENED",
+        "PLAN_PERSISTED",
+        "PLAN_REVISION_REQUESTED",
+        "PLAN_REVISED",
+        "ARCHITECTURE_REVIEW_ASSIGNED",
+        "ARCHITECTURE_APPROVED",
+        "ARCHITECTURE_BLOCKED",
+        "IMPLEMENTATION_ASSIGNED",
+        "CANDIDATE_CAPTURED",
+        "CANDIDATE_INVALIDATED",
+        "ADVERSARIAL_REVIEW_ASSIGNED",
+        "REVIEW_ACCEPTED",
+        "REVIEW_BLOCKED",
+        "REVIEW_REQUIRES_PLAN_REVISION",
+        "REMEDIATION_ASSIGNED",
+        "REMEDIATION_CONTEXT_REPLACEMENT_REQUIRED",
+        "ACCEPTANCE_INVALIDATED",
+        "COMMIT_FAILED_RECOVERABLE",
+        "COMMIT_RECORDED",
+        "GOVERNANCE_STARTED",
+        "GOVERNANCE_COMMIT_RECORDED",
+        "GOVERNANCE_RECONCILED",
+        "RUN_STOPPED",
+        "HUMAN_RECOVERY_OPENED"
+      ]
+    },
+    "record": {
+      "$ref": "#/$defs/recordRef"
+    },
+    "related_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "assignment_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "principal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_cycle": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "remediation_cycle": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "workspace_revision_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "evidence_set_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "approved_revision_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "base_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "tree_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "parent_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "reason_code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_state": {
+      "enum": [
+        "PLANNING",
+        "PLAN_REVISION",
+        "IMPLEMENTATION",
+        "IMPLEMENTATION_READY_FOR_REVIEW"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "enum": [
+              "PLAN_PERSISTED",
+              "PLAN_REVISED",
+              "ARCHITECTURE_APPROVED",
+              "ARCHITECTURE_BLOCKED",
+              "CANDIDATE_CAPTURED",
+              "REVIEW_ACCEPTED",
+              "REVIEW_BLOCKED",
+              "REVIEW_REQUIRES_PLAN_REVISION",
+              "COMMIT_FAILED_RECOVERABLE",
+              "GOVERNANCE_COMMIT_RECORDED",
+              "GOVERNANCE_RECONCILED",
+              "HUMAN_RECOVERY_OPENED"
+            ]
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "record"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "enum": [
+              "ARCHITECTURE_REVIEW_ASSIGNED",
+              "IMPLEMENTATION_ASSIGNED",
+              "ADVERSARIAL_REVIEW_ASSIGNED",
+              "REMEDIATION_ASSIGNED"
+            ]
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "assignment_id",
+          "principal_id",
+          "execution_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "enum": [
+              "REVIEW_ACCEPTED",
+              "REVIEW_BLOCKED",
+              "REVIEW_REQUIRES_PLAN_REVISION"
+            ]
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "review_cycle",
+          "workspace_revision_digest",
+          "evidence_set_digest",
+          "plan_revision"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "REVIEW_ACCEPTED"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "approved_revision_digest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "REVIEW_BLOCKED"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "remediation_cycle",
+          "related_records"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "RUN_OPENED"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "base_commit_oid",
+          "workspace_revision_digest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "enum": [
+              "COMMIT_RECORDED",
+              "GOVERNANCE_COMMIT_RECORDED"
+            ]
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "commit_oid",
+          "tree_oid",
+          "parent_commit_oid"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "enum": [
+              "PLAN_REVISION_REQUESTED",
+              "CANDIDATE_INVALIDATED",
+              "REMEDIATION_CONTEXT_REPLACEMENT_REQUIRED",
+              "ACCEPTANCE_INVALIDATED",
+              "RUN_STOPPED"
+            ]
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "reason_code",
+          "reason"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "HUMAN_RECOVERY_OPENED"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "target_state"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "enum": [
+            "PLAN",
+            "ARCHITECTURE_REVIEW",
+            "CANDIDATE",
+            "ADVERSARIAL_REVIEW",
+            "REMEDIATION_PACKET",
+            "TEST_RECEIPT_SET",
+            "COMMIT_FAILURE",
+            "GOVERNANCE",
+            "RECOVERY"
+          ]
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

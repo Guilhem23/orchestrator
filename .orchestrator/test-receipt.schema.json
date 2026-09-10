@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-test-receipt.json",
+  "title": "Slice Orchestrator v4 Trusted Test Receipt",
+  "description": "Control-plane execution receipt bound to an exact candidate revision. Implementation-authored summaries do not satisfy this schema's authority requirement.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "project_id",
+    "slice",
+    "candidate_tree_oid",
+    "composite_revision_digest",
+    "command",
+    "working_directory",
+    "environment_digest",
+    "toolchain_digest",
+    "started_at",
+    "completed_at",
+    "exit_code",
+    "counts",
+    "stdout_digest",
+    "stderr_digest",
+    "artifact_digests",
+    "executed_by"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "receipt_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "candidate_tree_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "composite_revision_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "command": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "working_directory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "toolchain_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "exit_code": {
+      "type": "integer"
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "passed",
+        "failed",
+        "skipped"
+      ],
+      "properties": {
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "stdout_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "stderr_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "artifact_digests": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "executed_by": {
+      "const": "CONTROL_PLANE_TEST_RUNNER"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    }
+  }
+}

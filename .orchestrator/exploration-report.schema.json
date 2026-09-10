@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-exploration-report.json",
+  "title": "Slice Orchestrator v4 Exploration Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "exploration_id",
+    "run_id",
+    "slice",
+    "topic",
+    "scratch_workspace_path",
+    "findings",
+    "recommendation",
+    "evidence_references",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "exploration_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scratch_workspace_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "findings": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recommendation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

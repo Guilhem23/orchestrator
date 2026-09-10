@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-delivery-health.json",
+  "title": "Slice Orchestrator v4 Deterministic Delivery Health",
+  "description": "Read-only projection of event and record facts. Interpretation is separate and non-authoritative.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "run_id",
+    "event_sequence",
+    "product_objectives",
+    "slice_objectives",
+    "work_items",
+    "blockers",
+    "risks",
+    "decisions",
+    "convergence_status",
+    "review_cycle",
+    "remediation_cycle",
+    "retry_count",
+    "scope_drift_count",
+    "trend",
+    "prior_snapshot_id",
+    "derived_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "snapshot_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "product_objectives": {
+      "$ref": "#/$defs/progress"
+    },
+    "slice_objectives": {
+      "$ref": "#/$defs/progress"
+    },
+    "work_items": {
+      "$ref": "#/$defs/progress"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fact"
+      }
+    },
+    "risks": {
+      "type": "object",
+      "required": [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ],
+      "properties": {
+        "HIGH": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "MEDIUM": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "LOW": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "required_open",
+        "recommended_open",
+        "optional_open",
+        "human_questions"
+      ],
+      "properties": {
+        "required_open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recommended_open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "optional_open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "human_questions": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "convergence_status": {
+      "enum": [
+        "NOT_RUN",
+        "DIVERGED",
+        "CONVERGED"
+      ]
+    },
+    "review_cycle": {
+      "$ref": "#/$defs/cycle"
+    },
+    "remediation_cycle": {
+      "$ref": "#/$defs/cycle"
+    },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "scope_drift_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "trend": {
+      "enum": [
+        "IMPROVING",
+        "STABLE",
+        "DEGRADING",
+        "MIXED",
+        "UNKNOWN"
+      ]
+    },
+    "prior_snapshot_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "interpretation": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional LLM interpretation; never changes the factual projection."
+    },
+    "derived_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "progress": {
+      "type": "object",
+      "required": [
+        "satisfied",
+        "total"
+      ],
+      "properties": {
+        "satisfied": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "cycle": {
+      "type": "object",
+      "required": [
+        "current",
+        "maximum"
+      ],
+      "properties": {
+        "current": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maximum": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "fact": {
+      "type": "object",
+      "required": [
+        "fact_id",
+        "statement",
+        "source_record_ids"
+      ],
+      "properties": {
+        "fact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_record_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

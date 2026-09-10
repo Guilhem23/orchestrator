@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-governance-record.json",
+  "title": "Slice Orchestrator v4 Governance Reconciliation Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "implementation_commit_oid",
+    "governance_commit_oid",
+    "governance_diff_digest",
+    "updated_paths",
+    "reconciled_status",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "implementation_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "governance_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "governance_diff_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "updated_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "reconciled_status": {
+      "const": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    }
+  }
+}

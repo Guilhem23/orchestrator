@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-artifact-graph-node.json",
+  "title": "Slice Orchestrator v4 Artifact Graph Node",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "type",
+    "parent_artifact_ids",
+    "run_id",
+    "work_item_id",
+    "revision",
+    "hash",
+    "created_at",
+    "creator_role"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "requirement",
+        "plan",
+        "objective",
+        "work_item",
+        "source_change",
+        "test",
+        "benchmark",
+        "evidence",
+        "remediation",
+        "review",
+        "gate",
+        "commit",
+        "governance"
+      ]
+    },
+    "parent_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "work_item_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "creator_role": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

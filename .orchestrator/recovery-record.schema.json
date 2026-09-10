@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-recovery-record.json",
+  "title": "Slice Orchestrator v4 Human Recovery Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "prior_run_id",
+    "prior_run_generation",
+    "prior_stopped_event_hash",
+    "prior_stream_tail_hash",
+    "new_run_id",
+    "new_run_generation",
+    "new_ownership_token_digest",
+    "operator_identity",
+    "reason",
+    "candidate_disposition",
+    "commit_disposition",
+    "target_state",
+    "replacement_implementation_assignment_id",
+    "review_high_water",
+    "remediation_high_water",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "prior_run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prior_run_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "prior_stopped_event_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "prior_stream_tail_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "new_run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "new_run_generation": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "new_ownership_token_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "operator_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "candidate_disposition": {
+      "enum": [
+        "DISCARDED",
+        "PRESERVED_FOR_RECAPTURE",
+        "PRESERVED_AS_REFERENCE"
+      ]
+    },
+    "commit_disposition": {
+      "enum": [
+        "NO_COMMIT",
+        "UNREFERENCED_OBJECT",
+        "REF_UPDATE_VERIFIED",
+        "REF_ROLLED_BACK_BY_EXPLICIT_PROCEDURE"
+      ]
+    },
+    "target_state": {
+      "enum": [
+        "PLANNING",
+        "PLAN_REVISION",
+        "IMPLEMENTATION",
+        "IMPLEMENTATION_READY_FOR_REVIEW"
+      ]
+    },
+    "replacement_implementation_assignment_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "review_high_water": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "remediation_high_water": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "target_state": {
+            "const": "IMPLEMENTATION"
+          }
+        },
+        "required": [
+          "target_state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replacement_implementation_assignment_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

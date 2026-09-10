@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-risk-record.json",
+  "title": "Slice Orchestrator v4 Product Risk",
+  "description": "Lightweight advisory risk used for warning and priority recommendations, never acceptance authority.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "risk_id",
+    "statement",
+    "probability",
+    "impact",
+    "owner_role",
+    "affected_objective",
+    "evidence",
+    "mitigation",
+    "mitigation_work_items",
+    "status",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "risk_id": {
+      "type": "string",
+      "pattern": "^RISK-[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "probability": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "impact": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "critical_classification": {
+      "enum": [
+        "NONE",
+        "SECURITY",
+        "GOVERNANCE"
+      ],
+      "default": "NONE"
+    },
+    "owner_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "affected_objective": {
+      "type": "string",
+      "pattern": "^(PO-[A-Za-z0-9][A-Za-z0-9._-]*|S[0-9]+-O[0-9]+)$"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "mitigation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mitigation_work_items": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]+-WI-[A-Za-z0-9-]+$"
+      }
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "MITIGATING",
+        "ACCEPTED",
+        "CLOSED"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,192 @@
+# Formal State Transition Table — Slice Orchestrator v3
+#
+# Every legal transition is listed explicitly.
+# Any transition NOT listed here is FORBIDDEN.
+# The transition checker MUST reject unlisted transitions mechanically.
+
+version: 3
+
+states:
+  - PLANNING
+  - PLAN_READY
+  - PLAN_REVISION
+  - ARCHITECTURE_REVIEW
+  - ARCHITECTURE_APPROVED
+  - IMPLEMENTATION
+  - IMPLEMENTATION_READY_FOR_REVIEW
+  - ADVERSARIAL_REVIEW
+  - REMEDIATION
+  - COMMIT_READY
+  - COMMITTED
+  - GOVERNANCE_RECONCILIATION
+  - COMPLETE
+  - STOPPED
+
+terminal_states:
+  - COMPLETE
+  - STOPPED
+
+transitions:
+  PLANNING:
+    - to: PLAN_READY
+      description: Plan completed and persisted
+      requires: [plan_file_exists, plan_hash_recorded]
+    - to: STOPPED
+      description: Unrecoverable planning failure
+      requires: [stopped_reason]
+
+  PLAN_READY:
+    - to: ARCHITECTURE_REVIEW
+      description: Plan submitted for architecture review
+      requires: [plan_hash_recorded]
+    - to: PLAN_REVISION
+      description: Plan needs revision before review
+      requires: [revision_rationale]
+    - to: STOPPED
+      description: Planning abandoned
+      requires: [stopped_reason]
+
+  PLAN_REVISION:
+    - to: PLAN_READY
+      description: Revised plan completed
+      requires: [plan_revision_number_incremented, new_plan_hash, revision_rationale, reviewer_reference]
+    - to: STOPPED
+      description: Plan revision abandoned
+      requires: [stopped_reason]
+
+  ARCHITECTURE_REVIEW:
+    - to: ARCHITECTURE_APPROVED
+      description: Architecture review approves the plan
+      requires: [review_artifact_exists, review_verdict_approved, approved_plan_hash_recorded]
+    - to: PLAN_REVISION
+      description: Architecture review finds blocking issues
+      requires: [review_artifact_exists, review_verdict_blocked, revision_rationale]
+    - to: STOPPED
+      description: Architecture review indicates unrecoverable issue
+      requires: [stopped_reason]
+
+  ARCHITECTURE_APPROVED:
+    - to: IMPLEMENTATION
+      description: Implementation begins
+      requires: [implementation_thread_id_assigned, approved_plan_hash_verified]
+    - to: STOPPED
+      description: Implementation cannot start
+      requires: [stopped_reason]
+
+  IMPLEMENTATION:
+    - to: IMPLEMENTATION_READY_FOR_REVIEW
+      description: Implementation complete, ready for adversarial review
+      requires: [tests_exist, evidence_exists, implementation_revision_recorded]
+    - to: STOPPED
+      description: Implementation failed or thread lost
+      requires: [stopped_reason]
+
+  IMPLEMENTATION_READY_FOR_REVIEW:
+    - to: ADVERSARIAL_REVIEW
+      description: Fresh adversarial reviewer assigned
+      requires: [review_cycle_incremented, fresh_reviewer_context]
+    - to: STOPPED
+      description: Cannot proceed to review
+      requires: [stopped_reason]
+
+  ADVERSARIAL_REVIEW:
+    - to: COMMIT_READY
+      description: Reviewer approves with zero blocking findings
+      requires:
+        - review_artifact_exists
+        - review_verdict_approved
+        - blocking_findings_zero
+        - reviewed_revision_hash_recorded
+        - evidence_pack_valid
+        - required_tests_passed
+        - no_protected_file_violations
+        - scope_check_passed
+    - to: REMEDIATION
+      description: Reviewer finds blocking issues
+      requires:
+        - review_artifact_exists
+        - review_verdict_blocked
+        - remediation_packet_exists
+        - remediation_packet_valid
+    - to: PLAN_REVISION
+      description: Reviewer finds fundamental plan issues requiring re-architecture
+      requires:
+        - review_artifact_exists
+        - review_verdict_blocked
+        - revision_rationale
+    - to: STOPPED
+      description: Maximum review cycles or unrecoverable issue
+      requires: [stopped_reason]
+
+  REMEDIATION:
+    - to: IMPLEMENTATION_READY_FOR_REVIEW
+      description: Remediation complete, ready for fresh review
+      requires:
+        - same_implementation_thread
+        - remediation_findings_addressed
+        - implementation_revision_recorded
+        - historical_evidence_intact
+    - to: STOPPED
+      description: Remediation failed or thread lost
+      requires: [stopped_reason]
+
+  COMMIT_READY:
+    - to: COMMITTED
+      description: Deterministic gate passed, commit succeeded
+      requires:
+        - gate_evaluator_pass
+        - reviewed_revision_matches_current
+        - staged_matches_reviewed
+        - no_protected_file_violations
+        - no_unexpected_staged_files
+        - scope_valid
+        - commit_hash_recorded
+    - to: IMPLEMENTATION_READY_FOR_REVIEW
+      description: Revision fingerprint changed — re-review required
+      requires: [revision_mismatch_detected]
+    - to: STOPPED
+      description: Unrecoverable commit failure
+      requires: [stopped_reason]
+
+  COMMITTED:
+    - to: GOVERNANCE_RECONCILIATION
+      description: Commit verified, governance update begins
+      requires: [commit_hash_verified]
+    - to: STOPPED
+      description: Post-commit verification failed
+      requires: [stopped_reason]
+
+  GOVERNANCE_RECONCILIATION:
+    - to: COMPLETE
+      description: Governance artifacts updated, slice complete
+      requires: [governance_artifacts_updated]
+    - to: STOPPED
+      description: Governance reconciliation failed
+      requires: [stopped_reason]
+
+# COMPLETE and STOPPED have no outgoing transitions.
+# STOPPED requires explicit human recovery (see CONSTITUTION.md §15).
+
+# Explicitly forbidden transitions (non-exhaustive, for documentation):
+forbidden_examples:
+  - from: REMEDIATION
+    to: COMMITTED
+    reason: Must go through fresh review
+  - from: IMPLEMENTATION
+    to: COMMITTED
+    reason: Must go through adversarial review
+  - from: ADVERSARIAL_REVIEW
+    to: COMMITTED
+    reason: Must pass through COMMIT_READY gate
+  - from: STOPPED
+    to: COMMITTED
+    reason: STOPPED requires human recovery
+  - from: STOPPED
+    to: COMPLETE
+    reason: STOPPED requires human recovery
+  - from: PLANNING
+    to: IMPLEMENTATION
+    reason: Must pass architecture review
+  - from: ARCHITECTURE_REVIEW
+    to: IMPLEMENTATION
+    reason: Must be ARCHITECTURE_APPROVED first

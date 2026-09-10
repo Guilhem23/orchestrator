@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-evidence-set.json",
+  "title": "Slice Orchestrator v4 Immutable Evidence Set",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "workspace_revision_digest",
+    "test_receipts",
+    "implementation_evidence",
+    "evidence_set_digest",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "workspace_revision_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "test_receipts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "implementation_evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    },
+    "evidence_set_digest": {
+      "$ref": "#/$defs/sha256",
+      "description": "Digest of canonical set content excluding this field."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "receipt_id",
+        "receipt_digest"
+      ],
+      "properties": {
+        "receipt_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidenceRef": {
+      "type": "object",
+      "required": [
+        "path",
+        "digest"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

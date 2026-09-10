@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-commit-failure-record.json",
+  "title": "Slice Orchestrator v4 Recoverable Commit Failure Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "approved_revision_digest",
+    "phase",
+    "error_code",
+    "error_digest",
+    "authoritative_ref_unchanged",
+    "accepted_revision_still_current",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "approved_revision_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "phase": {
+      "enum": [
+        "QUIESCE",
+        "RECAPTURE",
+        "INDEX",
+        "COMMIT_OBJECT",
+        "REF_COMPARE_AND_SWAP",
+        "EVENT_APPEND"
+      ]
+    },
+    "error_code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "error_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "authoritative_ref_unchanged": {
+      "const": true
+    },
+    "accepted_revision_still_current": {
+      "const": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

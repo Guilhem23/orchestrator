@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-convergence-report.json",
+  "title": "Slice Orchestrator v4 Convergence Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "report_id",
+    "run_id",
+    "work_item_id",
+    "objective_id",
+    "status",
+    "checks_evaluated",
+    "gaps_detected",
+    "remediation_work_items_created",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "report_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "work_item_id": {
+      "type": "string",
+      "pattern": "^S[0-9]+-WI-[0-9]+$"
+    },
+    "objective_id": {
+      "type": "string",
+      "pattern": "^S[0-9]+-O[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "CONVERGED",
+        "DIVERGED"
+      ]
+    },
+    "checks_evaluated": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "check_type",
+          "expected",
+          "actual",
+          "passed"
+        ],
+        "properties": {
+          "check_type": {
+            "type": "string",
+            "enum": [
+              "planned_vs_actual_file",
+              "requirement_vs_implementation",
+              "acceptance_predicate_vs_test",
+              "api_contract_vs_implementation",
+              "performance_vs_benchmark",
+              "scope_manifest_vs_diff"
+            ]
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gaps_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "remediation_work_items_created": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]+-WI-[0-9]+$"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

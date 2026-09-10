@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "remediation-packet-v3",
+  "title": "Remediation Packet v3",
+  "description": "Structured remediation packet. Reviewer-owned evidence. The implementer MUST NOT modify this artifact.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "slice",
+    "review_cycle",
+    "review_path",
+    "reviewer_revision",
+    "reviewed_at_revision",
+    "created_at",
+    "findings"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 3
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "review_cycle": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "review_path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path to the adversarial review artifact that produced this packet"
+    },
+    "reviewer_revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 fingerprint of the reviewer's artifact"
+    },
+    "reviewed_at_revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Repository revision fingerprint at the time of review"
+    },
+    "evidence_reference": {
+      "type": "string",
+      "description": "Path or identifier of the evidence pack examined"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "finding_id",
+          "severity",
+          "title",
+          "file",
+          "location",
+          "description",
+          "violated_invariant",
+          "required_test",
+          "expected_property"
+        ],
+        "properties": {
+          "finding_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable finding identifier (e.g., F-S3-001)"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "file": {
+            "type": "string",
+            "description": "Primary file affected"
+          },
+          "location": {
+            "type": "string",
+            "description": "Exact location (file:line or function/method)"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Concrete failure description"
+          },
+          "violated_invariant": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Which invariant or acceptance criterion is violated"
+          },
+          "required_test": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Regression test that must be added or updated"
+          },
+          "expected_property": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The property that must hold after remediation"
+          },
+          "forbidden_changes": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": [],
+            "description": "Changes that the implementer must NOT make"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

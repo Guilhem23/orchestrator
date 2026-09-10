@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-learning-record.json",
+  "title": "Slice Orchestrator v4 Learning Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "learning_id",
+    "source_work_item",
+    "timestamp",
+    "author_role",
+    "statement",
+    "confidence",
+    "evidence_reference"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "learning_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_work_item": {
+      "type": "string",
+      "pattern": "^S[0-9]+-WI-[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "author_role": {
+      "type": "string"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "evidence_reference": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

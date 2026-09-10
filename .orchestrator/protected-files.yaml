@@ -1,0 +1,20 @@
+# Protected Files Configuration
+# Files that cannot be modified by workers
+
+protected_patterns:
+  - ".orchestrator/**/*"
+  - ".git/**/*"
+  - ".orchestrator_slice/**/*"
+  - "*.lock"
+  - "pyproject.toml"
+  - "requirements.txt"
+
+# These patterns define files that are never part of slice scope
+never_in_scope:
+  - ".orchestrator/**"
+  - ".orchestrator_slice/**"
+  - ".git/**"
+  - "__pycache__/**"
+  - "*.pyc"
+  - ".venv/**"
+  - "orchestrator-extraction-bundle-*/**"

@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-review-record.json",
+  "title": "Slice Orchestrator v4 Adversarial Review Record",
+  "description": "Reviewer result ingested through a one-use control-plane assignment. The Markdown artifact is supporting evidence; this bound record is the review input to transition enforcement.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "review_request_id",
+    "review_cycle",
+    "reviewer_identity",
+    "reviewer_role",
+    "reviewer_assignment_id",
+    "reviewer_execution_id",
+    "freshness_attestation",
+    "reviewed_revision",
+    "plan_revision",
+    "plan_digest",
+    "scope_manifest_digest",
+    "review_artifact_digest",
+    "result",
+    "blocking_findings",
+    "created_at",
+    "evidence_references"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "review_request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "review_cycle": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reviewer_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer_role": {
+      "const": "ADVERSARIAL_REVIEWER"
+    },
+    "reviewer_assignment_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reviewer_execution_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "freshness_attestation": {
+      "type": "object",
+      "required": [
+        "issued_by_control_plane",
+        "one_use_capability",
+        "read_only_candidate",
+        "implementation_transcript_excluded",
+        "input_bundle_digest"
+      ],
+      "properties": {
+        "issued_by_control_plane": {
+          "const": true
+        },
+        "one_use_capability": {
+          "const": true
+        },
+        "read_only_candidate": {
+          "const": true
+        },
+        "implementation_transcript_excluded": {
+          "const": true
+        },
+        "input_bundle_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "vendor_thread_hint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "reviewed_revision": {
+      "$ref": "#/$defs/revisionIdentity"
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "plan_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "scope_manifest_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "review_artifact_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "result": {
+      "enum": [
+        "APPROVED",
+        "BLOCKED",
+        "PLAN_REVISION"
+      ]
+    },
+    "blocking_findings": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "kind",
+          "digest"
+        ],
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "CONTROL_TEST_RECEIPT",
+              "IMPLEMENTATION_EVIDENCE",
+              "PRIOR_REVIEW",
+              "REMEDIATION_PACKET",
+              "PLAN",
+              "SCOPE_MANIFEST",
+              "CANDIDATE_MANIFEST"
+            ]
+          },
+          "digest": {
+            "$ref": "#/$defs/sha256"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "APPROVED"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocking_findings": {
+            "const": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "enum": [
+              "BLOCKED",
+              "PLAN_REVISION"
+            ]
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocking_findings": {
+            "minimum": 1
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    },
+    "revisionIdentity": {
+      "type": "object",
+      "required": [
+        "repository_id",
+        "object_format",
+        "base_commit_oid",
+        "candidate_tree_oid",
+        "plan_revision",
+        "plan_digest",
+        "scope_manifest_digest",
+        "evidence_bundle_digest",
+        "policy_bundle_digest",
+        "composite_digest"
+      ],
+      "properties": {
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object_format": {
+          "enum": [
+            "sha1",
+            "sha256"
+          ]
+        },
+        "base_commit_oid": {
+          "$ref": "#/$defs/gitOid"
+        },
+        "candidate_tree_oid": {
+          "$ref": "#/$defs/gitOid"
+        },
+        "plan_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "scope_manifest_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evidence_bundle_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "policy_bundle_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "composite_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-commit-record.json",
+  "title": "Slice Orchestrator v4 Commit Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "commit_kind",
+    "commit_oid",
+    "tree_oid",
+    "parent_commit_oid",
+    "authoritative_ref",
+    "previous_ref_oid",
+    "new_ref_oid",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "commit_kind": {
+      "enum": [
+        "IMPLEMENTATION",
+        "GOVERNANCE"
+      ]
+    },
+    "commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "tree_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "parent_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "accepted_candidate_tree_oid": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/gitOid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "approved_revision_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "governance_diff_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authoritative_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_ref_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "new_ref_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "commit_kind": {
+            "const": "IMPLEMENTATION"
+          }
+        },
+        "required": [
+          "commit_kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "accepted_candidate_tree_oid",
+          "approved_revision_digest"
+        ],
+        "properties": {
+          "accepted_candidate_tree_oid": {
+            "$ref": "#/$defs/gitOid"
+          },
+          "approved_revision_digest": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "commit_kind": {
+            "const": "GOVERNANCE"
+          }
+        },
+        "required": [
+          "commit_kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "governance_diff_digest"
+        ],
+        "properties": {
+          "governance_diff_digest": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    }
+  }
+}

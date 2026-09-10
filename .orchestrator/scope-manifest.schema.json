@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-scope-manifest.json",
+  "title": "Slice Orchestrator v4 Scope Manifest",
+  "description": "Architecture-approved deterministic scope for one plan revision. Optional as a planning aid, mandatory before implementation authorization.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "project_id",
+    "slice",
+    "plan_revision",
+    "plan_digest",
+    "base_commit_oid",
+    "path_semantics",
+    "deny_unmatched",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "plan_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "base_commit_oid": {
+      "$ref": "#/$defs/gitOid"
+    },
+    "path_semantics": {
+      "const": "git_pathspec_v1"
+    },
+    "deny_unmatched": {
+      "const": true
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "category",
+          "pattern",
+          "operations",
+          "justification"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "category": {
+            "enum": [
+              "source",
+              "test",
+              "implementation_evidence",
+              "dependency",
+              "shared"
+            ]
+          },
+          "pattern": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "enum": [
+                "*",
+                "**",
+                "**/*"
+              ]
+            }
+          },
+          "operations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "add",
+                "modify",
+                "delete",
+                "rename",
+                "mode_change"
+              ]
+            }
+          },
+          "justification": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "category": {
+                  "enum": [
+                    "dependency",
+                    "shared"
+                  ]
+                }
+              },
+              "required": [
+                "category"
+              ]
+            },
+            "then": {
+              "properties": {
+                "justification": {
+                  "type": "string",
+                  "minLength": 10
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "gitOid": {
+      "type": "string",
+      "pattern": "^(sha1:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"
+    }
+  }
+}

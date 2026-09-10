@@ -1,0 +1,27 @@
+version: 2
+max_review_cycles: 5
+max_remediation_cycles: 5
+require_fresh_adversarial_context: true
+require_same_implementation_thread_for_remediation: true
+require_structured_remediation_packet: true
+require_genuine_red_green: true
+never_overwrite_historical_reviews: true
+never_commit_on_blocked_gate: true
+never_start_next_slice_before_commit: true
+never_use_broad_git_add: true
+stop_on_ambiguous_scope: true
+stop_on_missing_artifact: true
+stop_on_max_cycles: true
+require_human_intervention_after_max_cycles: true
+forbidden_commands:
+  - git reset --hard
+  - git clean -fd
+  - git restore .
+  - git add .
+required_final_gate:
+  review_status: APPROVED
+  blocking_findings: 0
+  evidence_valid: true
+  required_tests_skipped: false
+  implementation_thread_id_present: true
+  fresh_review_thread_required: true

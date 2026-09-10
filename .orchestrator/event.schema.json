@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-event.json",
+  "title": "Slice Orchestrator v4 Control-Plane Event",
+  "description": "Canonical append-only event. event_hash and event_mac are computed over canonical event content excluding those two fields.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "project_id",
+    "slice",
+    "run_id",
+    "run_generation",
+    "sequence",
+    "event_id",
+    "event_type",
+    "actor",
+    "expected_previous_event_hash",
+    "payload_schema",
+    "payload",
+    "recorded_at",
+    "event_hash",
+    "event_mac"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "enum": [
+        "RUN_OPENED",
+        "PLAN_PERSISTED",
+        "PLAN_REVISION_REQUESTED",
+        "PLAN_REVISED",
+        "ARCHITECTURE_REVIEW_ASSIGNED",
+        "ARCHITECTURE_APPROVED",
+        "ARCHITECTURE_BLOCKED",
+        "IMPLEMENTATION_ASSIGNED",
+        "IMPLEMENTATION_CONTEXT_CHECKPOINTED",
+        "IMPLEMENTATION_WORKER_REASSIGNED",
+        "IMPLEMENTATION_CONTEXT_INVALID",
+        "CANDIDATE_CAPTURED",
+        "CANDIDATE_INVALIDATED",
+        "ADVERSARIAL_REVIEW_ASSIGNED",
+        "REVIEW_ACCEPTED",
+        "REVIEW_BLOCKED",
+        "REVIEW_REQUIRES_PLAN_REVISION",
+        "REMEDIATION_ASSIGNED",
+        "REMEDIATION_CONTEXT_REPLACEMENT_REQUIRED",
+        "ACCEPTANCE_INVALIDATED",
+        "ASSIGNMENT_ISSUED",
+        "ASSIGNMENT_CONSUMED",
+        "CONTEXT_PACK_GENERATED",
+        "COMMIT_FAILED_RECOVERABLE",
+        "COMMIT_RECORDED",
+        "GOVERNANCE_STARTED",
+        "GOVERNANCE_COMMIT_RECORDED",
+        "GOVERNANCE_RECONCILED",
+        "RUN_STOPPED",
+        "RUN_PAUSED",
+        "RUN_RESUMED",
+        "HUMAN_RECOVERY_OPENED"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "principal_id",
+        "role",
+        "assignment_id",
+        "execution_id"
+      ],
+      "properties": {
+        "principal_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "CONTROL_OPERATOR",
+            "CONTROLLER_SYSTEM",
+            "PLANNER",
+            "ARCHITECTURE_REVIEWER",
+            "IMPLEMENTER",
+            "ADVERSARIAL_REVIEWER",
+            "COMMIT_MANAGER",
+            "GOVERNANCE_AGENT"
+          ]
+        },
+        "assignment_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "expected_previous_event_hash": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "payload_schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payload": {
+      "type": "object"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "event_mac": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

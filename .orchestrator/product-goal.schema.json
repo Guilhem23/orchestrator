@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-product-goal.json",
+  "title": "Slice Orchestrator v4 Product Goal",
+  "description": "Durable, sourced product finality. Informational intent; never transition or acceptance authority.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "goal_id",
+    "statement",
+    "rationale",
+    "source",
+    "success_indicators",
+    "related_roadmap_elements",
+    "status",
+    "created_by",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "goal_id": {
+      "type": "string",
+      "pattern": "^PG-[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/sourceRef"
+      }
+    },
+    "success_indicators": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "indicator_id",
+          "statement",
+          "measurement",
+          "evidence_references"
+        ],
+        "properties": {
+          "indicator_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "measurement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/recordRef"
+            }
+          },
+          "is_gate": {
+            "const": false,
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "related_roadmap_elements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "ACTIVE",
+        "ACHIEVED",
+        "DEFERRED",
+        "RETIRED"
+      ]
+    },
+    "supersedes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^PG-[A-Za-z0-9][A-Za-z0-9._-]*$"
+      }
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "path",
+        "section",
+        "content_digest",
+        "authority_reference"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "authority_reference": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

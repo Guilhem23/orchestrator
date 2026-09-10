@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestrator-state-v3",
+  "title": "Slice Orchestrator State v3",
+  "description": "Hardened per-slice orchestrator state. Fields marked DERIVED are computed and MUST NOT be treated as trust signals.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "slice",
+    "state",
+    "state_revision",
+    "transition_counter",
+    "implementation_thread_id",
+    "implementation_revision_hash",
+    "approved_plan_hash",
+    "plan_revision",
+    "review_cycle",
+    "review_revision_hash",
+    "last_review_artifact",
+    "remediation_packet",
+    "protected_policy_hash",
+    "commit_candidate_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 3,
+      "description": "Schema version for forward compatibility"
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$",
+      "description": "Slice identifier"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "PLANNING",
+        "PLAN_READY",
+        "PLAN_REVISION",
+        "ARCHITECTURE_REVIEW",
+        "ARCHITECTURE_APPROVED",
+        "IMPLEMENTATION",
+        "IMPLEMENTATION_READY_FOR_REVIEW",
+        "ADVERSARIAL_REVIEW",
+        "REMEDIATION",
+        "COMMIT_READY",
+        "COMMITTED",
+        "GOVERNANCE_RECONCILIATION",
+        "COMPLETE",
+        "STOPPED"
+      ],
+      "description": "Current orchestrator state; transitions validated by transition checker"
+    },
+    "state_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonically increasing state revision counter; incremented on every state mutation"
+    },
+    "transition_counter": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of state transitions executed; must match history length"
+    },
+    "implementation_thread_id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "description": "Persistent implementation thread identifier; null only before IMPLEMENTATION"
+    },
+    "implementation_revision_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 fingerprint of the implementation worktree state"
+    },
+    "approved_plan_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the architecture-approved plan file"
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Plan revision counter; 0 = initial plan, incremented on each PLAN_REVISION"
+    },
+    "plan_path": {
+      "type": ["string", "null"],
+      "description": "Path to the current frozen plan file"
+    },
+    "review_cycle": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Adversarial review cycle counter; incremented only at IMPLEMENTATION_READY_FOR_REVIEW -> ADVERSARIAL_REVIEW; never reset"
+    },
+    "review_revision_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Revision fingerprint at the time of the last adversarial review approval"
+    },
+    "last_review_artifact": {
+      "type": ["string", "null"],
+      "description": "Path to the latest review artifact file"
+    },
+    "last_review_verdict": {
+      "type": ["string", "null"],
+      "enum": ["APPROVED", "BLOCKED", null],
+      "description": "Verdict of the last review"
+    },
+    "last_review_thread_id": {
+      "type": ["string", "null"],
+      "description": "Thread ID of the last reviewer (for freshness verification)"
+    },
+    "remediation_packet": {
+      "type": ["string", "null"],
+      "description": "Path to the current remediation packet file"
+    },
+    "blocking_findings": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of blocking findings from the latest review"
+    },
+    "protected_policy_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Combined SHA-256 of all protected policy files recorded at slice-run startup"
+    },
+    "constitution_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of CONSTITUTION.md recorded at slice-run startup"
+    },
+    "commit_candidate_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Staged tree hash for the commit candidate"
+    },
+    "commit_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]+$",
+      "description": "Git commit hash after successful commit"
+    },
+    "git_head": {
+      "type": ["string", "null"],
+      "description": "Current Git HEAD at last state transition"
+    },
+    "stopped_reason": {
+      "type": ["string", "null"],
+      "enum": [
+        "MAX_CYCLES_EXCEEDED",
+        "IMPLEMENTATION_CONTEXT_UNAVAILABLE",
+        "CONCURRENT_ORCHESTRATOR_DETECTED",
+        "GOVERNANCE_POLICY_MODIFIED",
+        "EVIDENCE_INTEGRITY_FAILURE",
+        "UNRECOVERABLE_COMMIT_FAILURE",
+        "AMBIGUOUS_STATE_RECOVERY",
+        "PROTECTED_FILE_VIOLATION",
+        "CONSTITUTION_HASH_CHANGED",
+        "MANUAL_STOP",
+        null
+      ],
+      "description": "Reason for entering STOPPED state; required when state is STOPPED"
+    },
+    "architecture_review_plan_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Plan hash referenced by the architecture reviewer; must match approved_plan_hash"
+    },
+    "started_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when the slice run began"
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO-8601 timestamp of the last state mutation"
+    },
+    "commit_allowed_derived": {
+      "type": "boolean",
+      "default": false,
+      "description": "DERIVED ONLY — computed by gate evaluator. MUST NOT be used as a trust signal. Exists only for display/debugging."
+    }
+  },
+  "additionalProperties": false,
+  "if": {
+    "properties": { "state": { "const": "STOPPED" } }
+  },
+  "then": {
+    "required": ["stopped_reason"],
+    "properties": {
+      "stopped_reason": { "type": "string" }
+    }
+  }
+}

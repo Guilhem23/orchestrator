@@ -1,0 +1,9 @@
+# Slice Orchestrator Runtime Dependencies
+
+# Core dependencies
+pyyaml>=6.0
+jsonschema>=4.17.0
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-timeout>=2.1.0

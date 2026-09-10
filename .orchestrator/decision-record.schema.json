@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-decision-record.json",
+  "title": "Slice Orchestrator v4 Product Decision Record",
+  "description": "Durable explicit choice. A Decision is neither a Learning nor Policy and does not replace a required ADR.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "decision_id",
+    "question",
+    "context",
+    "alternatives",
+    "chosen_option",
+    "rationale",
+    "author",
+    "timestamp",
+    "affected_objectives",
+    "affected_slices",
+    "supersedes",
+    "evidence",
+    "source",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^DEC-[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1
+    },
+    "alternatives": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "option_id",
+          "statement"
+        ],
+        "properties": {
+          "option_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "chosen_option": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "affected_objectives": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(PO-[A-Za-z0-9][A-Za-z0-9._-]*|S[0-9]+-O[0-9]+)$"
+      }
+    },
+    "affected_slices": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(S[0-9]+|UI-[0-9]+)$"
+      }
+    },
+    "supersedes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^DEC-[A-Za-z0-9][A-Za-z0-9._-]*$"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "source": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/sourceRef"
+      }
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "ACCEPTED",
+        "SUPERSEDED",
+        "REJECTED"
+      ]
+    },
+    "requires_adr": {
+      "type": "boolean"
+    },
+    "adr_reference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "requires_adr": {
+            "const": true
+          }
+        },
+        "required": [
+          "requires_adr"
+        ]
+      },
+      "then": {
+        "required": [
+          "adr_reference"
+        ],
+        "properties": {
+          "adr_reference": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "path",
+        "section",
+        "content_digest"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recordRef": {
+      "type": "object",
+      "required": [
+        "record_type",
+        "record_id",
+        "record_digest"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

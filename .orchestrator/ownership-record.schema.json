@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-fabric.example/schemas/orchestrator-v4-ownership-record.json",
+  "title": "Slice Orchestrator v4 Run Ownership Lease Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_id",
+    "project_id",
+    "slice",
+    "run_id",
+    "run_generation",
+    "ownership_epoch",
+    "token_digest",
+    "controller_instance_id",
+    "operation",
+    "previous_ownership_record_id",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 4
+    },
+    "record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S[0-9]+$"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "run_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "ownership_epoch": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "token_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "controller_instance_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation": {
+      "enum": [
+        "OPENED",
+        "RESUMED",
+        "RECOVERED"
+      ]
+    },
+    "previous_ownership_record_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

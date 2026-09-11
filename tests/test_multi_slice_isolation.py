@@ -126,6 +126,9 @@ def test_one_slice_cannot_invalidate_another(disposable_repo_and_control):
 
 def test_concurrent_operations_on_separate_slices(disposable_repo_and_control):
     repo_dir, control_dir, _ = disposable_repo_and_control
+    # Pre-initialize store and secret key to prevent concurrent secret generation race
+    SliceRunController(repo_dir, control_dir, configured_adapter_id="dummy")
+
     errors: list[BaseException] = []
     states: dict[str, str] = {}
 

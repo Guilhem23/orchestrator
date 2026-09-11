@@ -23,9 +23,11 @@ from slice_orchestrator.control_store import ControlStore, ControlStoreError
 from slice_orchestrator.git_manager import (
     CandidateTreeBuilder,
     ScopeManifestValidator,
+    build_authoritative_test_manifest,
     compute_workspace_revision_digest,
     get_git_object_format,
     get_head_commit_oid,
+    verify_authoritative_tests_unmodified,
 )
 from slice_orchestrator.state_machine import SliceRunState
 
@@ -298,6 +300,20 @@ class GateEvaluator:
         if review_rec.get("verdict") != "APPROVED":
             return GateEvaluationResult(passed=False, reason=f"Review verdict is {review_rec.get('verdict')}, expected APPROVED")
 
+        # Check reviewer independence and self-approval
+        impl_principal = review_rec.get("implementer_principal")
+        rev_principal = review_rec.get("reviewer_principal")
+        if impl_principal and rev_principal and impl_principal == rev_principal:
+            return GateEvaluationResult(
+                passed=False,
+                reason=f"SELF_APPROVAL_REJECTED: Implementer '{impl_principal}' cannot act as adversarial reviewer",
+            )
+        if review_rec.get("is_self_approved"):
+            return GateEvaluationResult(
+                passed=False,
+                reason="SELF_APPROVAL_REJECTED: Review was self-approved by implementer actor",
+            )
+
         if review_rec.get("blocking_finding_count", 0) != 0:
             return GateEvaluationResult(
                 passed=False, reason=f"Review has {review_rec.get('blocking_finding_count')} blocking findings"
@@ -345,6 +361,44 @@ class GateEvaluator:
         receipt = self._require_bound_passing_receipt(state, captured_tree_oid, current_workspace_rev_digest)
         if isinstance(receipt, GateEvaluationResult):
             return receipt
+
+        # Verify authoritative control test provenance and immutability
+        plan_rec = None
+        if state.approved_plan_digest:
+            plan_rec = self.control_store.get_record(state.approved_plan_digest)
+            if not plan_rec:
+                for r in self.control_store.list_records_by_type("PLAN"):
+                    if (r.get("record_digest") == state.approved_plan_digest
+                        or r.get("plan_id") == state.approved_plan_digest
+                        or r.get("record_id") == state.approved_plan_digest
+                        or r.get("slice") == state.slice):
+                        plan_rec = r
+                        break
+
+        auth_manifest = None
+        allowed_mods = []
+        if plan_rec:
+            if plan_rec.get("authoritative_test_manifest"):
+                auth_manifest = plan_rec["authoritative_test_manifest"]
+            scope_m = plan_rec.get("scope_manifest", {})
+            for rule in scope_m.get("allow_paths", []):
+                pat = rule.get("pattern") if isinstance(rule, dict) else str(rule)
+                if pat:
+                    allowed_mods.append(pat)
+
+        if not auth_manifest:
+            auth_manifest = build_authoritative_test_manifest(self.repo_dir, base_commit)
+
+        test_ok, test_fail_reason = verify_authoritative_tests_unmodified(
+            self.repo_dir, base_commit, auth_manifest, allowed_modifications=allowed_mods
+        )
+        if not test_ok:
+            return GateEvaluationResult(
+                passed=False,
+                reason=test_fail_reason,
+                workspace_revision_digest=current_workspace_rev_digest,
+                candidate_tree_oid=captured_tree_oid,
+            )
 
         diff_entries = builder.compute_base_to_candidate_diff(base_commit, captured_tree_oid)
         scope_manifest_rec = None

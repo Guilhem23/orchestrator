@@ -247,12 +247,22 @@ class DispatchManager:
         plan_revision: int = 1,
         repository_revision: str = "sha1:0000000000000000000000000000000000000000",
         issued_by: str = "control_plane",
+        slice_name: str | None = None,
     ) -> dict[str, Any]:
         """
         Atomically creates Context Pack and issues single-use Assignment envelope.
         Emits CONTEXT_PACK_GENERATED and ASSIGNMENT_ISSUED events via M1 kernel.
         """
         assignment_id = str(uuid.uuid4())
+
+        s_name = slice_name
+        if not s_name:
+            events = self.store.get_events()
+            run_events = [e for e in events if e.get("run_id") == run_id]
+            if run_events:
+                s_name = run_events[0]["slice"]
+            else:
+                s_name = "S6"
 
         context_pack = self.generate_context_pack(
             role=role,
@@ -272,7 +282,7 @@ class DispatchManager:
             "plan_revision": plan_revision,
         }
         self.store.append_event(
-            slice_name="S6",
+            slice_name=s_name,
             run_id=run_id,
             event_type="CONTEXT_PACK_GENERATED",
             payload_type="CONTEXT_PACK_GENERATED",
@@ -285,6 +295,8 @@ class DispatchManager:
         assignment_data = {
             "assignment_id": assignment_id,
             "run_id": run_id,
+            "slice": s_name,
+            "slice_name": s_name,
             "role": role.upper(),
             "worker_execution_id": worker_execution_id,
             "context_pack_id": context_pack["context_pack_id"],

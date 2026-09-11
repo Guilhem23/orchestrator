@@ -1,0 +1,17 @@
+{
+  "evidence_class_intended": "FULL_CURSOR_IDE_RESTART",
+  "slice": "S940",
+  "run_id": "f278a27d-ee8c-436a-a31b-39282fa7b18a",
+  "state_before_shutdown": "IMPLEMENTATION",
+  "sequence": 10,
+  "last_event": "IMPLEMENTATION_ASSIGNED",
+  "impl_assignment_id": "e1eeae88-036a-48af-b962-08cbd6132fde",
+  "arch_assignment_id": "af25a4ba-5895-4d4c-be77-34079f16b583",
+  "work_item_id": "S940-WI-1",
+  "repo_dir": "/home/guilhem/workspace/orchestrator/evidence/cursor-full-restart-validation/disposable-S940",
+  "control_home": "/home/guilhem/workspace/orchestrator/evidence/cursor-full-restart-validation/disposable-S940/.orchestrator_slice",
+  "branch": "validation/cursor-full-ide-restart",
+  "revision": "1a472d6f43b40f67eead7d26dce6414f285e9857",
+  "pre_shutdown_utc": "2026-09-11T15:57:31Z",
+  "pending_next": "record implementer result for subtract, then tests/review/gate/finalize"
+}

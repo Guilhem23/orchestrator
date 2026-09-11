@@ -237,6 +237,9 @@ class SliceRunController:
             base_commit_oid=state.base_commit_oid or get_head_commit_oid(self.repo_dir),
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:
@@ -324,6 +327,9 @@ class SliceRunController:
             base_commit_oid=state.base_commit_oid or get_head_commit_oid(self.repo_dir),
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:
@@ -461,6 +467,9 @@ class SliceRunController:
             base_commit_oid=state.base_commit_oid or get_head_commit_oid(self.repo_dir),
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:
@@ -619,6 +628,9 @@ class SliceRunController:
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
             remediation_packets=[self.store.get_record(p) for p in state.open_remediation_packet_ids if self.store.get_record(p)],
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:
@@ -638,6 +650,9 @@ class SliceRunController:
             return self.get_slice_state(slice_name)  # type: ignore
 
         rev_id = rev_data.get("review_id", str(uuid.uuid4()))
+        rev_data.setdefault("implementer_principal", "implementer-worker")
+        rev_data.setdefault("reviewer_principal", "adversarial-reviewer")
+        rev_data.setdefault("is_self_approved", False)
         rev_digest = self.store.store_record("ADVERSARIAL_REVIEW", rev_id, rev_data)
 
         verdict = rev_data.get("verdict")
@@ -787,6 +802,9 @@ class SliceRunController:
             base_commit_oid=state.base_commit_oid or get_head_commit_oid(self.repo_dir),
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:
@@ -933,6 +951,9 @@ class SliceRunController:
             base_commit_oid=state.committed_implementation_oid or get_head_commit_oid(self.repo_dir),
             workspace_dir=self.repo_dir,
             output_dir=self.store.artifacts_dir,
+            candidate_tree_oid=getattr(state, "candidate_tree_oid", state.candidate_record_id),
+            workspace_revision_digest=state.workspace_revision_digest,
+            evidence_set_digest=state.evidence_set_digest,
         )
         result = adapter.run(bundle)
         if result.availability == "UNAVAILABLE" or not result.success:

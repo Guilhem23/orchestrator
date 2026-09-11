@@ -713,6 +713,8 @@ class ControlStore:
     def store_record(self, record_type: str, record_id: str, record_data: dict[str, Any]) -> str:
         records_dir = self.control_home / "records"
         records_dir.mkdir(parents=True, exist_ok=True)
+        if "record_type" not in record_data:
+            record_data["record_type"] = record_type
         digest = compute_record_digest(record_data)
         record_data["record_digest"] = digest
         (records_dir / f"{record_id}.json").write_text(json.dumps(record_data, indent=2), encoding="utf-8")

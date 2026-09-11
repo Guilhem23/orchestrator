@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "slice-orchestrator": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "python3",
+        "-m",
+        "slice_orchestrator.mcp_server"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}

@@ -5,7 +5,9 @@ Git Manager, Candidate Capture, Scope Manifest Validator, and Atomic Commit Mana
 from __future__ import annotations
 
 import hashlib
+import json
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -392,3 +394,99 @@ class AtomicCommitManager:
         finally:
             if os.path.exists(index_file):
                 os.remove(index_file)
+
+
+def build_authoritative_test_manifest(repo_dir: Path, base_commit_oid: str) -> dict[str, Any]:
+    """
+    Build a trusted baseline test manifest from base_commit_oid.
+    Captures all test files in the baseline commit, computes content digests and test function names.
+    """
+    raw_base = base_commit_oid.split(":")[-1]
+    found_tests: list[dict[str, Any]] = []
+    test_func_pattern = re.compile(r"^\s*def\s+(test_\w+)", re.MULTILINE)
+
+    try:
+        raw_tree_list = run_git_cmd(["ls-tree", "-r", "--name-only", raw_base], repo_dir, check=False)
+        lines = [line.strip() for line in raw_tree_list.splitlines() if line.strip()]
+    except Exception:
+        lines = []
+
+    for path in lines:
+        is_test_file = (
+            path.startswith("tests/")
+            or path.startswith("test/")
+            or os.path.basename(path).startswith("test_")
+            or os.path.basename(path).endswith("_test.py")
+        )
+        if is_test_file:
+            try:
+                content = run_git_cmd(["show", f"{raw_base}:{path}"], repo_dir, check=True)
+                digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
+                test_funcs = sorted(set(test_func_pattern.findall(content)))
+            except Exception:
+                continue
+
+            test_id = f"test-{hashlib.sha256(path.encode('utf-8')).hexdigest()[:8]}"
+            found_tests.append({
+                "test_id": test_id,
+                "path": path,
+                "content_digest": digest,
+                "test_functions": test_funcs,
+                "type": "AUTHORITATIVE_CONTROL_TEST",
+                "immutable": True,
+            })
+
+    found_tests.sort(key=lambda x: x["path"])
+
+    manifest = {
+        "schema_version": 4,
+        "base_commit_oid": base_commit_oid,
+        "tests": found_tests,
+    }
+    trusted_digest = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode("utf-8")).hexdigest()
+    manifest["trusted_test_set_digest"] = trusted_digest
+    return manifest
+
+
+def verify_authoritative_tests_unmodified(
+    repo_dir: Path,
+    base_commit_oid: str,
+    authoritative_manifest: dict[str, Any],
+    allowed_modifications: Sequence[str] | None = None,
+) -> tuple[bool, str]:
+    """
+    Verify that all authoritative control tests from the baseline manifest exist in the repository
+    and remain unmodified or un-weakened.
+    Returns (True, 'OK') or (False, reason_string).
+    """
+    tests = authoritative_manifest.get("tests", [])
+    if not tests:
+        return True, "No authoritative tests defined in baseline"
+
+    test_func_pattern = re.compile(r"^\s*def\s+(test_\w+)", re.MULTILINE)
+    allowed_set = set(allowed_modifications or [])
+
+    for test_item in tests:
+        rel_path = test_item["path"]
+        expected_digest = test_item["content_digest"]
+        file_path = repo_dir / rel_path
+
+        if not file_path.is_file():
+            return False, f"AUTHORITATIVE_TEST_DELETED: Test file '{rel_path}' present in baseline was deleted in candidate tree"
+
+        actual_content = file_path.read_text(encoding="utf-8", errors="replace")
+        actual_digest = hashlib.sha256(actual_content.encode("utf-8")).hexdigest()
+
+        if actual_digest != expected_digest:
+            baseline_funcs = set(test_item.get("test_functions", []))
+            actual_funcs = set(test_func_pattern.findall(actual_content))
+
+            missing_funcs = sorted(baseline_funcs - actual_funcs)
+            if missing_funcs:
+                return False, f"AUTHORITATIVE_TEST_WEAKENED: Test function '{missing_funcs[0]}' present in baseline test file '{rel_path}' was deleted"
+
+            if not any(match_path_pattern(rel_path, p) for p in allowed_set):
+                return False, f"AUTHORITATIVE_TEST_MODIFIED: Test file '{rel_path}' present in baseline was modified without plan re-approval"
+
+    return True, "All authoritative control tests verified unmodified"
+

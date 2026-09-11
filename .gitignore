@@ -3,6 +3,17 @@
 **/.slice-orchestrator/
 .orchestrator_slice/
 **/.orchestrator_slice/
+.orchestrator/
+**/.orchestrator/
+
+# Control-plane secrets and SQLite state (defense in depth)
+control_secret.key
+trusted_tail_anchor
+*.db
+*.sqlite
+*.sqlite3
+locks/
+**/locks/
 
 # Python
 __pycache__/
@@ -18,7 +29,16 @@ dist/
 # Temporary worker output
 .tmp/
 
+# Disposable live-validation / runtime evidence (not the curated README)
+evidence/cursor-live-validation/
+evidence/cursor-full-restart-validation/disposable-*/
+evidence/orchestrator/
+
 # Extraction bundles and archives
 orchestrator-extraction-bundle-*/
 *.tar.gz
 *.zip
+
+# Disposable local test-project artifacts (not part of committed fixtures)
+test-project/uv.lock
+test-project/src/impl.py

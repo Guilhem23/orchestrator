@@ -17,6 +17,7 @@ depth.
 - [mcp-host-compatibility.md](mcp-host-compatibility.md) — capability matrix and live-invocation evidence for each supported host
 - [cursor-integration.md](cursor-integration.md) — set up and validate Cursor Chat as a native host
 - [claude-code-integration.md](claude-code-integration.md) — set up and validate Claude Code as a native host
+- [integration-prompt.md](integration-prompt.md) — copy-paste prompt for registering Slice Orchestrator against a *different* target repository (external checkout, `uv run --project`)
 
 ## Observability & measurement
 

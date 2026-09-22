@@ -145,4 +145,4 @@ Central answer: after committing the observability layer, this controlled multi-
 2. Do **not** market “faster development” from this dataset.
 3. Re-run with human developers, counterbalanced order, larger tasks, and instrumented CONTROL tool use before any productivity claim.
 4. Investigate DF-08 blocked-review continuation UX separately as a process bug/friction item.
-5. Claude Code remains deferred; production readiness remains NOT READY.
+5. Claude Code native compatibility is now VALIDATED ([CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md), 2026-09-22); this study's conclusion is unaffected — production readiness remains NOT READY on productivity grounds alone.

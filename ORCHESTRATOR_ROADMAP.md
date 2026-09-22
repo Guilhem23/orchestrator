@@ -27,7 +27,7 @@ Native Claude Code support is **not** a separate orchestration architecture. It 
 ```text
 Cursor Chat live invocation: PASS
 Full IDE process restart: PASS (operator; slice S940)
-Claude Code native validation: DEFERRED
+Claude Code native validation: PASS (slices S999/S998/S997/S996/S995)
 Production readiness: NOT READY
 ```
 
@@ -56,20 +56,32 @@ Evidence: [CURSOR_CHAT_LIVE_VALIDATION.md](CURSOR_CHAT_LIVE_VALIDATION.md) (slic
 
 ## B. Claude Code native compatibility
 
-**Status**: DEFERRED — project `.mcp.json` + guide exist; live Claude Code native validation not executed
+**Status**: VALIDATED (live Claude Code tool invocation, full lifecycle to `COMPLETE`)
+
+```text
+Claude Code native invocation: PASS
+Tool discovery (14 slice_* tools): PASS
+Full lifecycle to COMPLETE with real HMAC test receipt: PASS (slice S994, 21 events)
+```
+
+Evidence: [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md) (slices `S999`/`S998`/`S997`/`S996`/`S995`/`S994`, disposable repos).
 
 ### Deliverables
 
 - [x] Project `.mcp.json` (stdio, no secrets)
 - [x] [CLAUDE_CODE_NATIVE_INTEGRATION_GUIDE.md](CLAUDE_CODE_NATIVE_INTEGRATION_GUIDE.md)
 - [x] Same tool contract as Cursor
-- [ ] Live Claude Code `/mcp` + tool invocation evidence
+- [x] Live Claude Code `/mcp` + tool invocation evidence — [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md)
 
 ### Exit criteria
 
-- [ ] Claude Code lists and connects `slice-orchestrator`
-- [ ] Disposable slice lifecycle tools succeed from Claude Code
+- [x] Claude Code lists and connects `slice-orchestrator`
+- [x] Disposable slice lifecycle tools succeed from Claude Code
 - [x] No duplicated orchestration logic for Claude
+
+### Follow-up (minor DX gap, not a Jalon B blocker, host-independent)
+
+- [ ] `slice_plan`'s MCP tool description doesn't document the expected `scope_manifest.allow_paths` shape and silently ignores unrecognized keys (`allowed_scope`, `files`) instead of validating. Caused a false-positive "hardcoded path" misdiagnosis during this validation before the correct shape was found by reading `tools.py`/`gates.py`. Suggest documenting the shape in the tool description or schema-validating `plan` input.
 
 ---
 

@@ -107,7 +107,13 @@ def slice_plan(
     repo_dir: Optional[str] = None,
     host: Optional[str] = None,
 ) -> dict[str, Any]:
-    """Submit or revise a structured execution plan for the slice."""
+    """Submit or revise a structured execution plan for the slice.
+
+    plan.scope_manifest.allow_paths (list of path strings or
+    {"pattern": str, "allowed_operations": [...]} dicts) is the only field
+    slice_gate/slice_finalize check to authorize file changes. Other scope
+    keys (allowed_scope, files, ...) are ignored.
+    """
     return tools.slice_plan(
         slice=slice,
         slice_name=slice_name,

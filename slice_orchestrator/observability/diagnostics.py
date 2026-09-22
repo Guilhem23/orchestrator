@@ -74,7 +74,7 @@ def run_doctor(
         store = ControlStore(control_home, policy_bundle_source=repo_dir / ".orchestrator")
         secret_ok = store.secret_path.is_file() and len(store.secret) == 32
         checks.append(_check("secret_availability", secret_ok, str(store.secret_path)))
-        trust_ok = store.tail_anchor_path.is_file() or not db_path.is_file()
+        trust_ok = store.tail_anchor_path.is_file() or not store._db_file_has_events()
         checks.append(
             _check(
                 "trust_anchor",

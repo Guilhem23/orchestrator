@@ -370,6 +370,32 @@ def slice_plan(
 ) -> dict[str, Any]:
     """
     Submit or revise a structured plan for the slice.
+
+    ``plan.scope_manifest.allow_paths`` is the ONLY field ``slice_gate`` and
+    ``slice_finalize`` consult to authorize file changes later in the run.
+    Any other key (e.g. ``allowed_scope``, ``files``) is silently ignored by
+    this tool and will leave the effective scope empty, causing every
+    modified/added/deleted path to be rejected at ``slice_gate`` with
+    "not authorized by scope manifest".
+
+    Expected shape::
+
+        {
+          "scope_manifest": {
+            "allow_paths": [
+              "src/calc.py",                              # shorthand: allows all ops
+              {"pattern": "tests/test_calc.py", "allowed_operations": ["add"]}
+            ]
+          },
+          "work_items": [...],
+          ...
+        }
+
+    A plan with no ``scope_manifest.allow_paths`` is valid for read-only /
+    investigation slices that never modify the workspace, but will fail the
+    commit gate as soon as any file is changed. See ``ORCHESTRATOR_ROADMAP.md``
+    (item B follow-up) and ``CLAUDE_CODE_NATIVE_VALIDATION.md`` §4 for the
+    incident that prompted this note.
     """
     s_name = _get_slice_name(slice, slice_name)
     if not plan:
@@ -402,6 +428,24 @@ def slice_plan(
                 })
             elif isinstance(item, dict):
                 norm_allow_paths.append(item)
+
+        scope_warning = None
+        if not norm_allow_paths:
+            unrecognized_scope_keys = [
+                k for k in ("allowed_scope", "files", "scope", "paths") if k in plan
+            ]
+            if unrecognized_scope_keys:
+                scope_warning = (
+                    f"plan key(s) {unrecognized_scope_keys} are not read by slice_plan and were "
+                    "ignored. Use plan.scope_manifest.allow_paths instead, or slice_gate will "
+                    "reject every file change with 'not authorized by scope manifest'."
+                )
+            else:
+                scope_warning = (
+                    "plan.scope_manifest.allow_paths is empty: any file this run adds, modifies, "
+                    "or deletes will be rejected by slice_gate. Set it if this run will change "
+                    "files."
+                )
 
         base_commit = state.base_commit_oid or get_head_commit_oid(r_dir)
         auth_test_manifest = build_authoritative_test_manifest(r_dir, base_commit)
@@ -478,7 +522,7 @@ def slice_plan(
 
         updated_state = controller.get_slice_state(s_name)
 
-    return {
+    result = {
         "slice": s_name,
         "slice_name": s_name,
         "plan_id": plan_id,
@@ -489,6 +533,9 @@ def slice_plan(
         "next_action": "Dispatch architecture reviewer or call slice_dispatch for execution.",
         "message": f"Plan revision {new_rev} successfully persisted.",
     }
+    if scope_warning:
+        result["scope_manifest_warning"] = scope_warning
+    return result
 
 
 def slice_work_list(

@@ -40,7 +40,7 @@
 | Shared project state | `.orchestrator_slice/` | `.orchestrator_slice/` | Yes | Cross-host tests PASS |
 | Requires `cursor-agent login` | **No** | N/A | — | |
 | Requires extra `claude` CLI auth | N/A | **No** (beyond Claude Code normal auth) | — | |
-| Live client invocation evidence | **UNVERIFIED** | **UNVERIFIED** | — | See validation report |
+| Live client invocation evidence | **PASS** (`S930`, `S940`) | **PASS** (`S999`–`S994`, full lifecycle to `COMPLETE` on `S994`) | — | See validation reports |
 
 ---
 
@@ -64,5 +64,7 @@
 | IN_PROCESS_MCP_TEST | Not client proof | Not client proof | PASS |
 | RAW_STDIO_PROTOCOL_TEST | Not client proof | Not client proof | PASS |
 | Cross-host isolation (tools) | Shared | Shared | PASS |
-| CURSOR_CHAT_INVOCATION | UNVERIFIED | — | — |
-| CLAUDE_CODE_INVOCATION | — | UNVERIFIED | — |
+| CURSOR_CHAT_INVOCATION | PASS — [CURSOR_CHAT_LIVE_VALIDATION.md](CURSOR_CHAT_LIVE_VALIDATION.md) | — | — |
+| CLAUDE_CODE_INVOCATION | — | PASS — [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md) | — |
+
+Both hosts reached `slice_finalize` → `COMPLETE` with a real HMAC test receipt in their respective validations (`S930` for Cursor, `S994` for Claude Code). A minor DX gap was found during the Claude Code validation: `slice_plan` doesn't document or validate the expected `scope_manifest.allow_paths` shape, so a caller passing an unrecognized key (`allowed_scope`, `files`) gets an empty effective scope and a confusing `slice_gate` rejection instead of a clear error. Tracked as a follow-up in [ORCHESTRATOR_ROADMAP.md](ORCHESTRATOR_ROADMAP.md).

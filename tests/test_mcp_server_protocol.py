@@ -68,6 +68,7 @@ async def test_mcp_server_tool_discovery():
         "slice_status",
         "slice_report",
         "slice_request_review",
+        "slice_remediate",
         "slice_gate",
         "slice_finalize",
     ]
@@ -75,7 +76,7 @@ async def test_mcp_server_tool_discovery():
     for expected in expected_tools:
         assert expected in tool_names, f"Tool '{expected}' missing from MCP server tool inventory"
 
-    assert len(tool_names) == 13
+    assert len(tool_names) == 14
 
 
 @pytest.mark.anyio

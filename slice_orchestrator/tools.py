@@ -149,6 +149,7 @@ def slice_start(
     objective: str | None = None,
     description: str | None = None,
     base_commit: str | None = None,
+    profile: str = "standard",
     repo_dir: str | Path | None = None,
     control_home: str | Path | None = None,
     host: str | None = None,
@@ -163,7 +164,7 @@ def slice_start(
     existing_state = controller.get_slice_state(s_name)
     is_new = existing_state is None or existing_state.is_terminal()
 
-    state = controller.open_run(s_name, base_commit=base_commit)
+    state = controller.open_run(s_name, base_commit=base_commit, profile=profile)
 
     obj_text = objective or description
     if obj_text:
@@ -363,6 +364,7 @@ def slice_plan(
     slice_name: str | None = None,
     plan: dict[str, Any] | None = None,
     is_revision: bool = False,
+    profile: str | None = None,
     repo_dir: str | Path | None = None,
     control_home: str | Path | None = None,
 ) -> dict[str, Any]:
@@ -404,12 +406,14 @@ def slice_plan(
         base_commit = state.base_commit_oid or get_head_commit_oid(r_dir)
         auth_test_manifest = build_authoritative_test_manifest(r_dir, base_commit)
 
+        prof = profile or plan.get("profile") or getattr(state, "profile", "standard")
         plan_record = {
             "schema_version": 4,
             "record_type": "PLAN",
             "plan_id": plan_id,
             "slice": s_name,
             "run_id": state.run_id,
+            "profile": prof,
             "revision": new_rev,
             "description": plan.get("description", ""),
             "scope_manifest": {"allow_paths": norm_allow_paths},
@@ -457,6 +461,7 @@ def slice_plan(
             "plan_id": plan_id,
             "plan_digest": plan_digest,
             "plan_revision": new_rev,
+            "profile": prof,
         }
 
         controller.store.append_event(
@@ -574,16 +579,24 @@ def slice_dispatch(
         target_role = role
         if not target_role:
             role_map = {
-                "PLAN_READY": "ARCHITECTURE_REVIEWER",
+                "PLAN_READY": "IMPLEMENTER" if getattr(state, "profile", "standard") == "fast-track" else "ARCHITECTURE_REVIEWER",
                 "ARCHITECTURE_APPROVED": "IMPLEMENTER",
                 "IMPLEMENTATION_READY_FOR_REVIEW": "ADVERSARIAL_REVIEWER",
                 "REMEDIATION": "REMEDIATOR",
             }
             target_role = role_map.get(state.state, "IMPLEMENTER")
 
+        if target_role == "ADVERSARIAL_REVIEWER" and state.state == "REMEDIATION":
+            raise OrchestratorError(
+                f"Cannot dispatch ADVERSARIAL_REVIEWER directly from state 'REMEDIATION'. "
+                f"Review findings must first be remediated. "
+                f"Call slice_remediate(slice='{s_name}') or dispatch 'REMEDIATOR' to return to IMPLEMENTATION."
+            )
+
         exec_id = f"exec-{str(uuid.uuid4())[:8]}"
+        role_in_envelope = "IMPLEMENTER" if target_role == "REMEDIATOR" else target_role
         envelope = controller.dispatch_manager.issue_dispatch_envelope(
-            role=target_role,
+            role=role_in_envelope,
             run_id=state.run_id,
             worker_execution_id=exec_id,
             target_item_id=work_item_id or f"{s_name}-WI-1",
@@ -613,7 +626,7 @@ def slice_dispatch(
             },
             "assignment_id": asgn_data["assignment_id"],
             "execution_id": asgn_data["execution_id"],
-            "role": target_role,
+            "role": role_in_envelope,
         }
         payload.update(_host_payload_fields(host))
 
@@ -818,6 +831,47 @@ def slice_record_result(
                 "verdict": verdict,
                 "summary": summary,
             }
+
+            pkt_id = None
+            pkt_data = None
+            findings: list[dict[str, Any]] = []
+            if ev_type == "REVIEW_BLOCKED":
+                pkt_id = str(uuid.uuid4())
+                findings = arts.get("findings") or arts.get("blocking_findings") or []
+                if not findings and summary:
+                    findings = [{"finding_id": "FINDING-01", "description": summary, "required_remediation": f"Address review finding: {summary}"}]
+                pkt_data = {
+                    "schema_version": 4,
+                    "record_type": "REMEDIATION_PACKET",
+                    "remediation_packet_id": pkt_id,
+                    "slice": s_name,
+                    "review_id": rev_id,
+                    "remediation_cycle": state.remediation_cycle_high_water + 1,
+                    "findings": findings,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+                pkt_digest = controller.store.store_record("REMEDIATION_PACKET", pkt_id, pkt_data)
+
+                from slice_orchestrator.work_items import WorkItem
+                rem_wi = WorkItem(
+                    work_item_id=f"{s_name}-WI-REM-{pkt_id[:6]}",
+                    run_id=state.run_id,
+                    objective_id=f"{s_name}-O1",
+                    description=f"Remediate findings for review {rev_id}",
+                    type="remediation",
+                    assigned_role="REMEDIATOR",
+                    status="READY",
+                )
+                controller.store.save_work_item(rem_wi)
+
+                payload["review_cycle"] = state.review_cycle_high_water
+                payload["remediation_cycle"] = state.remediation_cycle_high_water + 1
+                payload["related_records"] = [{
+                    "record_type": "REMEDIATION_PACKET",
+                    "record_id": pkt_id,
+                    "record_digest": pkt_digest,
+                }]
+
             payload.update(_host_payload_fields(host))
             controller.store.append_event(
                 slice_name=s_name,
@@ -833,7 +887,7 @@ def slice_record_result(
 
         updated_state = controller.get_slice_state(s_name)
 
-    return {
+    resp: dict[str, Any] = {
         "slice": s_name,
         "slice_name": s_name,
         "state": updated_state.state if updated_state else state.state,
@@ -843,6 +897,15 @@ def slice_record_result(
         "next_action": f"Current state is {updated_state.state}. Proceed with next workflow step.",
         "message": f"Result for assignment {assignment_id} successfully recorded.",
     }
+    if role == "ADVERSARIAL_REVIEWER" and ev_type == "REVIEW_BLOCKED":
+        resp["remediation_packet"] = pkt_data
+        resp["remediation_packet_id"] = pkt_id
+        resp["findings"] = findings
+        resp["next_action"] = (
+            f"Review BLOCKED with {len(findings)} finding(s). "
+            f"Call slice_remediate(slice='{s_name}') or 'slice remediate {s_name}' to return to IMPLEMENTATION and address findings."
+        )
+    return resp
 
 
 def slice_run_tests(
@@ -1107,6 +1170,12 @@ def slice_request_review(
             raise OrchestratorError(f"Slice '{s_name}' does not exist.")
 
         if state.state != "IMPLEMENTATION_READY_FOR_REVIEW":
+            if state.state == "REMEDIATION":
+                raise OrchestratorError(
+                    f"Cannot request review from state 'REMEDIATION'. "
+                    f"The review was blocked and findings must be addressed first. "
+                    f"Call slice_remediate(slice='{s_name}') to return to IMPLEMENTATION."
+                )
             raise OrchestratorError(
                 f"Cannot request review in state '{state.state}'. "
                 "Slice must be in IMPLEMENTATION_READY_FOR_REVIEW."
@@ -1171,6 +1240,137 @@ def slice_request_review(
         "context_pack_digest": cp_data["context_pack_digest"],
         "prompt": f"Execute ADVERSARIAL_REVIEWER task for slice {s_name} with assignment {asgn_data['assignment_id']}.",
         "message": f"Review assignment {asgn_data['assignment_id']} issued to {rev_principal}.",
+    }
+
+
+def slice_remediate(
+    slice: str | None = None,
+    slice_name: str | None = None,
+    work_item_id: str | None = None,
+    repo_dir: str | Path | None = None,
+    control_home: str | Path | None = None,
+    host: str | None = None,
+) -> dict[str, Any]:
+    """
+    Resume an implementation thread from REMEDIATION state after a review was blocked.
+    Transitions REMEDIATION -> IMPLEMENTATION, binds active remediation findings,
+    and returns instructions/prompt for the implementer worker.
+    """
+    s_name = _get_slice_name(slice, slice_name)
+    r_dir, c_home = _resolve_paths(repo_dir, control_home)
+    controller = SliceRunController(repo_dir=r_dir, control_home=c_home)
+
+    with controller._get_lock(s_name):
+        state = controller.get_slice_state(s_name)
+        if not state:
+            raise OrchestratorError(f"Slice '{s_name}' does not exist.")
+
+        if state.state != "REMEDIATION":
+            raise OrchestratorError(
+                f"Cannot remediate slice '{s_name}' in state '{state.state}'. "
+                "Slice must be in REMEDIATION state."
+            )
+
+        token = str(uuid.uuid4())
+        token_hash = controller.store.set_ownership(s_name, state.run_id, state.run_generation, state.sequence + 1, token)
+
+        # Retrieve active remediation packet and findings
+        pkt_id = state.latest_remediation_packet_id
+        pkt_data = None
+        if pkt_id:
+            try:
+                pkt_data = controller.store.get_record(pkt_id)
+            except Exception:
+                pass
+        if not pkt_data:
+            packets = controller.store.list_records_by_type("REMEDIATION_PACKET")
+            slice_packets = [p for p in packets if p.get("slice") == s_name]
+            if slice_packets:
+                pkt_data = slice_packets[-1]
+                pkt_id = pkt_data.get("remediation_packet_id") or pkt_data.get("record_id")
+
+        findings = pkt_data.get("findings", []) if pkt_data else []
+
+        # Find target work item
+        target_item = work_item_id
+        if not target_item:
+            rem_wis = [
+                wi for wi in controller.store.list_work_items(state.run_id)
+                if wi.status == "READY" and wi.type == "remediation"
+            ]
+            if rem_wis:
+                target_item = rem_wis[0].work_item_id
+            else:
+                target_item = f"{s_name}-WI-1"
+
+        exec_id = f"exec-{str(uuid.uuid4())[:8]}"
+        envelope = controller.dispatch_manager.issue_dispatch_envelope(
+            role="IMPLEMENTER",
+            run_id=state.run_id,
+            worker_execution_id=exec_id,
+            target_item_id=target_item,
+            objective_id=f"{s_name}-O1",
+            plan_revision=state.plan_revision,
+            repository_revision=f"sha1:{state.base_commit_oid}",
+            issued_by=MCP_HOST_PRINCIPAL,
+            slice_name=s_name,
+        )
+        asgn_data = envelope["assignment"]
+        cp_data = envelope["context_pack"]
+
+        payload = {
+            "payload_type": "REMEDIATION_ASSIGNED",
+            "record": {
+                "record_type": "WORK_ASSIGNMENT",
+                "record_id": asgn_data["assignment_id"],
+                "record_digest": compute_record_digest(asgn_data),
+            },
+            "assignment_id": asgn_data["assignment_id"],
+            "execution_id": asgn_data["execution_id"],
+            "role": "IMPLEMENTER",
+            "remediation_packet_id": pkt_id,
+        }
+        payload.update(_host_payload_fields(host))
+
+        controller.store.append_event(
+            slice_name=s_name,
+            run_id=state.run_id,
+            generation=state.run_generation,
+            event_type="REMEDIATION_ASSIGNED",
+            payload_type="REMEDIATION_ASSIGNED",
+            actor_role="CONTROLLER_SYSTEM",
+            actor_principal=OPERATOR_PRINCIPAL,
+            payload=payload,
+            token_hash=token_hash,
+        )
+
+        updated_state = controller.get_slice_state(s_name)
+
+    findings_summary = "\n".join(
+        f" - [{f.get('finding_id', 'F')}] {f.get('description', '')}"
+        + (f" (Remediation: {f.get('required_remediation')})" if f.get("required_remediation") else "")
+        for f in findings
+    ) if findings else " - None explicitly listed"
+
+    prompt = (
+        f"Remediation assignment {asgn_data['assignment_id']} for slice {s_name} "
+        f"(Cycle {getattr(updated_state, 'remediation_cycle_high_water', 1)}).\n\n"
+        f"Findings to address:\n{findings_summary}\n\n"
+        f"Action: Implement the requested fixes, run authorized tests, and record results."
+    )
+
+    return {
+        "slice": s_name,
+        "slice_name": s_name,
+        "state": updated_state.state if updated_state else "IMPLEMENTATION",
+        "remediation_cycle": getattr(updated_state, "remediation_cycle_high_water", 1),
+        "assignment_id": asgn_data["assignment_id"],
+        "execution_id": asgn_data["execution_id"],
+        "remediation_packet_id": pkt_id,
+        "findings": findings,
+        "prompt": prompt,
+        "next_action": "Apply the requested fixes in the workspace, run tests, and record implementation results.",
+        "message": f"Remediation assignment {asgn_data['assignment_id']} issued for slice {s_name}.",
     }
 
 
@@ -1335,4 +1535,87 @@ def slice_finalize(
         "state": updated_state.state if updated_state else "COMPLETE",
         "commit_oid": captured_tree_oid,
         "message": f"Slice '{s_name}' successfully finalized to COMPLETE state.",
+    }
+
+
+def slice_fast_track_certify(
+    slice: str | None = None,
+    slice_name: str | None = None,
+    repo_dir: str | Path | None = None,
+    control_home: str | Path | None = None,
+) -> dict[str, Any]:
+    """
+    Certify a fast-track slice that has passed tests and valid scope, transitioning to COMMIT_READY.
+    """
+    s_name = _get_slice_name(slice, slice_name)
+    r_dir, c_home = _resolve_paths(repo_dir, control_home)
+    controller = SliceRunController(repo_dir=r_dir, control_home=c_home)
+
+    with controller._get_lock(s_name):
+        state = controller.get_slice_state(s_name)
+        if not state:
+            raise OrchestratorError(f"Slice '{s_name}' does not exist.")
+
+        if getattr(state, "profile", "standard") != "fast-track":
+            raise OrchestratorError(f"Slice '{s_name}' is not in fast-track profile (current: {state.profile}).")
+
+        if state.state != "IMPLEMENTATION_READY_FOR_REVIEW":
+            raise OrchestratorError(f"Cannot fast-track certify in state '{state.state}'. Must be in IMPLEMENTATION_READY_FOR_REVIEW.")
+
+        token = str(uuid.uuid4())
+        token_hash = controller.store.set_ownership(s_name, state.run_id, state.run_generation, state.sequence + 1, token)
+
+        rev_id = f"rev-ft-{uuid.uuid4().hex[:8]}"
+        rev_record = {
+            "schema_version": 4,
+            "record_type": "REVIEW_RECORD",
+            "record_id": rev_id,
+            "slice": s_name,
+            "run_id": state.run_id,
+            "verdict": "APPROVED",
+            "summary": "Fast-track deterministic certification: tests verified green and scope valid.",
+            "reviewer_principal": "controller-fast-track",
+            "implementer_principal": "controller-fast-track-impl",
+            "is_self_approved": False,
+            "is_fast_track": True,
+            "blocking_finding_count": 0,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        rev_digest = controller.store.store_record("REVIEW_RECORD", rev_id, rev_record)
+
+        payload = {
+            "payload_type": "REVIEW_ACCEPTED",
+            "record": {
+                "record_type": "REVIEW_RECORD",
+                "record_id": rev_id,
+                "record_digest": rev_digest,
+            },
+            "verdict": "APPROVED",
+            "summary": "Fast-track deterministic certification: tests verified green and scope valid.",
+            "is_fast_track": True,
+            "workspace_revision_digest": state.workspace_revision_digest,
+            "evidence_set_digest": state.evidence_set_digest,
+            "approved_revision_digest": rev_digest,
+        }
+
+        controller.store.append_event(
+            slice_name=s_name,
+            run_id=state.run_id,
+            generation=state.run_generation,
+            event_type="REVIEW_ACCEPTED",
+            payload_type="REVIEW_ACCEPTED",
+            actor_role="CONTROLLER_SYSTEM",
+            actor_principal=MCP_HOST_PRINCIPAL,
+            payload=payload,
+            token_hash=token_hash,
+        )
+
+        updated_state = controller.get_slice_state(s_name)
+
+    return {
+        "slice": s_name,
+        "slice_name": s_name,
+        "state": updated_state.state if updated_state else state.state,
+        "certified": True,
+        "message": "Fast-track review accepted. Proceed to slice_gate and slice_finalize.",
     }

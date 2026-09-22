@@ -96,9 +96,18 @@ Evidence: [CURSOR_CHAT_LIVE_VALIDATION.md](CURSOR_CHAT_LIVE_VALIDATION.md) (slic
 
 ## D. Productivity comparison
 
-**Status**: NOT STARTED
+**Status**: STUDY EXECUTED — no productivity speedup claim authorized
 
-Compare Cursor Chat native mode vs Claude Code native mode vs subprocess workers on the same disposable development scenario. Do not start until A–C have at least one verified live host.
+Observability layer, metrics engine, export, and `slice compare` are implemented. Multi-task dogfood study results: [PRODUCTIVITY_STUDY_RESULTS.md](PRODUCTIVITY_STUDY_RESULTS.md), [PRODUCTIVITY_STUDY_ANALYSIS.md](PRODUCTIVITY_STUDY_ANALYSIS.md). Conclusion: observed process/recovery trade-offs; **INSUFFICIENT EVIDENCE** for net human productivity improvement.
+
+### Deliverables
+
+- [x] Observability model + diagnostic CLI
+- [x] Metrics with provenance
+- [x] Run export + comparison format
+- [x] Dogfood task catalog
+- [x] Multi-task manual vs orchestrated study executed
+
 
 ---
 

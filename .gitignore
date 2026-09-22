@@ -29,6 +29,10 @@ dist/
 # Temporary worker output
 .tmp/
 
+# Observability exports written outside control home (default exports stay under .orchestrator_slice/)
+exports/
+**/exports/
+
 # Disposable live-validation / runtime evidence (not the curated README)
 evidence/cursor-live-validation/
 evidence/cursor-full-restart-validation/disposable-*/
@@ -42,3 +46,6 @@ orchestrator-extraction-bundle-*/
 # Disposable local test-project artifacts (not part of committed fixtures)
 test-project/uv.lock
 test-project/src/impl.py
+
+# Productivity study runtime exports (root deliverables remain tracked)
+evidence/dogfood-tasks/study-runs/

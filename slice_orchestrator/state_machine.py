@@ -26,6 +26,7 @@ class SliceRunState:
     review_cycle_high_water: int = 0
     remediation_cycle_high_water: int = 0
     execution_mode: str = "RUNNING"  # RUNNING | PAUSED
+    profile: str = "standard"  # standard | fast-track
 
     base_commit_oid: str | None = None
     policy_bundle_digest: str | None = None
@@ -102,6 +103,8 @@ def project_slice_run_state(events: list[dict[str, Any]], control_store: Any = N
             proj.state = "PLANNING"
             proj.base_commit_oid = payload["base_commit_oid"]
             proj.policy_bundle_digest = payload["policy_bundle_digest"]
+            if "profile" in payload:
+                proj.profile = payload["profile"]
 
         elif ev_type == "PLANNER_ASSIGNED":
             proj.state = "PLANNING"
@@ -109,13 +112,19 @@ def project_slice_run_state(events: list[dict[str, Any]], control_store: Any = N
         elif ev_type == "PLAN_PERSISTED":
             proj.state = "PLAN_READY"
             proj.plan_revision = payload.get("plan_revision", proj.plan_revision + 1)
+            if "profile" in payload:
+                proj.profile = payload["profile"]
             rec = payload.get("record", {})
             if rec:
+                if "profile" in rec:
+                    proj.profile = rec["profile"]
                 plan_rec_id = rec.get("record_id")
                 proj.approved_plan_digest = rec.get("record_digest")
                 if control_store and plan_rec_id:
                     plan_obj = control_store.get_record(plan_rec_id)
                     if plan_obj:
+                        if "profile" in plan_obj:
+                            proj.profile = plan_obj["profile"]
                         proj.scope_manifest_digest = plan_obj.get("scope_manifest_digest")
                         proj.required_test_plan_digest = plan_obj.get("test_plan_digest")
 
@@ -352,9 +361,18 @@ class TransitionEngine:
             if proposed_cycle > self.max_remediation_cycles:
                 raise TransitionError(f"MAX_CYCLES_EXCEEDED: remediation cycle {proposed_cycle} > max {self.max_remediation_cycles}")
 
+        if event_type == "IMPLEMENTATION_ASSIGNED" and current_state.state == "PLAN_READY":
+            if getattr(current_state, "profile", "standard") != "fast-track":
+                raise TransitionError("IMPLEMENTATION_ASSIGNED directly from PLAN_READY is only permitted for 'fast-track' profile")
+
+        if event_type == "REVIEW_ACCEPTED" and current_state.state == "IMPLEMENTATION_READY_FOR_REVIEW":
+            if getattr(current_state, "profile", "standard") != "fast-track":
+                raise TransitionError("Direct REVIEW_ACCEPTED from IMPLEMENTATION_READY_FOR_REVIEW is only permitted for 'fast-track' profile")
+
         EVENT_STATE_MAP = {
             ("PLANNING", "PLAN_PERSISTED"): "PLAN_READY",
             ("PLAN_READY", "ARCHITECTURE_REVIEW_ASSIGNED"): "ARCHITECTURE_REVIEW",
+            ("PLAN_READY", "IMPLEMENTATION_ASSIGNED"): "IMPLEMENTATION",
             ("PLAN_READY", "PLAN_REVISION_REQUESTED"): "PLAN_REVISION",
             ("PLAN_REVISION", "PLAN_REVISED"): "PLAN_READY",
             ("PLAN_REVISION", "PLAN_PERSISTED"): "PLAN_READY",
@@ -365,6 +383,7 @@ class TransitionEngine:
             ("IMPLEMENTATION", "IMPLEMENTATION_CONTEXT_CHECKPOINTED"): "IMPLEMENTATION",
             ("IMPLEMENTATION", "IMPLEMENTATION_WORKER_REASSIGNED"): "IMPLEMENTATION",
             ("IMPLEMENTATION_READY_FOR_REVIEW", "ADVERSARIAL_REVIEW_ASSIGNED"): "ADVERSARIAL_REVIEW",
+            ("IMPLEMENTATION_READY_FOR_REVIEW", "REVIEW_ACCEPTED"): "COMMIT_READY",
             ("IMPLEMENTATION_READY_FOR_REVIEW", "CANDIDATE_CAPTURED"): "IMPLEMENTATION_READY_FOR_REVIEW",
             ("ADVERSARIAL_REVIEW", "REVIEW_ACCEPTED"): "COMMIT_READY",
             ("ADVERSARIAL_REVIEW", "REVIEW_BLOCKED"): "REMEDIATION",
@@ -414,7 +433,7 @@ class TransitionEngine:
             "IMPLEMENTATION_WORKER_REASSIGNED": ["CONTROLLER_SYSTEM"],
             "CANDIDATE_CAPTURED": ["IMPLEMENTER", "CONTROLLER_SYSTEM"],
             "ADVERSARIAL_REVIEW_ASSIGNED": ["CONTROLLER_SYSTEM"],
-            "REVIEW_ACCEPTED": ["ADVERSARIAL_REVIEWER"],
+            "REVIEW_ACCEPTED": ["ADVERSARIAL_REVIEWER", "CONTROLLER_SYSTEM"],
             "REVIEW_BLOCKED": ["ADVERSARIAL_REVIEWER"],
             "REVIEW_REQUIRES_PLAN_REVISION": ["ADVERSARIAL_REVIEWER"],
             "REMEDIATION_ASSIGNED": ["CONTROLLER_SYSTEM"],

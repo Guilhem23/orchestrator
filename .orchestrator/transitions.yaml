@@ -39,6 +39,9 @@ transitions:
     - to: ARCHITECTURE_REVIEW
       description: Plan submitted for architecture review
       requires: [plan_hash_recorded]
+    - to: IMPLEMENTATION
+      description: Fast-track profile bypasses architecture review for low-complexity slices
+      requires: [fast_track_profile, plan_hash_recorded]
     - to: PLAN_REVISION
       description: Plan needs revision before review
       requires: [revision_rationale]
@@ -85,6 +88,9 @@ transitions:
     - to: ADVERSARIAL_REVIEW
       description: Fresh adversarial reviewer assigned
       requires: [review_cycle_incremented, fresh_reviewer_context]
+    - to: COMMIT_READY
+      description: Fast-track profile auto-certifies verification upon passing tests and valid scope
+      requires: [fast_track_profile, required_tests_passed, scope_check_passed]
     - to: STOPPED
       description: Cannot proceed to review
       requires: [stopped_reason]

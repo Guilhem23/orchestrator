@@ -1,6 +1,7 @@
 """
 CLI Interface for Method v4 Slice Orchestrator.
-Supports commands: plan, status, run, inspect, explain, pause, resume, stop, recover, work, explore.
+Supports commands: plan, status, run, inspect, explain, pause, resume, stop, recover,
+work, explore, doctor, diagnostics, timeline, export, compare, metrics.
 """
 
 from __future__ import annotations
@@ -13,6 +14,25 @@ from pathlib import Path
 
 from slice_orchestrator.exploration import ExplorationManager
 from slice_orchestrator.orchestrator import OrchestratorError, SliceRunController
+from slice_orchestrator.observability.compare import (
+    compare_runs,
+    format_compare_human,
+    load_comparison_run,
+)
+from slice_orchestrator.observability.diagnostics import (
+    build_diagnostics,
+    build_explain,
+    format_diagnostics_human,
+    format_doctor_human,
+    format_explain_human,
+    format_timeline_human,
+    run_doctor,
+)
+from slice_orchestrator.observability.export import export_run
+from slice_orchestrator.observability.logging import OperationalLogger
+from slice_orchestrator.observability.metrics import MetricsEngine
+from slice_orchestrator.observability.timeline import build_timeline
+from slice_orchestrator.tools import slice_remediate
 
 
 def get_controller(
@@ -27,8 +47,9 @@ def get_controller(
 
 def cmd_plan(args: argparse.Namespace) -> int:
     ctrl = get_controller(adapter_id=args.adapter)
-    state = ctrl.get_slice_state(args.slice) or ctrl.open_run(args.slice)
-    print(f"Slice {args.slice} initialized in state {state.state} (Run ID: {state.run_id})")
+    profile = getattr(args, "profile", "standard")
+    state = ctrl.get_slice_state(args.slice) or ctrl.open_run(args.slice, profile=profile)
+    print(f"Slice {args.slice} initialized in state {state.state} [Profile: {getattr(state, 'profile', profile)}] (Run ID: {state.run_id})")
     return 0
 
 
@@ -41,6 +62,7 @@ def cmd_status(args: argparse.Namespace) -> int:
 
     print(f"Slice:             {state.slice}")
     print(f"Run ID:            {state.run_id}")
+    print(f"Profile:           {getattr(state, 'profile', 'standard')}")
     print(f"State:             {state.state}")
     print(f"Mode:              {state.execution_mode}")
     print(f"Generation:        {state.run_generation}")
@@ -54,13 +76,49 @@ def cmd_status(args: argparse.Namespace) -> int:
 
 def cmd_run(args: argparse.Namespace) -> int:
     ctrl = get_controller(adapter_id=args.adapter)
+    profile = getattr(args, "profile", "standard")
+    state = ctrl.get_slice_state(args.slice)
+    if state is None:
+        state = ctrl.open_run(args.slice, profile=profile)
     marker = " [TEST-ONLY dummy worker]" if args.adapter == "dummy" else ""
-    print(f"Driving slice {args.slice} to completion with worker adapter '{args.adapter}'{marker}...")
+    print(f"Driving slice {args.slice} to completion with worker adapter '{args.adapter}'{marker} [Profile: {getattr(state, 'profile', profile)}]...")
     final_state = ctrl.run_to_completion(args.slice)
     print(f"Slice {args.slice} execution ended in state: {final_state.state}")
     if final_state.stop_reason:
         print(f"Reason: [{final_state.stop_reason_code}] {final_state.stop_reason}")
     return 0 if final_state.state == "COMPLETE" else 1
+
+
+def cmd_remediate(args: argparse.Namespace) -> int:
+    ctrl = get_controller(
+        repo_dir=getattr(args, "repo_dir", None),
+        control_home=getattr(args, "control_home", None),
+        adapter_id=getattr(args, "adapter", "dummy"),
+    )
+    state = ctrl.get_slice_state(args.slice)
+    if not state:
+        print(f"Slice {args.slice}: No active or past Slice Run.")
+        return 1
+    if state.state != "REMEDIATION":
+        print(f"Slice {args.slice} is in state '{state.state}', not 'REMEDIATION'. Cannot remediate.")
+        return 1
+    res = slice_remediate(
+        slice=args.slice,
+        repo_dir=ctrl.repo_dir,
+        control_home=ctrl.store.control_home,
+    )
+    print(f"Slice {args.slice} transitioned to {res['state']} (Remediation Cycle {res.get('remediation_cycle')})")
+    findings = res.get("findings", [])
+    if findings:
+        print(f"=== {len(findings)} Finding(s) to Address ===")
+        for f in findings:
+            fid = f.get("finding_id", "FINDING")
+            desc = f.get("description", "")
+            req = f.get("required_remediation", "")
+            print(f" - [{fid}] {desc}" + (f" -> {req}" if req else ""))
+    print()
+    print(f"Next action: {res['next_action']}")
+    return 0
 
 
 def cmd_inspect(args: argparse.Namespace) -> int:
@@ -87,9 +145,16 @@ def cmd_inspect(args: argparse.Namespace) -> int:
 
 def cmd_explain(args: argparse.Namespace) -> int:
     ctrl = get_controller()
-    explanation = ctrl.explain_slice(args.slice)
-    print(explanation)
-    return 0
+    expl = build_explain(ctrl, args.slice)
+    if getattr(args, "json", False):
+        print(json.dumps(expl, indent=2))
+    else:
+        print(format_explain_human(expl))
+        # Preserve legacy controller explain for operators who want raw transition dump
+        if getattr(args, "legacy", False):
+            print()
+            print(ctrl.explain_slice(args.slice))
+    return 0 if expl.get("exists", True) or expl.get("facts") is not None else 1
 
 
 def cmd_pause(args: argparse.Namespace) -> int:
@@ -191,18 +256,121 @@ def cmd_explore(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_doctor(args: argparse.Namespace) -> int:
+    repo = Path(args.repo_dir).resolve() if getattr(args, "repo_dir", None) else Path.cwd()
+    home = Path(args.control_home).resolve() if getattr(args, "control_home", None) else None
+    report = run_doctor(repo_dir=repo, control_home=home)
+    if args.json:
+        print(json.dumps(report, indent=2))
+    else:
+        print(format_doctor_human(report))
+    return int(report.get("exit_code", 0))
+
+
+def cmd_diagnostics(args: argparse.Namespace) -> int:
+    ctrl = get_controller()
+    diag = build_diagnostics(ctrl, args.slice)
+    # Correlate operational logs when present (non-authoritative)
+    try:
+        logger = OperationalLogger(ctrl.store.control_home, run_id=diag.get("run_id"))
+        entries = logger.read_entries(slice_id=args.slice, run_id=diag.get("run_id"))
+        diag["operational_log_entries"] = len(entries)
+    except Exception:
+        diag["operational_log_entries"] = 0
+    if args.json:
+        print(json.dumps(diag, indent=2))
+    else:
+        print(format_diagnostics_human(diag))
+    if not diag.get("exists"):
+        return 1
+    if diag.get("corrupt_state"):
+        return 2
+    return 0
+
+
+def cmd_timeline(args: argparse.Namespace) -> int:
+    ctrl = get_controller()
+    try:
+        events = [e for e in ctrl.store.verify_store_integrity() if e.get("slice") == args.slice]
+    except Exception as exc:
+        print(f"Error reading events: {exc}", file=sys.stderr)
+        return 2
+    if not events:
+        print(f"No events found for slice {args.slice}")
+        return 1
+    timeline = build_timeline(
+        events,
+        control_store=ctrl.store,
+        phase_filter=args.phase,
+        errors_only=args.errors,
+    )
+    # Best-effort structured log emission for correlation (never authoritative)
+    try:
+        logger = OperationalLogger(ctrl.store.control_home)
+        for ev in events:
+            logger.emit_from_event(ev)
+    except Exception:
+        pass
+    if args.json:
+        print(json.dumps(timeline, indent=2))
+    else:
+        print(format_timeline_human(timeline))
+    return 0
+
+
+def cmd_export(args: argparse.Namespace) -> int:
+    ctrl = get_controller()
+    out = Path(args.output).resolve() if getattr(args, "output", None) else None
+    try:
+        result = export_run(ctrl, args.slice, fmt=args.format, output_dir=out)
+    except ValueError as exc:
+        print(f"Export error: {exc}", file=sys.stderr)
+        return 1
+    if args.json:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Exported slice {args.slice} ({args.format}) -> {result['directory']}")
+        print(f"Digest: {result.get('export_digest')}")
+    return 0
+
+
+def cmd_compare(args: argparse.Namespace) -> int:
+    try:
+        manual = load_comparison_run(args.manual)
+        orchestrated = load_comparison_run(args.orchestrated)
+    except Exception as exc:
+        print(f"Compare load error: {exc}", file=sys.stderr)
+        return 1
+    report = compare_runs(manual, orchestrated)
+    if args.json:
+        print(json.dumps(report, indent=2))
+    else:
+        print(format_compare_human(report))
+    return 0
+
+
+def cmd_metrics(args: argparse.Namespace) -> int:
+    ctrl = get_controller()
+    report = MetricsEngine(ctrl.store).compute_for_slice(args.slice)
+    print(json.dumps(report, indent=2))
+    return 0 if report.get("metrics") else 1
+
+
 def main(sys_args: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="slice",
         description="Method v4 Slice Orchestrator CLI",
     )
     parser.add_argument("--adapter", default="dummy", help="Worker adapter ID (dummy, cursor, claude, gemini, manual)")
+    parser.add_argument("--repo-dir", default=None, help="Repository root (default: cwd)")
+    parser.add_argument("--control-home", default=None, help="Control home override (default: .orchestrator_slice)")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # plan
     p_plan = subparsers.add_parser("plan", help="Initialize or plan a slice")
     p_plan.add_argument("slice", help="Slice identifier (e.g. S6, S99)")
+    p_plan.add_argument("--profile", choices=["standard", "fast-track"], default="standard", help="Governance profile (standard or fast-track)")
 
     # status
     p_status = subparsers.add_parser("status", help="Show current status of a slice")
@@ -211,6 +379,11 @@ def main(sys_args: list[str] | None = None) -> int:
     # run
     p_run = subparsers.add_parser("run", help="Autonomously drive slice to completion")
     p_run.add_argument("slice", help="Slice identifier")
+    p_run.add_argument("--profile", choices=["standard", "fast-track"], default="standard", help="Governance profile (standard or fast-track)")
+
+    # remediate
+    p_remediate = subparsers.add_parser("remediate", help="Transition from REMEDIATION to IMPLEMENTATION with active findings")
+    p_remediate.add_argument("slice", help="Slice identifier")
 
     # inspect
     p_inspect = subparsers.add_parser("inspect", help="Inspect event stream for a slice")
@@ -218,8 +391,10 @@ def main(sys_args: list[str] | None = None) -> int:
     p_inspect.add_argument("--json", action="store_true", help="Output raw JSON")
 
     # explain
-    p_explain = subparsers.add_parser("explain", help="Explain current state, legal transitions, and blocking conditions")
+    p_explain = subparsers.add_parser("explain", help="Explain current state, blockers, and recommended next action")
     p_explain.add_argument("slice", help="Slice identifier")
+    p_explain.add_argument("--json", action="store_true", help="Machine-readable explanation")
+    p_explain.add_argument("--legacy", action="store_true", help="Also print legacy controller explain dump")
 
     # pause
     p_pause = subparsers.add_parser("pause", help="Pause an active slice run")
@@ -257,12 +432,48 @@ def main(sys_args: list[str] | None = None) -> int:
     p_explore.add_argument("slice", help="Slice identifier")
     p_explore.add_argument("--topic", required=True, help="Exploration topic")
 
+    # doctor
+    p_doctor = subparsers.add_parser("doctor", help="Check installation, trust, and runtime health")
+    p_doctor.add_argument("--json", action="store_true", help="Machine-readable output")
+    p_doctor.add_argument("--repo-dir", default=None, help="Repository root (default: cwd)")
+    p_doctor.add_argument("--control-home", default=None, help="Control home override")
+
+    # diagnostics
+    p_diag = subparsers.add_parser("diagnostics", help="Show blockers, pending work, and evidence locations")
+    p_diag.add_argument("slice", help="Slice identifier")
+    p_diag.add_argument("--json", action="store_true", help="Machine-readable output")
+
+    # timeline
+    p_tl = subparsers.add_parser("timeline", help="Ordered event timeline with phase durations")
+    p_tl.add_argument("slice", help="Slice identifier")
+    p_tl.add_argument("--json", action="store_true", help="Machine-readable output")
+    p_tl.add_argument("--phase", default=None, help="Filter by phase (e.g. implementation)")
+    p_tl.add_argument("--errors", action="store_true", help="Show error/blocked events only")
+
+    # export
+    p_export = subparsers.add_parser("export", help="Export a reproducible run package")
+    p_export.add_argument("slice", help="Slice identifier")
+    p_export.add_argument("--format", choices=["json", "markdown"], default="json")
+    p_export.add_argument("--output", default=None, help="Output root directory (versioned subdir created)")
+    p_export.add_argument("--json", action="store_true", help="Print export result metadata as JSON")
+
+    # compare
+    p_cmp = subparsers.add_parser("compare", help="Compare manual vs orchestrated run JSON files")
+    p_cmp.add_argument("--manual", required=True, help="Path to manual-run.json")
+    p_cmp.add_argument("--orchestrated", required=True, help="Path to orchestrated-run.json")
+    p_cmp.add_argument("--json", action="store_true", help="Machine-readable comparison")
+
+    # metrics
+    p_metrics = subparsers.add_parser("metrics", help="Compute authoritative metrics with provenance")
+    p_metrics.add_argument("slice", help="Slice identifier")
+
     parsed = parser.parse_args(sys_args)
 
     cmd_map = {
         "plan": cmd_plan,
         "status": cmd_status,
         "run": cmd_run,
+        "remediate": cmd_remediate,
         "inspect": cmd_inspect,
         "explain": cmd_explain,
         "pause": cmd_pause,
@@ -271,6 +482,12 @@ def main(sys_args: list[str] | None = None) -> int:
         "recover": cmd_recover,
         "work": cmd_work,
         "explore": cmd_explore,
+        "doctor": cmd_doctor,
+        "diagnostics": cmd_diagnostics,
+        "timeline": cmd_timeline,
+        "export": cmd_export,
+        "compare": cmd_compare,
+        "metrics": cmd_metrics,
     }
 
     try:

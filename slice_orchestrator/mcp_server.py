@@ -256,6 +256,24 @@ def slice_request_review(
 
 
 @mcp.tool()
+def slice_remediate(
+    slice: Optional[str] = None,
+    slice_name: Optional[str] = None,
+    work_item_id: Optional[str] = None,
+    repo_dir: Optional[str] = None,
+    host: Optional[str] = None,
+) -> dict[str, Any]:
+    """Resume an implementation thread from REMEDIATION state after review findings."""
+    return tools.slice_remediate(
+        slice=slice,
+        slice_name=slice_name,
+        work_item_id=work_item_id,
+        repo_dir=repo_dir,
+        host=host,
+    )
+
+
+@mcp.tool()
 def slice_gate(
     slice: Optional[str] = None,
     slice_name: Optional[str] = None,

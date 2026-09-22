@@ -1060,6 +1060,33 @@ class ControlStore:
                 return json.loads(row["assignment_json"])
         return None
 
+    def list_assignments(
+        self,
+        run_id: str | None = None,
+        slice_name: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Read-only listing of assignments for observability/diagnostics."""
+        if not self.db_path.is_file():
+            return []
+        with self._get_db_connection() as conn:
+            if run_id is not None:
+                cursor = conn.execute(
+                    "SELECT assignment_json FROM assignments WHERE run_id = ?",
+                    (run_id,),
+                )
+            else:
+                cursor = conn.execute("SELECT assignment_json FROM assignments")
+            rows = []
+            for row in cursor.fetchall():
+                try:
+                    data = json.loads(row["assignment_json"])
+                except Exception:
+                    continue
+                if slice_name is not None and data.get("slice") not in (None, slice_name):
+                    continue
+                rows.append(data)
+            return rows
+
     def verify_context_pack_binding(self, assignment_id: str, expected_pack_digest: str) -> None:
         assignment = self.get_assignment(assignment_id)
         if not assignment:

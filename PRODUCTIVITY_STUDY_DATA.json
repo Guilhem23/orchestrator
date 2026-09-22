@@ -1,0 +1,2396 @@
+{
+  "schema": "productivity-study-data-v1",
+  "baseline_head": "f1aa3443ac7397940a4bcc7b10ccd4181bf0ef6d",
+  "developer": "agent:composer (same for CONTROL and TREATMENT)",
+  "model": "Cursor agent session",
+  "protocol": "PRODUCTIVITY_MEASUREMENT_PROTOCOL.md",
+  "catalog": "DOGFOOD_TASK_CATALOG.md",
+  "measurements": [
+    {
+      "task_id": "DF-01",
+      "condition": "CONTROL",
+      "starting_revision": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+      "final_revision": "39959da8727a9537842fade033a81af5b0803559",
+      "elapsed_time_ms": 155,
+      "human_active_time_ms": 155,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 0,
+      "tests_passed": 1,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": 1,
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Straightforward bugfix",
+      "task_complexity": 1,
+      "notes": [],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-01",
+        "task_complexity": 1,
+        "starting_revision": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+        "final_revision": "39959da8727a9537842fade033a81af5b0803559",
+        "elapsed_time_ms": 155,
+        "human_active_time_ms": 155,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 0,
+        "tests_passed": 1,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": 1,
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Straightforward bugfix"
+      }
+    },
+    {
+      "task_id": "DF-01",
+      "condition": "TREATMENT",
+      "starting_revision": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+      "final_revision": "914413a2d9d281299693d5e09c40babb366c28c1",
+      "elapsed_time_ms": 2723,
+      "human_active_time_ms": 7,
+      "human_waiting_time_ms": 2716,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 14,
+      "context_reconstruction": 1,
+      "tests_added": 0,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": 1,
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 1,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "ccd3a9a1e377439ec3b6686fe575fe26d2968ca1b30a43cf7b645e98041fc203",
+      "comparison_ready": {
+        "task_identifier": "DF-01",
+        "task_complexity": 1,
+        "starting_revision": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+        "final_revision": "914413a2d9d281299693d5e09c40babb366c28c1",
+        "elapsed_time_ms": 2723,
+        "human_active_time_ms": 7,
+        "human_waiting_time_ms": 2716,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 14,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 0,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": 1,
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-02",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "be23a9d5bd197d08221dd45ac501b7527fb19ec8",
+      "elapsed_time_ms": 163,
+      "human_active_time_ms": 163,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 1,
+      "tests_passed": 2,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Simple feature",
+      "task_complexity": 1,
+      "notes": [],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-02",
+        "task_complexity": 1,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "be23a9d5bd197d08221dd45ac501b7527fb19ec8",
+        "elapsed_time_ms": 163,
+        "human_active_time_ms": 163,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 1,
+        "tests_passed": 2,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Simple feature"
+      }
+    },
+    {
+      "task_id": "DF-02",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "336c790486e3e1792147ec56f5000c30884fa789",
+      "elapsed_time_ms": 2708,
+      "human_active_time_ms": 7,
+      "human_waiting_time_ms": 2701,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 14,
+      "context_reconstruction": 1,
+      "tests_added": 1,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 1,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "ddc609f54242e27c096f95a36d89fe0d80cc283f42573085f18f45f5a5e622d9",
+      "comparison_ready": {
+        "task_identifier": "DF-02",
+        "task_complexity": 1,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "336c790486e3e1792147ec56f5000c30884fa789",
+        "elapsed_time_ms": 2708,
+        "human_active_time_ms": 7,
+        "human_waiting_time_ms": 2701,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 14,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 1,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-03",
+      "condition": "CONTROL",
+      "starting_revision": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+      "final_revision": "4f15d154d6f433fe0805fa35c0d88bdeca56d4a8",
+      "elapsed_time_ms": 164,
+      "human_active_time_ms": 164,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 0,
+      "tests_passed": 3,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Behavior-preserving refactor",
+      "task_complexity": 2,
+      "notes": [],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-03",
+        "task_complexity": 2,
+        "starting_revision": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+        "final_revision": "4f15d154d6f433fe0805fa35c0d88bdeca56d4a8",
+        "elapsed_time_ms": 164,
+        "human_active_time_ms": 164,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 0,
+        "tests_passed": 3,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Behavior-preserving refactor"
+      }
+    },
+    {
+      "task_id": "DF-03",
+      "condition": "TREATMENT",
+      "starting_revision": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+      "final_revision": "24ad51e8b891d3ec6d9bfd21ced55d185424957d",
+      "elapsed_time_ms": 2714,
+      "human_active_time_ms": 8,
+      "human_waiting_time_ms": 2706,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 14,
+      "context_reconstruction": 1,
+      "tests_added": 0,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 2,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "aa582eda9c4aa18a701e6b327f24100fdc740953c9c34e95f8ed3d937aa961e5",
+      "comparison_ready": {
+        "task_identifier": "DF-03",
+        "task_complexity": 2,
+        "starting_revision": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+        "final_revision": "24ad51e8b891d3ec6d9bfd21ced55d185424957d",
+        "elapsed_time_ms": 2714,
+        "human_active_time_ms": 8,
+        "human_waiting_time_ms": 2706,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 14,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 0,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-04",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "elapsed_time_ms": 159,
+      "human_active_time_ms": 159,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 2,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 0,
+      "tests_passed": 1,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "ABANDONED_PENDING_CLARIFICATION",
+      "developer_assessment": "Correctly stopped for clarification",
+      "task_complexity": 3,
+      "notes": [
+        "Asked what UX means; no acceptance tests; did not invent scope"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-04",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "elapsed_time_ms": 159,
+        "human_active_time_ms": 159,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 2,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 0,
+        "tests_passed": 1,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "ABANDONED_PENDING_CLARIFICATION",
+        "developer_assessment": "Correctly stopped for clarification"
+      }
+    },
+    {
+      "task_id": "DF-04",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "elapsed_time_ms": 585,
+      "human_active_time_ms": 3,
+      "human_waiting_time_ms": 582,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 4,
+      "context_reconstruction": 1,
+      "tests_added": 0,
+      "tests_passed": 0,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "ABANDONED_PENDING_CLARIFICATION",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 3,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "stopped for clarification; no silent scope invention",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "939429d14748b5c4c87710baa71ef98d7c25d97ee13ffd5eca30ce0a78e1acb5",
+      "comparison_ready": {
+        "task_identifier": "DF-04",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "elapsed_time_ms": 585,
+        "human_active_time_ms": 3,
+        "human_waiting_time_ms": 582,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 4,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 0,
+        "tests_passed": 0,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "ABANDONED_PENDING_CLARIFICATION",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-05",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "3e4b8a13dc558274d827d34ffa668d0abc954554",
+      "elapsed_time_ms": 154,
+      "human_active_time_ms": 154,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 2,
+      "tests_passed": 3,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Clarification then implement",
+      "task_complexity": 2,
+      "notes": [],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-05",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "3e4b8a13dc558274d827d34ffa668d0abc954554",
+        "elapsed_time_ms": 154,
+        "human_active_time_ms": 154,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 2,
+        "tests_passed": 3,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Clarification then implement"
+      }
+    },
+    {
+      "task_id": "DF-05",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "6c28c109afa151539b5e81a282cfa5620fe19f5a",
+      "elapsed_time_ms": 2706,
+      "human_active_time_ms": 6,
+      "human_waiting_time_ms": 2700,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 14,
+      "context_reconstruction": 1,
+      "tests_added": 2,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 2,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "6caffbecf5ee1494ccf4da8a025a94e93227bd4ef4d5e3247711306878cb7fad",
+      "comparison_ready": {
+        "task_identifier": "DF-05",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "6c28c109afa151539b5e81a282cfa5620fe19f5a",
+        "elapsed_time_ms": 2706,
+        "human_active_time_ms": 6,
+        "human_waiting_time_ms": 2700,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 14,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 2,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-06",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "bf6efa0801fc7c385abb116c874856452cfffa9b",
+      "elapsed_time_ms": 152,
+      "human_active_time_ms": 152,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 1,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 1,
+      "tests_passed": 2,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Simple feature",
+      "task_complexity": 2,
+      "notes": [
+        "Paused mid-implementation then resumed"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-06",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "bf6efa0801fc7c385abb116c874856452cfffa9b",
+        "elapsed_time_ms": 152,
+        "human_active_time_ms": 152,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 1,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 1,
+        "tests_passed": 2,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Simple feature"
+      }
+    },
+    {
+      "task_id": "DF-06",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "552e0984e951a45d2ad6a3c14e56cd919d6093dd",
+      "elapsed_time_ms": 2942,
+      "human_active_time_ms": 206,
+      "human_waiting_time_ms": 2736,
+      "human_questions": 1,
+      "interruptions": 1,
+      "tool_calls": 14,
+      "context_reconstruction": 1,
+      "tests_added": 1,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 2,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "RUN paused mid-implementation",
+        "RUN resumed",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "c19a95b15d97fed7b799a1269f0bd25503ffbb5fa773272aefb1a6ad91cdc56b",
+      "comparison_ready": {
+        "task_identifier": "DF-06",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "552e0984e951a45d2ad6a3c14e56cd919d6093dd",
+        "elapsed_time_ms": 2942,
+        "human_active_time_ms": 206,
+        "human_waiting_time_ms": 2736,
+        "number_of_questions": 1,
+        "number_of_interruptions": 1,
+        "number_of_tool_calls": 14,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 1,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-07",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "0c004cdc43ec5aad069c9c46edc463a87a799237",
+      "elapsed_time_ms": 299,
+      "human_active_time_ms": 299,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 1,
+      "tests_passed": 2,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 1,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": 1,
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Simple feature",
+      "task_complexity": 3,
+      "notes": [
+        "Initial implementation failed tests; remediated"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-07",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "0c004cdc43ec5aad069c9c46edc463a87a799237",
+        "elapsed_time_ms": 299,
+        "human_active_time_ms": 299,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 1,
+        "tests_passed": 2,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 1,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": 1,
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Simple feature"
+      }
+    },
+    {
+      "task_id": "DF-07",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "bcb1eae7c54223bb5f3722ce3e0e00879b84c0e2",
+      "elapsed_time_ms": 3034,
+      "human_active_time_ms": 8,
+      "human_waiting_time_ms": 3026,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 15,
+      "context_reconstruction": 1,
+      "tests_added": 1,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 1,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 3,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "first control test failed; remediating",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "538c4c12edb0d0feca80895bf5df02d9dd870ef49a55c17318c63c898754680f",
+      "comparison_ready": {
+        "task_identifier": "DF-07",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "bcb1eae7c54223bb5f3722ce3e0e00879b84c0e2",
+        "elapsed_time_ms": 3034,
+        "human_active_time_ms": 8,
+        "human_waiting_time_ms": 3026,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 15,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 1,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 1,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-08",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "27daf2818dd9c1ea1106025474d3fc353e0df94b",
+      "elapsed_time_ms": 152,
+      "human_active_time_ms": 152,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 2,
+      "tests_passed": 3,
+      "review_findings": 1,
+      "remediation_cycles": 1,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Simple feature",
+      "task_complexity": 3,
+      "notes": [
+        "Self-review found missing edge case; remediated"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-08",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "27daf2818dd9c1ea1106025474d3fc353e0df94b",
+        "elapsed_time_ms": 152,
+        "human_active_time_ms": 152,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 2,
+        "tests_passed": 3,
+        "review_findings": 1,
+        "remediation_cycles": 1,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Simple feature"
+      }
+    },
+    {
+      "task_id": "DF-08",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "98b8788d29843f01c71b596d3bd5864e8bd32d48",
+      "elapsed_time_ms": 1926,
+      "human_active_time_ms": 146,
+      "human_waiting_time_ms": 1780,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 12,
+      "context_reconstruction": 1,
+      "tests_added": 2,
+      "tests_passed": 1,
+      "review_findings": 1,
+      "remediation_cycles": 1,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "PARTIAL",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 3,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "review blocked once",
+        "re-review path issue: Illegal transition rejected: Illegal transition: event ADVERSARIAL_REVIEW_ASSIGNED is not permitted from state REMEDIATION",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "193f68252a922faab27af095637680202bda4c29f2130f09b7e67ef9ee7d444f",
+      "comparison_ready": {
+        "task_identifier": "DF-08",
+        "task_complexity": 3,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "98b8788d29843f01c71b596d3bd5864e8bd32d48",
+        "elapsed_time_ms": 1926,
+        "human_active_time_ms": 146,
+        "human_waiting_time_ms": 1780,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 12,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 2,
+        "tests_passed": 1,
+        "review_findings": 1,
+        "remediation_cycles": 1,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "PARTIAL",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-09",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "elapsed_time_ms": 148,
+      "human_active_time_ms": 148,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 0,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": "UNAVAILABLE",
+      "tests_added": 0,
+      "tests_passed": 1,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": 1,
+      "final_outcome": "FAILED",
+      "developer_assessment": "Failure handled",
+      "task_complexity": 2,
+      "notes": [
+        "Simulated unavailable backend; stopped without false COMPLETE"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-09",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "elapsed_time_ms": 148,
+        "human_active_time_ms": 148,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": "UNAVAILABLE",
+        "tests_added": 0,
+        "tests_passed": 1,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": 1,
+        "final_outcome": "FAILED",
+        "developer_assessment": "Failure handled"
+      }
+    },
+    {
+      "task_id": "DF-09",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "elapsed_time_ms": 1183,
+      "human_active_time_ms": 3,
+      "human_waiting_time_ms": 1180,
+      "human_questions": 1,
+      "interruptions": 0,
+      "tool_calls": 8,
+      "context_reconstruction": 1,
+      "tests_added": 0,
+      "tests_passed": 0,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": 1,
+      "final_outcome": "FAILED",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 2,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "worker_fail_state=IMPLEMENTATION_READY_FOR_REVIEW",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "d4d88eca36430d320445560014c9b408e0d5ff6ab7d044a889235ded11236b83",
+      "comparison_ready": {
+        "task_identifier": "DF-09",
+        "task_complexity": 2,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "elapsed_time_ms": 1183,
+        "human_active_time_ms": 3,
+        "human_waiting_time_ms": 1180,
+        "number_of_questions": 1,
+        "number_of_interruptions": 0,
+        "number_of_tool_calls": 8,
+        "number_of_context_reconstructions": 1,
+        "tests_added": 0,
+        "tests_passed": 0,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": 1,
+        "final_outcome": "FAILED",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    },
+    {
+      "task_id": "DF-10",
+      "condition": "CONTROL",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "98ec1fe8b430f9698acba80f9482eaf6a27a1f3a",
+      "elapsed_time_ms": 149,
+      "human_active_time_ms": 149,
+      "human_waiting_time_ms": "UNAVAILABLE",
+      "human_questions": 0,
+      "interruptions": 1,
+      "tool_calls": "UNAVAILABLE",
+      "context_reconstruction": 1,
+      "tests_added": 1,
+      "tests_passed": 2,
+      "review_findings": "UNAVAILABLE",
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "Simple feature",
+      "task_complexity": 4,
+      "notes": [
+        "Stopped mid-task; reconstructed context from notes; completed"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": null,
+      "comparison_ready": {
+        "task_identifier": "DF-10",
+        "task_complexity": 4,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "98ec1fe8b430f9698acba80f9482eaf6a27a1f3a",
+        "elapsed_time_ms": 149,
+        "human_active_time_ms": 149,
+        "human_waiting_time_ms": "UNAVAILABLE",
+        "number_of_questions": 0,
+        "number_of_interruptions": 1,
+        "number_of_tool_calls": "UNAVAILABLE",
+        "number_of_context_reconstructions": 1,
+        "tests_added": 1,
+        "tests_passed": 2,
+        "review_findings": "UNAVAILABLE",
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "Simple feature"
+      }
+    },
+    {
+      "task_id": "DF-10",
+      "condition": "TREATMENT",
+      "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+      "final_revision": "cb9e3444dda704eaed9ef8c423a0b32434b38a7f",
+      "elapsed_time_ms": 2952,
+      "human_active_time_ms": 199,
+      "human_waiting_time_ms": 2753,
+      "human_questions": 1,
+      "interruptions": 1,
+      "tool_calls": 15,
+      "context_reconstruction": 2,
+      "tests_added": 1,
+      "tests_passed": 1,
+      "review_findings": 0,
+      "remediation_cycles": 0,
+      "defects_introduced": "UNAVAILABLE",
+      "defects_detected": "UNAVAILABLE",
+      "final_outcome": "COMPLETE",
+      "developer_assessment": "UNAVAILABLE",
+      "task_complexity": 4,
+      "notes": [
+        "start_state=PLANNING",
+        "grill/clarification surfaced",
+        "RUN paused mid-implementation",
+        "RUN resumed",
+        "multi-session context reconstruction",
+        "final_state=COMPLETE",
+        "authoritative_metrics_count=57"
+      ],
+      "errors": [],
+      "orchestrator_export_digest": "f5a697489af9ba4fb5d70cfc365093af6dbaa53f84eea65544f4313bdc778b7f",
+      "comparison_ready": {
+        "task_identifier": "DF-10",
+        "task_complexity": 4,
+        "starting_revision": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+        "final_revision": "cb9e3444dda704eaed9ef8c423a0b32434b38a7f",
+        "elapsed_time_ms": 2952,
+        "human_active_time_ms": 199,
+        "human_waiting_time_ms": 2753,
+        "number_of_questions": 1,
+        "number_of_interruptions": 1,
+        "number_of_tool_calls": 15,
+        "number_of_context_reconstructions": 2,
+        "tests_added": 1,
+        "tests_passed": 1,
+        "review_findings": 0,
+        "remediation_cycles": 0,
+        "defects_introduced": "UNAVAILABLE",
+        "defects_detected": "UNAVAILABLE",
+        "final_outcome": "COMPLETE",
+        "developer_assessment": "UNAVAILABLE"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "task_id": "DF-01",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-01",
+            "orchestrated": "DF-01",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+            "orchestrated": "c1cb11bf3ac338b76688e68e910ad3ebb2fdcd18",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "39959da8727a9537842fade033a81af5b0803559",
+            "orchestrated": "914413a2d9d281299693d5e09c40babb366c28c1",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 155,
+            "orchestrated": 2723,
+            "absolute_difference": 2568,
+            "percent_difference": 1656.77
+          },
+          "human_active_time_ms": {
+            "manual": 155,
+            "orchestrated": 7,
+            "absolute_difference": -148,
+            "percent_difference": -95.48
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2716,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 14,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "tests_passed": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Straightforward bugfix",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-02",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-02",
+            "orchestrated": "DF-02",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "be23a9d5bd197d08221dd45ac501b7527fb19ec8",
+            "orchestrated": "336c790486e3e1792147ec56f5000c30884fa789",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 163,
+            "orchestrated": 2708,
+            "absolute_difference": 2545,
+            "percent_difference": 1561.35
+          },
+          "human_active_time_ms": {
+            "manual": 163,
+            "orchestrated": 7,
+            "absolute_difference": -156,
+            "percent_difference": -95.71
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2701,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 14,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 2,
+            "orchestrated": 1,
+            "absolute_difference": -1,
+            "percent_difference": -50.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Simple feature",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-03",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-03",
+            "orchestrated": "DF-03",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+            "orchestrated": "295a13c186ec00ca005eb6ead7b0f57c04793dbf",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "4f15d154d6f433fe0805fa35c0d88bdeca56d4a8",
+            "orchestrated": "24ad51e8b891d3ec6d9bfd21ced55d185424957d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 164,
+            "orchestrated": 2714,
+            "absolute_difference": 2550,
+            "percent_difference": 1554.88
+          },
+          "human_active_time_ms": {
+            "manual": 164,
+            "orchestrated": 8,
+            "absolute_difference": -156,
+            "percent_difference": -95.12
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2706,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 14,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "tests_passed": {
+            "manual": 3,
+            "orchestrated": 1,
+            "absolute_difference": -2,
+            "percent_difference": -66.67
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Behavior-preserving refactor",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-04",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-04",
+            "orchestrated": "DF-04",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 3,
+            "orchestrated": 3,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 159,
+            "orchestrated": 585,
+            "absolute_difference": 426,
+            "percent_difference": 267.92
+          },
+          "human_active_time_ms": {
+            "manual": 159,
+            "orchestrated": 3,
+            "absolute_difference": -156,
+            "percent_difference": -98.11
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 582,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 2,
+            "orchestrated": 1,
+            "absolute_difference": -1,
+            "percent_difference": -50.0
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 4,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "tests_passed": {
+            "manual": 1,
+            "orchestrated": 0,
+            "absolute_difference": -1,
+            "percent_difference": -100.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "ABANDONED_PENDING_CLARIFICATION",
+            "orchestrated": "ABANDONED_PENDING_CLARIFICATION",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Correctly stopped for clarification",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-05",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-05",
+            "orchestrated": "DF-05",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "3e4b8a13dc558274d827d34ffa668d0abc954554",
+            "orchestrated": "6c28c109afa151539b5e81a282cfa5620fe19f5a",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 154,
+            "orchestrated": 2706,
+            "absolute_difference": 2552,
+            "percent_difference": 1657.14
+          },
+          "human_active_time_ms": {
+            "manual": 154,
+            "orchestrated": 6,
+            "absolute_difference": -148,
+            "percent_difference": -96.1
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2700,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 14,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 3,
+            "orchestrated": 1,
+            "absolute_difference": -2,
+            "percent_difference": -66.67
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Clarification then implement",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-06",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-06",
+            "orchestrated": "DF-06",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "bf6efa0801fc7c385abb116c874856452cfffa9b",
+            "orchestrated": "552e0984e951a45d2ad6a3c14e56cd919d6093dd",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 152,
+            "orchestrated": 2942,
+            "absolute_difference": 2790,
+            "percent_difference": 1835.53
+          },
+          "human_active_time_ms": {
+            "manual": 152,
+            "orchestrated": 206,
+            "absolute_difference": 54,
+            "percent_difference": 35.53
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2736,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 14,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 2,
+            "orchestrated": 1,
+            "absolute_difference": -1,
+            "percent_difference": -50.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Simple feature",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-07",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-07",
+            "orchestrated": "DF-07",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 3,
+            "orchestrated": 3,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "0c004cdc43ec5aad069c9c46edc463a87a799237",
+            "orchestrated": "bcb1eae7c54223bb5f3722ce3e0e00879b84c0e2",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 299,
+            "orchestrated": 3034,
+            "absolute_difference": 2735,
+            "percent_difference": 914.72
+          },
+          "human_active_time_ms": {
+            "manual": 299,
+            "orchestrated": 8,
+            "absolute_difference": -291,
+            "percent_difference": -97.32
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 3026,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 15,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 2,
+            "orchestrated": 1,
+            "absolute_difference": -1,
+            "percent_difference": -50.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": 1,
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Simple feature",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-08",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-08",
+            "orchestrated": "DF-08",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 3,
+            "orchestrated": 3,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "27daf2818dd9c1ea1106025474d3fc353e0df94b",
+            "orchestrated": "98b8788d29843f01c71b596d3bd5864e8bd32d48",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 152,
+            "orchestrated": 1926,
+            "absolute_difference": 1774,
+            "percent_difference": 1167.11
+          },
+          "human_active_time_ms": {
+            "manual": 152,
+            "orchestrated": 146,
+            "absolute_difference": -6,
+            "percent_difference": -3.95
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1780,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 12,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 3,
+            "orchestrated": 1,
+            "absolute_difference": -2,
+            "percent_difference": -66.67
+          },
+          "review_findings": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "remediation_cycles": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "PARTIAL",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Simple feature",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-09",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-09",
+            "orchestrated": "DF-09",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 2,
+            "orchestrated": 2,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 148,
+            "orchestrated": 1183,
+            "absolute_difference": 1035,
+            "percent_difference": 699.32
+          },
+          "human_active_time_ms": {
+            "manual": 148,
+            "orchestrated": 3,
+            "absolute_difference": -145,
+            "percent_difference": -97.97
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1180,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 8,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 1,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "tests_added": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "tests_passed": {
+            "manual": 1,
+            "orchestrated": 0,
+            "absolute_difference": -1,
+            "percent_difference": -100.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "final_outcome": {
+            "manual": "FAILED",
+            "orchestrated": "FAILED",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Failure handled",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "number_of_context_reconstructions",
+          "review_findings",
+          "defects_introduced",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    },
+    {
+      "task_id": "DF-10",
+      "report": {
+        "schema_version": "productivity-comparison-v1",
+        "fields": {
+          "task_identifier": {
+            "manual": "DF-10",
+            "orchestrated": "DF-10",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "task_complexity": {
+            "manual": 4,
+            "orchestrated": 4,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "starting_revision": {
+            "manual": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "orchestrated": "d57a4016e0b703ff6ff5c2bc7aa3fb663b2cef7d",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_revision": {
+            "manual": "98ec1fe8b430f9698acba80f9482eaf6a27a1f3a",
+            "orchestrated": "cb9e3444dda704eaed9ef8c423a0b32434b38a7f",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "elapsed_time_ms": {
+            "manual": 149,
+            "orchestrated": 2952,
+            "absolute_difference": 2803,
+            "percent_difference": 1881.21
+          },
+          "human_active_time_ms": {
+            "manual": 149,
+            "orchestrated": 199,
+            "absolute_difference": 50,
+            "percent_difference": 33.56
+          },
+          "human_waiting_time_ms": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 2753,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_questions": {
+            "manual": 0,
+            "orchestrated": 1,
+            "absolute_difference": 1,
+            "percent_difference": null
+          },
+          "number_of_interruptions": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "number_of_tool_calls": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 15,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "number_of_context_reconstructions": {
+            "manual": 1,
+            "orchestrated": 2,
+            "absolute_difference": 1,
+            "percent_difference": 100.0
+          },
+          "tests_added": {
+            "manual": 1,
+            "orchestrated": 1,
+            "absolute_difference": 0,
+            "percent_difference": 0.0
+          },
+          "tests_passed": {
+            "manual": 2,
+            "orchestrated": 1,
+            "absolute_difference": -1,
+            "percent_difference": -50.0
+          },
+          "review_findings": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": 0,
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "remediation_cycles": {
+            "manual": 0,
+            "orchestrated": 0,
+            "absolute_difference": 0,
+            "percent_difference": null
+          },
+          "defects_introduced": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "defects_detected": {
+            "manual": "UNAVAILABLE",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "final_outcome": {
+            "manual": "COMPLETE",
+            "orchestrated": "COMPLETE",
+            "absolute_difference": null,
+            "percent_difference": null
+          },
+          "developer_assessment": {
+            "manual": "Simple feature",
+            "orchestrated": "UNAVAILABLE",
+            "absolute_difference": null,
+            "percent_difference": null
+          }
+        },
+        "missing_data": [
+          "human_waiting_time_ms",
+          "number_of_tool_calls",
+          "review_findings",
+          "defects_introduced",
+          "defects_detected",
+          "developer_assessment"
+        ],
+        "confounding_factors": [
+          "Single-run comparison cannot establish causality.",
+          "Task familiarity, IDE state, and developer fatigue may differ.",
+          "Tooling versions and model availability may differ across runs.",
+          "Missing fields must not be imputed."
+        ],
+        "qualitative_observations": [],
+        "productivity_conclusion": "NO UNSUPPORTED CONCLUSION: This report presents absolute and relative differences only. Do not claim the orchestrator improves productivity until the comparison protocol has been executed on multiple comparable tasks."
+      }
+    }
+  ],
+  "confounding_factors": [
+    "Same agent executed both conditions sequentially (order: CONTROL then TREATMENT)",
+    "Task familiarity higher on TREATMENT due to CONTROL-first ordering",
+    "CONTROL IDE tool_calls mostly UNAVAILABLE (not instrumented)",
+    "TREATMENT human_active_time derived as elapsed - tool waiting (approximation)",
+    "Disposable calc fixtures; not production repositories",
+    "Pause/resume and worker failure paths partially simulated via control-plane APIs",
+    "Sample size n=10 tasks; no inferential statistics authorized"
+  ]
+}

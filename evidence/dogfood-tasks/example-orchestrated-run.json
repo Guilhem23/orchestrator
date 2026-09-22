@@ -1,0 +1,21 @@
+{
+  "task_identifier": "DF-01",
+  "task_complexity": 1,
+  "starting_revision": "UNAVAILABLE",
+  "final_revision": "UNAVAILABLE",
+  "elapsed_time_ms": 150000,
+  "human_active_time_ms": "UNAVAILABLE",
+  "human_waiting_time_ms": 20000,
+  "number_of_questions": 2,
+  "number_of_interruptions": 1,
+  "number_of_tool_calls": 14,
+  "number_of_context_reconstructions": 3,
+  "tests_added": 0,
+  "tests_passed": 1,
+  "review_findings": 0,
+  "remediation_cycles": 0,
+  "defects_introduced": "UNAVAILABLE",
+  "defects_detected": 1,
+  "final_outcome": "COMPLETE",
+  "developer_assessment": "UNAVAILABLE"
+}

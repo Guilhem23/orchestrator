@@ -31,6 +31,7 @@ def run_git_cmd(
     repo_dir: Path,
     env: dict[str, str] | None = None,
     check: bool = True,
+    strip: bool = True,
 ) -> str:
     """
     Execute a Git command safely with clean environment (hooks disabled, custom index when needed).
@@ -52,7 +53,7 @@ def run_git_cmd(
     )
     if check and res.returncode != 0:
         raise GitManagerError(f"Git command failed: {' '.join(cmd)}\nStderr: {res.stderr.strip()}")
-    return res.stdout.strip()
+    return res.stdout.strip() if strip else res.stdout
 
 
 def get_git_object_format(repo_dir: Path) -> str:
@@ -69,6 +70,36 @@ def get_head_commit_oid(repo_dir: Path) -> str:
     fmt = get_git_object_format(repo_dir)
     raw = run_git_cmd(["rev-parse", "HEAD"], repo_dir)
     return f"{fmt}:{raw}"
+
+
+def get_target_ref_for_head(repo_dir: Path) -> str:
+    """
+    Resolve the authoritative Git ref for HEAD.
+    Prefers the symbolic-ref of HEAD (e.g. refs/heads/main, refs/heads/master, refs/heads/feature/...).
+    Falls back to existing refs/heads/main or refs/heads/master, and defaults to refs/heads/main.
+    """
+    try:
+        sym = run_git_cmd(["symbolic-ref", "--quiet", "HEAD"], repo_dir, check=False).strip()
+        if sym and sym.startswith("refs/heads/"):
+            return sym
+    except Exception:
+        pass
+
+    try:
+        has_main = run_git_cmd(["rev-parse", "--verify", "--quiet", "refs/heads/main"], repo_dir, check=False).strip()
+        if has_main:
+            return "refs/heads/main"
+    except Exception:
+        pass
+
+    try:
+        has_master = run_git_cmd(["rev-parse", "--verify", "--quiet", "refs/heads/master"], repo_dir, check=False).strip()
+        if has_master:
+            return "refs/heads/master"
+    except Exception:
+        pass
+
+    return "refs/heads/main"
 
 
 class ScopeManifestValidator:
@@ -346,7 +377,7 @@ class AtomicCommitManager:
         accepted_candidate_tree_oid: str,
         expected_parent_commit_oid: str,
         commit_message: str,
-        target_ref: str = "refs/heads/main",
+        target_ref: str | None = None,
     ) -> str:
         """
         1. Populate private commit index only from accepted immutable candidate tree objects.
@@ -355,6 +386,9 @@ class AtomicCommitManager:
         4. Compare-and-swap authoritative ref (git update-ref).
         Returns created commit OID (fmt:hex).
         """
+        if not target_ref:
+            target_ref = get_target_ref_for_head(self.repo_dir)
+
         raw_tree = accepted_candidate_tree_oid.split(":")[-1]
         raw_parent = expected_parent_commit_oid.split(":")[-1]
         fmt = get_git_object_format(self.repo_dir)
@@ -420,7 +454,7 @@ def build_authoritative_test_manifest(repo_dir: Path, base_commit_oid: str) -> d
         )
         if is_test_file:
             try:
-                content = run_git_cmd(["show", f"{raw_base}:{path}"], repo_dir, check=True)
+                content = run_git_cmd(["show", f"{raw_base}:{path}"], repo_dir, check=True, strip=False)
                 digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
                 test_funcs = sorted(set(test_func_pattern.findall(content)))
             except Exception:

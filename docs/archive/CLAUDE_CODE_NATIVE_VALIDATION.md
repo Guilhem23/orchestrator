@@ -131,7 +131,7 @@ COMPLETE MCP-ONLY LIFECYCLE TO COMPLETE WITH REAL TEST RECEIPT: PASS (S994)
 GOVERNANCE GUARD PARITY WITH CURSOR: PASS
 ```
 
-**Jalon B exit criteria** ([ORCHESTRATOR_ROADMAP.md](ORCHESTRATOR_ROADMAP.md)):
+**Jalon B exit criteria** ([roadmap.md](../roadmap.md)):
 - [x] Claude Code lists and connects to `slice-orchestrator`
 - [x] Slice lifecycle tools succeed when invoked from Claude Code, up to and including `slice_finalize` → `COMPLETE`
 - [x] No duplicated orchestration logic for Claude

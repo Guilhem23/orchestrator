@@ -14,7 +14,7 @@ Each task defines objective, repository fixture, starting revision policy, expec
 | Base fixture | Disposable git repo seeded like `tests/workspace_support.seed_passing_workspace` |
 | Suggested root | `evidence/dogfood-tasks/fixtures/` (local; runtime trees gitignored when under evidence disposables) |
 | Starting revision | Fresh commit after fixture seed; record OID per experiment |
-| Comparison protocol | [PRODUCTIVITY_MEASUREMENT_PROTOCOL.md](PRODUCTIVITY_MEASUREMENT_PROTOCOL.md) |
+| Comparison protocol | [productivity-protocol.md](productivity-protocol.md) |
 
 ---
 

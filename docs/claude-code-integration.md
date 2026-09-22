@@ -3,7 +3,7 @@
 **Status**: USER & DEVELOPER GUIDE — Claude Code secondary host
 **Date**: 2026-09-11
 **Version**: 1.0.0
-**Architecture**: [MULTI_HOST_MCP_ARCHITECTURE.md](MULTI_HOST_MCP_ARCHITECTURE.md)
+**Architecture**: [multi-host-architecture.md](multi-host-architecture.md)
 
 ---
 

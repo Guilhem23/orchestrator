@@ -41,7 +41,7 @@ COMMON AUTHORITY:            Slice Orchestrator Control Plane
 └─────────────────────┴───────────────────────────────────┘
 ```
 
-See [MULTI_HOST_MCP_ARCHITECTURE.md](MULTI_HOST_MCP_ARCHITECTURE.md) for the frozen multi-host contract.
+See [multi-host-architecture.md](multi-host-architecture.md) for the frozen multi-host contract.
 
 ---
 

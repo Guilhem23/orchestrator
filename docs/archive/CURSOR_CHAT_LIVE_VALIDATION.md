@@ -32,7 +32,7 @@ slice_gate, slice_finalize, slice_status, slice_report
 
 | Field | Value |
 |---|---|
-| `repo_dir` | `/home/guilhem/workspace/orchestrator/evidence/cursor-live-validation/disposable-S930` |
+| `repo_dir` | `<repo-root>/evidence/cursor-live-validation/disposable-S930` |
 | Slice | `S930` |
 | Objective | Add `multiply(a,b)` to `calc` with unit test |
 | Base commit | `sha1:8412faaf423bd3d880425c4423974151a07dbb1e` |

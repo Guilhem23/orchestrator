@@ -1,246 +1,180 @@
-# Slice Orchestrator — Method v4 Runtime
+# Slice Orchestrator
 
-This repository contains a **real, executable implementation** of the Slice Orchestrator runtime (Method v4) integrated from historical sources.
+**A deterministic control plane for AI coding agents.** Slice Orchestrator
+sits between your AI assistant (Cursor, Claude Code) and your repository,
+enforcing a governed lifecycle — plan → implement → test → review → commit —
+with cryptographic event logging, single-use assignments, and a scope
+manifest that decides which files an agent is actually allowed to touch.
 
-## Current Status
+If you've ever had an agent silently expand scope, skip tests, or claim
+success without proof, this is the missing layer: every state transition is
+event-sourced and hash-chained, every test run produces an HMAC receipt, and
+the commit gate mechanically checks the diff against an approved plan before
+anything lands.
 
-**Integration Date**: 2026-09-09  
-**Implementation**: **COMPLETE**  
-**Runtime Evidence**: **VERIFIED** (partially)
+## Why
 
-The orchestrator is a deterministic control-plane coordinator for governed vertical slices with:
-- ✅ Event-sourced state machine
-- ✅ Cryptographic event chaining
-- ✅ Atomic file locks
-- ✅ Worker adapter system (NO silent dummy fallback)
-- ✅ CLI interface
-- ✅ Git integration
-- ✅ Policy-based governance
+Coding agents are good at writing code and bad at knowing when to stop, what
+they're allowed to change, and whether their own tests actually ran. Slice
+Orchestrator doesn't replace the agent — it wraps a **slice** (one unit of
+governed work) in a state machine the agent must satisfy:
 
-## Quick Start
+```
+PLANNING → ARCHITECTURE_REVIEW → IMPLEMENTATION → ADVERSARIAL_REVIEW
+         → COMMIT_READY → GATE → COMPLETE
+```
 
-### Installation
+- **Scope manifest** — the approved plan declares exactly which paths may be
+  added/modified/deleted; anything else is rejected at the commit gate.
+- **Authoritative test receipts** — tests run through the control plane, not
+  self-reported by the agent, and are bound to an HMAC receipt.
+- **Test-tampering guards** — modifying or deleting a baseline test file
+  without plan re-approval is rejected outright.
+- **Event-sourced, hash-chained state** — every transition is an append-only,
+  cryptographically chained event; state survives IDE restarts and crashes.
+- **Host-agnostic** — one control plane, exposed as MCP tools, used
+  identically by Cursor Chat and Claude Code (see
+  [docs/mcp-host-compatibility.md](docs/mcp-host-compatibility.md)).
+
+## Quickstart
+
+Requires Python 3.11+ and [`uv`](https://github.com/astral-sh/uv).
 
 ```bash
-# Clone or extract this repository
+git clone <this-repo>
 cd orchestrator
-
-# Set PYTHONPATH
-export PYTHONPATH=$(pwd):$PYTHONPATH
-
-# Verify installation
-python3 -m slice_orchestrator.cli --help
+uv sync --extra test
 ```
 
-### Initialize a Slice
+Check your environment is wired correctly:
 
 ```bash
-# Initialize a slice (creates persistent state)
-python3 -m slice_orchestrator.cli plan S1
-
-# Check status
-python3 -m slice_orchestrator.cli status S1
-
-# Inspect events
-python3 -m slice_orchestrator.cli inspect S1
+uv run slice doctor
 ```
 
-### Run Tests (requires pytest)
+```
+=== slice doctor ===
+Status: ok
+[PASS] package_installation: import slice_orchestrator
+[PASS] git_repository: repo has .git
+[PASS] event_chain_integrity: 2 events verified
+[PASS] mcp_configuration: cursor=True project=True
+...
+Summary: 19/19 passed (0 errors, 0 warnings)
+```
+
+Start a slice against any git repository:
 
 ```bash
-# Install test dependencies
-pip install pytest pytest-timeout
-
-# Run all tests
-pytest tests/ -v
-
-# Run specific test
-pytest tests/test_no_dummy_fallback.py -v
+uv run slice --repo-dir /path/to/your/repo plan S1
 ```
 
-## Repository Structure
-
 ```
-orchestrator/
-├── slice_orchestrator/          # Runtime implementation (~5,000 LOC)
-│   ├── orchestrator.py         # Main controller
-│   ├── control_store.py        # Event store
-│   ├── state_machine.py        # Lifecycle FSM
-│   ├── workers.py              # Worker adapters
-│   ├── gates.py                # Gate evaluation
-│   └── ... (15 more modules)
-│
-├── .orchestrator/              # Contracts and policies
-│   ├── *.schema.json           # 34 JSON schemas
-│   ├── protocols/              # Protocol documentation
-│   ├── tools/                  # Utility tools
-│   ├── transitions.yaml        # State transitions
-│   └── slice-policy.yaml       # Policy configuration
-│
-├── tests/                      # Test suite (120+ tests)
-│   ├── test_no_dummy_fallback.py  # NEW: Security tests
-│   ├── test_control_store_and_locks.py
-│   ├── test_state_machine.py
-│   └── ... (14 more test files)
-│
-├── orchestrator/               # Method documentation
-│   ├── 10_SLICE_ORCHESTRATOR.md
-│   ├── memory/                 # Decisions, principles, playbook
-│   └── prompts/                # Orchestrator prompts
-│
-├── test-project/               # Dogfooding target
-│   └── src/                    # Simple Python project
-│
-├── evidence/                   # Historical evidence (simulation)
-│   └── orchestrator-dogfood/  # Pre-integration narratives
-│
-├── .orchestrator_slice/        # Runtime state (generated)
-│   ├── state.db               # SQLite event store
-│   ├── trusted_tail_anchor    # Cryptographic anchor
-│   └── locks/                 # Concurrency locks
-│
-├── pyproject.toml             # Package configuration
-├── requirements.txt           # Dependencies
-├── ORCHESTRATOR_INTEGRATION_MAP.md     # Integration mapping
-├── ORCHESTRATOR_INTEGRATION_REPORT.md  # Full integration report
-├── DOGFOOD_IMPLEMENTATION_REVIEW.md    # Pre-integration review
-└── README.md                  # This file
+Slice S1 initialized in state PLANNING [Profile: standard] (Run ID: 35a5c7f8-...)
 ```
-
-## Critical Security Fixes
-
-During integration, **2 critical security issues** were identified and fixed:
-
-### 1. Silent Dummy Fallback (FIXED)
-**Issue**: Historical implementation had vendor adapters (Cursor, Claude, Gemini) that silently fell back to dummy worker in production.
-
-**Fix**: Changed default `fallback_to_dummy=False`. Production code now **fails explicitly** if real implementation unavailable. Dummy fallback requires **explicit opt-in** for testing only.
-
-**Verification**: See `tests/test_no_dummy_fallback.py` (8 tests)
-
-### 2. Non-Atomic Locks (FIXED)
-**Issue**: Historical lock implementation used non-atomic file write/unlink.
-
-**Fix**: Replaced with OS-level exclusive locks using `fcntl.flock()` (Unix/Linux).
-
-**Verification**: Code uses correct atomic operations (concurrent test pending)
-
-## Integration Summary
-
-**From Historical Bundle**: `orchestrator-extraction-bundle-20260909.tar.gz`
-
-**Integrated**:
-- ✅ 20 Python runtime modules (~5,000 LOC)
-- ✅ 34 JSON schemas
-- ✅ 16 test modules + 1 new
-- ✅ 8 protocol documents
-- ✅ 5 utility tools
-
-**Modified During Integration**:
-- `workers.py` → Fixed silent dummy fallback
-- `control_store.py` → Fixed lock atomicity
-- `orchestrator.py` → Added fallback control parameter
-
-**Excluded**:
-- ❌ Historical state.db files
-- ❌ Historical secrets
-- ❌ KB-specific code (none found)
-
-## Runtime Evidence
-
-The following evidence was generated from **actual execution**:
 
 ```bash
-# CLI execution
-$ python3 -m slice_orchestrator.cli plan S99
-Slice S99 initialized in state PLANNING (Run ID: b4c2d03c-c55f-42d2-a30a-ec6c2f7b6e01)
+uv run slice --repo-dir /path/to/your/repo status S1
+```
 
-# State query
-$ python3 -m slice_orchestrator.cli status S99
-Slice:             S99
-Run ID:            b4c2d03c-c55f-42d2-a30a-ec6c2f7b6e01
+```
+Slice:             S1
 State:             PLANNING
-Mode:              RUNNING
 Generation:        1
-Sequence:          1
-Review Cycle:      0
-Remediation Cycle: 0
-
-# State files created
-$ ls -la .orchestrator_slice/
-drwxr-xr-x  5 guilhem guilhem  4096 Sep  9 19:20 .
--rw-------  1 guilhem guilhem    32 Sep  9 19:20 control_secret.key
--rw-r--r--  1 guilhem guilhem 20480 Sep  9 19:20 state.db
--rw-r--r--  1 guilhem guilhem   132 Sep  9 19:20 trusted_tail_anchor
-drwxr-xr-x  2 guilhem guilhem  4096 Sep  9 19:20 locks
-
-# Trusted tail anchor
-$ cat .orchestrator_slice/trusted_tail_anchor
-1
-2e8be7e41976e04b4dba767c23a8133f63b550e9fbb142735211c676d70f3534
-908a2736333e2f3c77b800b01ef92ffddfafab1097eeb1116f14b0b652832040
-
-# Git commit
-$ git log --oneline
-c7a7198 Initial integration of Slice Orchestrator runtime
+Sequence:          3
 ```
 
-**Git Commit**: `c7a7198` (271 files, 43,647 lines)  
-**Run ID**: `b4c2d03c-c55f-42d2-a30a-ec6c2f7b6e01`  
-**Sequence**: 1  
-**Event Hash**: `2e8be7e41976e04b4dba767c23a8133f63b550e9fbb142735211c676d70f3534`
+Run the test suite (240 tests):
 
-## Verdicts
+```bash
+uv run python3 -m pytest tests/ -q
+```
 
-Based on integration requirements:
+## Using it from an AI coding assistant
 
-**IMPLEMENTATION VERDICT**: **PASS**
-- Executable CLI ✅
-- State persistence ✅
-- No KB dependencies ✅
-- No silent dummy fallback ✅
-- Atomic locks ✅
-- Git integration ✅
+Slice Orchestrator exposes the same 14 `slice_*` tools over MCP to any
+compatible host. A project-scoped `.mcp.json` is already committed here.
 
-**RUNTIME EVIDENCE**: **PARTIALLY VERIFIED**
-- Initialization verified ✅
-- State persistence verified ✅
-- Event chaining verified ✅
-- Full lifecycle: Not tested (requires pytest)
-- Worker execution: Not tested (requires pytest or real adapter)
+- **Cursor Chat** → [docs/cursor-integration.md](docs/cursor-integration.md)
+- **Claude Code** → [docs/claude-code-integration.md](docs/claude-code-integration.md)
 
-**PRODUCTIVITY VERDICT**: **UNVERIFIED**
-- No manual vs orchestrated comparison performed
-- Awaiting full dogfood execution
+Both hosts share one project-local state store (`.orchestrator_slice/`); a
+run started from one host can be inspected or resumed from the other. See
+[docs/multi-host-architecture.md](docs/multi-host-architecture.md) for how
+that works, and [docs/mcp-host-compatibility.md](docs/mcp-host-compatibility.md)
+for live-invocation evidence on each host.
 
-## Next Steps
+## CLI reference
 
-1. **Install pytest**: `pip install pytest pytest-timeout`
-2. **Run test suite**: `pytest tests/ -v` (expected: 120+ tests pass)
-3. **Execute dogfood**: Run full slice lifecycle against `test-project/`
-4. **Measure productivity**: Compare manual vs orchestrated development
-5. **Add Windows locks**: Implement `msvcrt.locking()` for Windows support (if needed)
+```
+slice plan <slice>          Initialize or plan a slice
+slice status <slice>        Show current status
+slice run <slice>           Autonomously drive slice to completion
+slice inspect <slice>       Inspect event stream
+slice explain <slice>       Explain current state, blockers, next action
+slice pause / resume / stop / recover <slice>
+slice work list|inspect|retry
+slice explore               Launch exploration mode in isolated scratch space
+slice doctor                Check installation, trust, and runtime health
+slice diagnostics <slice>   Show blockers, pending work, evidence locations
+slice timeline <slice>      Ordered event timeline with phase durations
+slice export <slice>        Export a reproducible run package
+slice compare               Compare manual vs. orchestrated run JSON files
+slice metrics <slice>       Compute authoritative metrics with provenance
+```
 
-## Documentation
+Run `slice <command> --help` for full options. Global flags (`--repo-dir`,
+`--control-home`, `--adapter`) go **before** the subcommand.
 
-- [Integration Map](ORCHESTRATOR_INTEGRATION_MAP.md) — File-by-file mapping
-- [Integration Report](ORCHESTRATOR_INTEGRATION_REPORT.md) — Full integration report with verdicts
-- [Pre-Integration Review](DOGFOOD_IMPLEMENTATION_REVIEW.md) — Adversarial review that motivated this integration
-- [Operator Checklist](OPERATOR_CHECKLIST.md) — Operator guidelines
-- [Method Documentation](orchestrator/10_SLICE_ORCHESTRATOR.md) — Core method
+## Repository layout
 
-## Historical Context
+```
+slice_orchestrator/     Runtime implementation (control store, state machine,
+                         gates, dispatch, MCP server, CLI)
+tests/                  240 tests (state machine, security, MCP protocol,
+                         cross-host isolation, recovery, ...)
+.orchestrator/          JSON schemas, transition policy, protocol docs
+.mcp.json               Project-scoped MCP server registration
+docs/                   Reference documentation (architecture, MCP contract,
+                         observability, roadmap) — see docs/README.md
+docs/archive/           Historical validation & remediation reports (audit
+                         trail, not onboarding material)
+orchestrator/           Method documentation for the orchestration approach
+                         itself (prompts, decisions, review heuristics) —
+                         informational, not the runtime (that's
+                         slice_orchestrator/)
+test-project/            Disposable fixture repo used to dogfood the
+                         orchestrator (includes deliberately adversarial
+                         fixtures for security tests)
+evidence/                Raw supporting evidence referenced by docs/archive/
+                         reports (logs, checkpoints, run exports)
+```
 
-**Previous State**: This repository contained method documentation and **narrative simulations** of dogfooding (see `evidence/orchestrator-dogfood-v2/`). Those narratives described **hypothetical** orchestrator behavior.
+## Project status
 
-**Current State**: Real, executable orchestrator integrated from historical implementation. Evidence is now from **actual execution**, not simulation.
+Slice Orchestrator is under active development. Current milestone status,
+what's validated with live evidence, and what's explicitly still open are
+tracked in [docs/roadmap.md](docs/roadmap.md). In short:
 
-**Review**: See [DOGFOOD_IMPLEMENTATION_REVIEW.md](DOGFOOD_IMPLEMENTATION_REVIEW.md) for the adversarial review that identified the simulation vs implementation gap.
+- ✅ Core runtime, state machine, and security model: implemented and tested
+- ✅ Cursor Chat native integration: validated with live tool invocation and a full IDE restart
+- ✅ Claude Code native integration: validated with live tool invocation through a complete lifecycle to `COMPLETE`
+- ⚠️ Net human productivity benefit: **not yet established** — an initial
+  agent-vs-agent study was inconclusive on real developer speedup (see
+  [docs/productivity-study-analysis.md](docs/productivity-study-analysis.md));
+  treat governance/traceability, not speed, as the current value proposition
+- ⏳ Concurrent dual-host sessions and cross-client restart recovery: not yet validated
+
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR:
+
+1. `uv run python3 -m pytest tests/ -q` — the full suite must pass
+2. If you touch MCP tool schemas or the state machine, update the relevant
+   doc in `docs/` in the same PR
+3. Keep validation/remediation write-ups in `docs/archive/` rather than the
+   repository root
 
 ## License
 
-[Specify license]
-
-## Contact
-
-[Specify contact]
+MIT — see [LICENSE](LICENSE).

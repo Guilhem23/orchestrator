@@ -393,9 +393,9 @@ def slice_plan(
 
     A plan with no ``scope_manifest.allow_paths`` is valid for read-only /
     investigation slices that never modify the workspace, but will fail the
-    commit gate as soon as any file is changed. See ``ORCHESTRATOR_ROADMAP.md``
-    (item B follow-up) and ``CLAUDE_CODE_NATIVE_VALIDATION.md`` §4 for the
-    incident that prompted this note.
+    commit gate as soon as any file is changed. See ``docs/roadmap.md``
+    (item B follow-up) and ``docs/archive/CLAUDE_CODE_NATIVE_VALIDATION.md`` §4
+    for the incident that prompted this note.
     """
     s_name = _get_slice_name(slice, slice_name)
     if not plan:

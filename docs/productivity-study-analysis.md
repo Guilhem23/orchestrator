@@ -2,12 +2,12 @@
 
 ## 1. Study Design
 
-Paired comparison of ten disposable dogfood tasks from [DOGFOOD_TASK_CATALOG.md](DOGFOOD_TASK_CATALOG.md) under:
+Paired comparison of ten disposable dogfood tasks from [dogfood-task-catalog.md](dogfood-task-catalog.md) under:
 
 * **CONTROL** — Cursor Chat alone (direct edits + pytest; no orchestrator control plane)
 * **TREATMENT** — Cursor Chat + Slice Orchestrator tools API (same authority plane as MCP)
 
-Protocol: [PRODUCTIVITY_MEASUREMENT_PROTOCOL.md](PRODUCTIVITY_MEASUREMENT_PROTOCOL.md).  
+Protocol: [productivity-protocol.md](productivity-protocol.md).  
 Measurement schema fields use `UNAVAILABLE` when not instrumented. Worker summaries are never authoritative.
 
 Statistical note: n=10 tasks, single agent, fixed order. No inferential tests; no significance claims.
@@ -41,7 +41,7 @@ Authoritative TREATMENT metrics/export digests come from the control store and `
 
 ## 5. Raw Measurements
 
-See [PRODUCTIVITY_STUDY_DATA.json](PRODUCTIVITY_STUDY_DATA.json) and the summary table in [PRODUCTIVITY_STUDY_RESULTS.md](PRODUCTIVITY_STUDY_RESULTS.md).
+See [productivity-study-data.json](productivity-study-data.json) and the summary table in [productivity-study-results.md](productivity-study-results.md).
 
 Comparable wall-clock samples (ms):
 
@@ -145,4 +145,4 @@ Central answer: after committing the observability layer, this controlled multi-
 2. Do **not** market “faster development” from this dataset.
 3. Re-run with human developers, counterbalanced order, larger tasks, and instrumented CONTROL tool use before any productivity claim.
 4. Investigate DF-08 blocked-review continuation UX separately as a process bug/friction item.
-5. Claude Code native compatibility is now VALIDATED ([CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md), 2026-09-22); this study's conclusion is unaffected — production readiness remains NOT READY on productivity grounds alone.
+5. Claude Code native compatibility is now VALIDATED ([archive/CLAUDE_CODE_NATIVE_VALIDATION.md](archive/CLAUDE_CODE_NATIVE_VALIDATION.md), 2026-09-22); this study's conclusion is unaffected — production readiness remains NOT READY on productivity grounds alone.

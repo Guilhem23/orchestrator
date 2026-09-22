@@ -2,7 +2,7 @@
 
 **Status**: FROZEN — Authoritative multi-host architecture
 **Date**: 2026-09-11
-**Depends on**: [EXECUTION_MODES_ARCHITECTURE.md](EXECUTION_MODES_ARCHITECTURE.md), [MCP_COMPLETE_LIFECYCLE_SPEC.md](MCP_COMPLETE_LIFECYCLE_SPEC.md)
+**Depends on**: [execution-modes.md](execution-modes.md), [mcp-lifecycle-spec.md](mcp-lifecycle-spec.md)
 
 ---
 
@@ -67,7 +67,7 @@ Native host integrations **must not** launch `cursor-agent` or `claude` as a sec
 | `slice_gate` | ✗ | evaluates commit gate |
 | `slice_finalize` | ✅ | COMMIT_READY → COMPLETE |
 
-Schemas, errors, transitions, and persistence behavior are defined in [CURSOR_MCP_TOOL_CONTRACT.md](CURSOR_MCP_TOOL_CONTRACT.md) and [MCP_COMPLETE_LIFECYCLE_SPEC.md](MCP_COMPLETE_LIFECYCLE_SPEC.md). The contract is host-independent; the Cursor-named file remains the canonical schema document for historical continuity.
+Schemas, errors, transitions, and persistence behavior are defined in [mcp-tool-contract.md](mcp-tool-contract.md) and [mcp-lifecycle-spec.md](mcp-lifecycle-spec.md). The contract is host-independent; the Cursor-named file remains the canonical schema document for historical continuity.
 
 ### 2.2 Host metadata rules
 

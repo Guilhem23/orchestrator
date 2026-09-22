@@ -9,7 +9,7 @@
 
 ## 1. Architectural Decision
 
-Confirmed and documented in [MULTI_HOST_MCP_ARCHITECTURE.md](MULTI_HOST_MCP_ARCHITECTURE.md):
+Confirmed and documented in [multi-host-architecture.md](../multi-host-architecture.md):
 
 ```text
 PRIMARY HOST:           Cursor Chat

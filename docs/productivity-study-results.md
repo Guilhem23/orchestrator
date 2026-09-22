@@ -1,10 +1,10 @@
 # Productivity Study Results
 
 **Status**: EXECUTED on disposable fixtures  
-**Protocol**: [PRODUCTIVITY_MEASUREMENT_PROTOCOL.md](PRODUCTIVITY_MEASUREMENT_PROTOCOL.md)  
-**Catalog**: [DOGFOOD_TASK_CATALOG.md](DOGFOOD_TASK_CATALOG.md)  
-**Raw data**: [PRODUCTIVITY_STUDY_DATA.json](PRODUCTIVITY_STUDY_DATA.json)  
-**Analysis**: [PRODUCTIVITY_STUDY_ANALYSIS.md](PRODUCTIVITY_STUDY_ANALYSIS.md)  
+**Protocol**: [productivity-protocol.md](productivity-protocol.md)  
+**Catalog**: [dogfood-task-catalog.md](dogfood-task-catalog.md)  
+**Raw data**: [productivity-study-data.json](productivity-study-data.json)  
+**Analysis**: [productivity-study-analysis.md](productivity-study-analysis.md)  
 **Observability baseline**: `f1aa3443ac7397940a4bcc7b10ccd4181bf0ef6d`
 
 ## Conditions
@@ -52,7 +52,7 @@ Do **not** interpret these ratios as human productivity claims. Both sides are a
 
 ## Exports
 
-All ten TREATMENT runs produced export digests (recorded in `PRODUCTIVITY_STUDY_DATA.json`). Runtime packages live under gitignored `evidence/dogfood-tasks/study-runs/`.
+All ten TREATMENT runs produced export digests (recorded in `productivity-study-data.json`). Runtime packages live under gitignored `evidence/dogfood-tasks/study-runs/`.
 
 ## Claim authorization
 

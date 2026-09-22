@@ -12,7 +12,6 @@ Per the project's measurements and studies (`PRODUCTIVITY_STUDY_RESULTS.md`
 and `PRODUCTIVITY_STUDY_ANALYSIS.md`), the tool is not meant to accelerate
 raw wall-clock execution time on micro-tasks, but to bring guarantees that
 are otherwise missing in AI-governed software engineering:
-
 * **Reliability and integrity**: Eliminates false positives ("*completion
   hallucinations*") through deterministic mechanical barriers (*quality
   gates*) validated against JSON schemas and real test results.
@@ -73,7 +72,6 @@ are otherwise missing in AI-governed software engineering:
     (`CLAUDE_CODE_NATIVE_INTEGRATION_GUIDE.md`).
   * Validate collaborative/alternating workflows (start a slice in Cursor,
     resume or audit it in Claude Code on the same repository).
-
 ### D. Headless Mode and CI/CD Integration (Mode B)
 * **Observation**: The autonomous subprocess mode is still mostly confined
   to local development.

@@ -1,79 +1,30 @@
-# Evidence Directory
+# Evidence
 
-This directory will contain **actual runtime evidence** from orchestrator executions.
+Raw artifacts supporting the validation reports in
+[docs/archive/](../docs/archive/). These are logs, checkpoints, and example
+run exports — not documentation themselves.
 
-## Runtime Evidence Location
+## Contents
 
-**Actual runtime evidence** from the integrated orchestrator is in:
+- `cursor-full-restart-validation/` — raw logs (pre-shutdown process list, MCP
+  reconnect log, a mid-run state checkpoint, a corruption note) from the full
+  IDE cold-restart recovery test. Referenced from
+  [docs/archive/FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md](../docs/archive/FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md).
+- `dogfood-tasks/` — example manual-run and orchestrated-run exports, used as
+  reference fixtures for the run-export format
+  ([docs/run-export-format.md](../docs/run-export-format.md)) and the
+  productivity study
+  ([docs/productivity-study-results.md](../docs/productivity-study-results.md)).
 
-```
-.orchestrator_slice/          # State files
-├── state.db                  # SQLite event store (20KB)
-├── trusted_tail_anchor       # Cryptographic chain anchor
-├── locks/                    # Concurrency locks
-└── control_secret.key        # HMAC secret
-
-.git/                         # Git history
-├── logs/                     # Git operation logs
-└── refs/                     # Commit references
-```
-
-**Git commits** (actual execution evidence):
-- `c7a7198` - Initial integration (271 files, 43,647 lines)
-- `ca51e6c` - Integration completion
-- `1369f23` - Integration summary
-- `618beaa` - Bundle cleanup
-- `c401303` - Gitignore update
-- `0faf93a` - Documentation archive
-
-**Run ID**: `b4c2d03c-c55f-42d2-a30a-ec6c2f7b6e01`  
-**Event Hash**: `2e8be7e41976e04b4dba767c23a8133f63b550e9fbb142735211c676d70f3534`  
-**Sequence**: 1  
-**State**: PLANNING  
-
----
-
-## How to Generate Real Evidence
-
-To generate actual runtime evidence:
+The authoritative, current runtime state for any slice lives in
+`.orchestrator_slice/` at the repository root (gitignored — it's generated,
+not committed). Generate your own evidence for a given run with:
 
 ```bash
-# Initialize a slice
-python3 -m slice_orchestrator.cli plan S1
-
-# Check status (generates query evidence)
-python3 -m slice_orchestrator.cli status S1
-
-# Inspect events (generates audit trail)
-python3 -m slice_orchestrator.cli inspect S1
-
-# Run test suite (requires pytest)
-pytest tests/ -v --tb=short
-
-# Full dogfood run (requires worker adapter or explicit dummy)
-python3 -m slice_orchestrator.cli run S1 --adapter dummy
+uv run slice inspect <slice>       # event stream / audit trail
+uv run slice diagnostics <slice>   # blockers, pending work, evidence locations
+uv run slice export <slice>        # reproducible run package
 ```
 
-**Real evidence includes**:
-- ✅ Timestamps (from file system, git, SQLite)
-- ✅ Run IDs (UUIDs generated at runtime)
-- ✅ Event hashes (cryptographic integrity)
-- ✅ State files (persistent across processes)
-- ✅ Git commits (traceable changes)
-- ✅ Test results (pytest output)
-
----
-
-## Summary
-
-All runtime evidence is stored in:
-- `.orchestrator_slice/` - State files and event store
-- `.git/` - Git history with commits
-- Test results - `pytest tests/` output
-
-**For citations**: Use integration reports and actual runtime artifacts.
-
-**See also**:
-- [DOGFOOD_IMPLEMENTATION_REVIEW.md](../DOGFOOD_IMPLEMENTATION_REVIEW.md) - Analysis revealing simulations
-- [INTEGRATION_SUMMARY.md](../INTEGRATION_SUMMARY.md) - Actual integration results
-- [ORCHESTRATOR_INTEGRATION_REPORT.md](../ORCHESTRATOR_INTEGRATION_REPORT.md) - Full integration evidence
+See [docs/diagnostics.md](../docs/diagnostics.md) for the full command
+reference.

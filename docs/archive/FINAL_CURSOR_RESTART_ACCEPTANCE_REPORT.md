@@ -3,7 +3,7 @@
 **Date**: 2026-09-11  
 **Branch**: `validation/cursor-full-ide-restart`  
 **Baseline revision**: `1a472d6f43b40f67eead7d26dce6414f285e9857`  
-**Companions**: [CURSOR_FULL_RESTART_EVIDENCE.md](CURSOR_FULL_RESTART_EVIDENCE.md), [CURSOR_RESTART_VALIDATION_REPORT.md](CURSOR_RESTART_VALIDATION_REPORT.md), [CURSOR_RECOVERY_NEGATIVE_TESTS.md](CURSOR_RECOVERY_NEGATIVE_TESTS.md)  
+**Companions**: CURSOR_FULL_RESTART_EVIDENCE.md, CURSOR_RESTART_VALIDATION_REPORT.md, CURSOR_RECOVERY_NEGATIVE_TESTS.md *(removed during pre-public cleanup; see [README.md](README.md))*  
 **Method**: Operator-completed Cursor IDE cold restart; Cursor MCP resume of parked slice; control-store verification.  
 **Agent role**: Documentation and commit finalization only — the cold restart itself was **not** validated by the agent.
 
@@ -112,9 +112,9 @@ COMPLETE LIFECYCLE: PASS
 
 | Artifact | Path |
 |---|---|
-| Restart evidence narrative | `CURSOR_FULL_RESTART_EVIDENCE.md` |
-| Validation report | `CURSOR_RESTART_VALIDATION_REPORT.md` |
-| Negative recovery matrix | `CURSOR_RECOVERY_NEGATIVE_TESTS.md` |
+| Restart evidence narrative | `CURSOR_FULL_RESTART_EVIDENCE.md` *(removed; see [README.md](README.md))* |
+| Validation report | `CURSOR_RESTART_VALIDATION_REPORT.md` *(removed; see [README.md](README.md))* |
+| Negative recovery matrix | `CURSOR_RECOVERY_NEGATIVE_TESTS.md` *(removed; see [README.md](README.md))* |
 | Pre-shutdown checkpoint | `evidence/cursor-full-restart-validation/S940_PRE_SHUTDOWN_CHECKPOINT.json` |
 | Pre-shutdown PIDs | `evidence/cursor-full-restart-validation/PRE_SHUTDOWN_PIDS.txt` |
 | MCP kill/reconnect log | `evidence/cursor-full-restart-validation/MCP_RESTART_LOG.txt` |

@@ -1,6 +1,6 @@
 # Productivity Measurement Protocol
 
-**Status**: PROTOCOL DEFINED — initial multi-task study executed (see PRODUCTIVITY_STUDY_RESULTS.md); productivity claim still NOT AUTHORIZED  
+**Status**: PROTOCOL DEFINED — initial multi-task study executed (see productivity-study-results.md); productivity claim still NOT AUTHORIZED  
 **Comparison schema**: `productivity-comparison-v1`  
 **CLI**: `slice compare --manual manual-run.json --orchestrated orchestrated-run.json`
 
@@ -45,7 +45,7 @@ Missing values must be `UNAVAILABLE`, never imputed.
 
 ## 3. Protocol steps
 
-1. Select a task from [DOGFOOD_TASK_CATALOG.md](DOGFOOD_TASK_CATALOG.md).
+1. Select a task from [dogfood-task-catalog.md](dogfood-task-catalog.md).
 2. Reset disposable repository to the listed starting revision.
 3. Execute **manual** Cursor Chat attempt; record `manual-run.json`.
 4. Reset to the same starting revision.

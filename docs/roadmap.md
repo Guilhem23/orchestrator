@@ -2,7 +2,7 @@
 
 **Status**: REBASELINED — Multi-host MCP (Cursor primary, Claude Code secondary)
 **Date**: 2026-09-11
-**Depends on**: [MULTI_HOST_MCP_ARCHITECTURE.md](MULTI_HOST_MCP_ARCHITECTURE.md), [EXECUTION_MODES_ARCHITECTURE.md](EXECUTION_MODES_ARCHITECTURE.md)
+**Depends on**: [multi-host-architecture.md](multi-host-architecture.md), [execution-modes.md](execution-modes.md)
 
 ---
 
@@ -31,15 +31,15 @@ Claude Code native validation: PASS (slices S999/S998/S997/S996/S995)
 Production readiness: NOT READY
 ```
 
-Evidence: [CURSOR_CHAT_LIVE_VALIDATION.md](CURSOR_CHAT_LIVE_VALIDATION.md) (slice `S930`);  
-[FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md](FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md) (slice `S940`, full IDE cold restart by operator).
+Evidence: [archive/CURSOR_CHAT_LIVE_VALIDATION.md](archive/CURSOR_CHAT_LIVE_VALIDATION.md) (slice `S930`);  
+[archive/FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md](archive/FINAL_CURSOR_RESTART_ACCEPTANCE_REPORT.md) (slice `S940`, full IDE cold restart by operator).
 
 ### Deliverables
 
 - [x] Host-agnostic MCP server (`slice_orchestrator/mcp_server.py`)
 - [x] Tool layer (`slice_orchestrator/tools.py`) including gate/finalize
 - [x] `.cursor/mcp.json`
-- [x] [CURSOR_NATIVE_INTEGRATION_GUIDE.md](CURSOR_NATIVE_INTEGRATION_GUIDE.md)
+- [x] [cursor-integration.md](cursor-integration.md)
 - [x] RAW_STDIO + IN_PROCESS tests (explicitly classified)
 - [x] Live Cursor Chat invocation evidence (discovery → report → persistence) — `S930`
 - [x] Full Cursor IDE cold restart recovery evidence — `S940` (operator outside agent)
@@ -64,14 +64,14 @@ Tool discovery (14 slice_* tools): PASS
 Full lifecycle to COMPLETE with real HMAC test receipt: PASS (slice S994, 21 events)
 ```
 
-Evidence: [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md) (slices `S999`/`S998`/`S997`/`S996`/`S995`/`S994`, disposable repos).
+Evidence: [archive/CLAUDE_CODE_NATIVE_VALIDATION.md](archive/CLAUDE_CODE_NATIVE_VALIDATION.md) (slices `S999`/`S998`/`S997`/`S996`/`S995`/`S994`, disposable repos).
 
 ### Deliverables
 
 - [x] Project `.mcp.json` (stdio, no secrets)
-- [x] [CLAUDE_CODE_NATIVE_INTEGRATION_GUIDE.md](CLAUDE_CODE_NATIVE_INTEGRATION_GUIDE.md)
+- [x] [claude-code-integration.md](claude-code-integration.md)
 - [x] Same tool contract as Cursor
-- [x] Live Claude Code `/mcp` + tool invocation evidence — [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md)
+- [x] Live Claude Code `/mcp` + tool invocation evidence — [archive/CLAUDE_CODE_NATIVE_VALIDATION.md](archive/CLAUDE_CODE_NATIVE_VALIDATION.md)
 
 ### Exit criteria
 
@@ -91,10 +91,10 @@ Evidence: [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md) (
 
 ### Deliverables
 
-- [x] [MULTI_HOST_MCP_ARCHITECTURE.md](MULTI_HOST_MCP_ARCHITECTURE.md)
-- [x] [MCP_HOST_COMPATIBILITY_MATRIX.md](MCP_HOST_COMPATIBILITY_MATRIX.md)
+- [x] [multi-host-architecture.md](multi-host-architecture.md)
+- [x] [mcp-host-compatibility.md](mcp-host-compatibility.md)
 - [x] `tests/test_mcp_cross_host_isolation.py`
-- [x] [MULTI_HOST_MCP_VALIDATION_REPORT.md](MULTI_HOST_MCP_VALIDATION_REPORT.md)
+- [x] [archive/MULTI_HOST_MCP_VALIDATION_REPORT.md](archive/MULTI_HOST_MCP_VALIDATION_REPORT.md)
 - [ ] Concurrent live Cursor + Claude Code session evidence
 
 ### Exit criteria
@@ -110,7 +110,7 @@ Evidence: [CLAUDE_CODE_NATIVE_VALIDATION.md](CLAUDE_CODE_NATIVE_VALIDATION.md) (
 
 **Status**: STUDY EXECUTED — no productivity speedup claim authorized
 
-Observability layer, metrics engine, export, and `slice compare` are implemented. Multi-task dogfood study results: [PRODUCTIVITY_STUDY_RESULTS.md](PRODUCTIVITY_STUDY_RESULTS.md), [PRODUCTIVITY_STUDY_ANALYSIS.md](PRODUCTIVITY_STUDY_ANALYSIS.md). Conclusion: observed process/recovery trade-offs; **INSUFFICIENT EVIDENCE** for net human productivity improvement.
+Observability layer, metrics engine, export, and `slice compare` are implemented. Multi-task dogfood study results: [productivity-study-results.md](productivity-study-results.md), [productivity-study-analysis.md](productivity-study-analysis.md). Conclusion: observed process/recovery trade-offs; **INSUFFICIENT EVIDENCE** for net human productivity improvement.
 
 ### Deliverables
 

@@ -2,7 +2,7 @@
 
 **Status**: IMPLEMENTED — Validated with 17 security tests and 180+ regression tests
 **Date**: 2026-09-11
-**Depends on**: [EXECUTION_MODES_ARCHITECTURE.md](EXECUTION_MODES_ARCHITECTURE.md)
+**Depends on**: [execution-modes.md](execution-modes.md)
 
 ---
 
@@ -10,7 +10,7 @@
 
 The subprocess execution mode provides headless, CI/CD, server-side, asynchronous, and local-model execution of Slice Orchestrator workflows. It is a **complementary** execution backend for use cases where interactive Cursor Chat is not available or not appropriate.
 
-This mode is **not** the primary human development experience. See [EXECUTION_MODES_ARCHITECTURE.md](EXECUTION_MODES_ARCHITECTURE.md) for the primary mode (Cursor-native).
+This mode is **not** the primary human development experience. See [execution-modes.md](execution-modes.md) for the primary mode (Cursor-native).
 
 ---
 
@@ -345,7 +345,7 @@ In subprocess mode:
 
 ## 14. Hardening Roadmap
 
-Per [ORCHESTRATOR_ROADMAP.md](ORCHESTRATOR_ROADMAP.md), subprocess mode hardening is Phase E:
+Per [roadmap.md](roadmap.md), subprocess mode hardening is Phase E:
 
 1. Authenticate `cursor-agent` in a dedicated runner environment.
 2. Execute end-to-end slice with real Cursor CLI worker.

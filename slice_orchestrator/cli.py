@@ -36,12 +36,12 @@ from slice_orchestrator.tools import slice_remediate
 
 
 def get_controller(
-    repo_dir: Path | None = None,
-    control_home: Path | None = None,
+    repo_dir: Path | str | None = None,
+    control_home: Path | str | None = None,
     adapter_id: str = "dummy",
 ) -> SliceRunController:
-    cwd = (repo_dir or Path.cwd()).resolve()
-    home = (control_home or cwd / ".orchestrator_slice").resolve()
+    cwd = (Path(repo_dir) if repo_dir else Path.cwd()).resolve()
+    home = (Path(control_home) if control_home else cwd / ".orchestrator_slice").resolve()
     return SliceRunController(repo_dir=cwd, control_home=home, configured_adapter_id=adapter_id)
 
 
@@ -104,6 +104,7 @@ def cmd_remediate(args: argparse.Namespace) -> int:
         return 1
     res = slice_remediate(
         slice=args.slice,
+        work_item_id=getattr(args, "work_item_id", None),
         repo_dir=ctrl.repo_dir,
         control_home=ctrl.store.control_home,
     )
@@ -117,7 +118,12 @@ def cmd_remediate(args: argparse.Namespace) -> int:
             req = f.get("required_remediation", "")
             print(f" - [{fid}] {desc}" + (f" -> {req}" if req else ""))
     print()
-    print(f"Next action: {res['next_action']}")
+    if getattr(args, "prompt", False):
+        print("=== Copy-Paste Prompt for Agent ===")
+        print(res.get("prompt", ""))
+        print("===================================")
+    else:
+        print(f"Next action: {res['next_action']}")
     return 0
 
 
@@ -165,10 +171,40 @@ def cmd_pause(args: argparse.Namespace) -> int:
 
 
 def cmd_resume(args: argparse.Namespace) -> int:
-    ctrl = get_controller(adapter_id=args.adapter)
+    ctrl = get_controller(
+        repo_dir=getattr(args, "repo_dir", None),
+        control_home=getattr(args, "control_home", None),
+        adapter_id=getattr(args, "adapter", "dummy"),
+    )
+    current_state = ctrl.get_slice_state(args.slice)
+    if current_state and current_state.state == "REMEDIATION":
+        print(f"Slice {args.slice} is currently in REMEDIATION. Initiating remediation workflow...")
+        return cmd_remediate(args)
+
     state = ctrl.resume_slice(args.slice)
     print(f"Slice {args.slice} execution mode updated: {state.execution_mode}")
-    if args.run:
+    if getattr(args, "with_packet", False):
+        try:
+            packets = ctrl.store.list_records_by_type("REMEDIATION_PACKET")
+            slice_packets = [p for p in packets if p.get("slice") == args.slice]
+            if slice_packets:
+                packet = slice_packets[-1]
+                cycle = packet.get("remediation_cycle", 1)
+                run_id = packet.get("run_id", "N/A")
+                findings = packet.get("findings", [])
+                failed_tests = packet.get("failed_tests", [])
+                print("\n=== Remediation Context Packet ===")
+                print(f"Cycle: {cycle} | Run ID: {run_id}")
+                if findings:
+                    print(f"Findings ({len(findings)}):")
+                    for f in findings:
+                        print(f" - [{f.get('finding_id', 'F')}] {f.get('description', '')}")
+                if failed_tests:
+                    print(f"Failed Tests: {', '.join(failed_tests)}")
+                print("==================================")
+        except Exception:
+            pass
+    if getattr(args, "run", False):
         return cmd_run(args)
     return 0
 
@@ -384,6 +420,8 @@ def main(sys_args: list[str] | None = None) -> int:
     # remediate
     p_remediate = subparsers.add_parser("remediate", help="Transition from REMEDIATION to IMPLEMENTATION with active findings")
     p_remediate.add_argument("slice", help="Slice identifier")
+    p_remediate.add_argument("--prompt", action="store_true", help="Print copy-paste Markdown remediation prompt")
+    p_remediate.add_argument("--work-item-id", default=None, help="Target specific work item")
 
     # inspect
     p_inspect = subparsers.add_parser("inspect", help="Inspect event stream for a slice")
@@ -405,6 +443,9 @@ def main(sys_args: list[str] | None = None) -> int:
     p_resume = subparsers.add_parser("resume", help="Resume a paused slice run")
     p_resume.add_argument("slice", help="Slice identifier")
     p_resume.add_argument("--run", action="store_true", help="Drive to completion after resuming")
+    p_resume.add_argument("--with-packet", action="store_true", help="Display remediation packet context on resume")
+    p_resume.add_argument("--prompt", action="store_true", help="If slice is in REMEDIATION, output prompt")
+    p_resume.add_argument("--work-item-id", default=None, help="If slice is in REMEDIATION, target specific work item")
 
     # stop
     p_stop = subparsers.add_parser("stop", help="Stop a slice run")

@@ -18,3 +18,4 @@ jobs:
         uses: ./
         with:
           base-ref: "origin/${{ github.base_ref }}"
+          if-no-slice: "skip"

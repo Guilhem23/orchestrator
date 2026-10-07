@@ -47,6 +47,15 @@ def test_verify_pr_fails_when_no_slice_run(disposable_repo_and_control):
     assert any("NO_SLICE_RUN" in r for r in res["reasons"])
 
 
+def test_verify_pr_skips_when_no_slice_run_and_skip_mode(disposable_repo_and_control):
+    repo_dir, control_home, _ = disposable_repo_and_control
+    _init_git_repo(repo_dir)
+
+    res = verify_pr_governance(repo_dir=repo_dir, control_home=control_home, if_no_slice="skip")
+    assert res["passed"]
+    assert "SKIPPED" in res["summary_markdown"]
+
+
 def test_verify_pr_fails_when_slice_not_terminal(disposable_repo_and_control):
     repo_dir, control_home, _ = disposable_repo_and_control
     _init_git_repo(repo_dir)

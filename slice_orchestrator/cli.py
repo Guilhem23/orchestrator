@@ -401,6 +401,7 @@ def cmd_verify_pr(args: argparse.Namespace) -> int:
         control_home=home,
         base_ref=getattr(args, "base", None),
         slice_name=getattr(args, "slice", None),
+        if_no_slice=getattr(args, "if_no_slice", "fail"),
     )
     if getattr(args, "json", False):
         print(json.dumps(res, indent=2))
@@ -599,6 +600,7 @@ def main(sys_args: list[str] | None = None) -> int:
     p_vpr = subparsers.add_parser("verify-pr", help="Authoritative CI / PR gate verification")
     p_vpr.add_argument("--slice", default=None, help="Specific slice identifier to verify (default: latest active)")
     p_vpr.add_argument("--base", default=None, help="Base commit/branch for PR diff (e.g. origin/main, HEAD~1)")
+    p_vpr.add_argument("--if-no-slice", choices=["fail", "skip", "warn"], default="fail", help="Behavior when no slice run is found (fail, skip, or warn)")
     p_vpr.add_argument("--json", action="store_true", help="Machine-readable JSON output for CI")
 
     # graph

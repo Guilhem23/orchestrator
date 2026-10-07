@@ -35,6 +35,7 @@ def verify_pr_governance(
     control_home: Path,
     base_ref: str | None = None,
     slice_name: str | None = None,
+    if_no_slice: str = "fail",
 ) -> dict[str, Any]:
     """
     Perform authoritative CI gate verification on the current branch / PR diff.
@@ -63,6 +64,13 @@ def verify_pr_governance(
                 pass
 
     if not s_name:
+        if if_no_slice in ("skip", "warn"):
+            return {
+                "passed": True,
+                "slice": None,
+                "reasons": [],
+                "summary_markdown": "### ℹ️ Slice CI Gate: SKIPPED\n\nNo Slice Orchestrator run found in `.orchestrator_slice/`. Gate skipped for non-governed / human PR.",
+            }
         return {
             "passed": False,
             "slice": None,

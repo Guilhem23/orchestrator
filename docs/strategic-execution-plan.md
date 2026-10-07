@@ -25,18 +25,49 @@ The execution sequence follows an unforgiving product-market law:
 
 ---
 
-## Phase 1 (Action #4): Agent Docility, Zero-Panic Guidance & Token Economy
+## Phase 1 (Action #4): Token Economy, Heterogeneous Compute & Agent Docility
 
 ### 1. Problem Statement
-When LLM agents (Claude 3.7 Sonnet, GPT-4o, DeepSeek) encounter strict state machine errors (e.g. `TransitionError`, `GateError`), they frequently fail blindly, looping through arbitrary MCP tool calls, re-reading massive message context, and burning $1.00–$3.00 of API tokens per slice in wasted retries.
+1. **Blind Panic & Token Waste**: When LLM agents (Claude 3.7 Sonnet, GPT-4o, DeepSeek) encounter strict state machine errors (e.g. `TransitionError`, `GateError`), they frequently fail blindly, looping through arbitrary MCP tool calls, re-reading massive message context, and burning $1.00–$3.00 of API tokens per slice in wasted retries.
+2. **Cloud Monoculture & Self-Approval Bias**: Relying 100% on expensive frontier cloud APIs for every trivial task (linting, diff scanning, adversarial review) is economically unsustainable. Furthermore, having the same model family (e.g. Claude) write code and audit its own PR introduces severe cognitive blind spots.
 
 ### 2. Objectives & Metrics
 * **First-Turn Recovery Rate**: 100% of state-machine or policy rejections must tell the agent the exact tool and payload to invoke next.
-* **Token Overhead Reduction**: Reduce average MCP round-trip token waste by **>60%**.
-* **Zero Loop Panic**: Eliminate hallucinated recovery loops when a slice hits `BLOCKED` or `REMEDIATION`.
+* **Token Cost Reduction**: Reduce cloud API expenditure by **60% to 80%** by offloading audits, reviews, and triage to local/on-premise compute.
+* **Heterogeneous Compute Agility**: Support simultaneous routing across Local NPU/Metal (MacBook), Private LAN GPU (DGX station / vLLM), and Frontier Cloud.
+* **Cross-Model Adversarial Diversity**: Mechanically enforce that the `ADVERSARIAL_REVIEWER` operates on a distinct model architecture from the `IMPLEMENTER`.
 
 ### 3. Deliverables & Technical Architecture
-1. **Universal Structured Error Schema (`NextActionGuidance`)**:
+1. **Heterogeneous Provider Engine (`slice_orchestrator/workers.py`)**:
+   * Implement `LocalWorkerAdapter` supporting standard OpenAI-compatible endpoints:
+     - **Tier 1 (Edge Laptop)**: Ollama / LM Studio on Apple Silicon Metal or NPU (`http://localhost:11434/v1`, e.g. Qwen 2.5 Coder 14B/32B at 50 tok/s).
+     - **Tier 2 (Private Cluster / LAN)**: On-premise Nvidia DGX / vLLM server (`http://dgx-station.local:8000/v1`, e.g. DeepSeek-R1 70B, Qwen 72B).
+     - **Tier 3 (Frontier Cloud)**: Anthropic Claude, Google Gemini, OpenAI API.
+2. **Declarative Multi-Model Role Routing (`.slice.toml`)**:
+   * Enable fine-grained routing per SDLC role:
+     ```toml
+     [providers.laptop_m3]
+     type = "openai_compatible"
+     endpoint = "http://localhost:11434/v1"
+     model = "qwen2.5-coder:14b"
+
+     [providers.office_dgx]
+     type = "openai_compatible"
+     endpoint = "http://dgx-station.local:8000/v1"
+     model = "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+
+     [providers.claude_cloud]
+     type = "claude"
+     model = "claude-3-7-sonnet"
+
+     [routing]
+     planner              = "claude_cloud"        # Frontier reasoning for architecture
+     implementer          = "cursor"              # Developer IDE agent
+     architecture_reviewer= "office_dgx"          # On-premise 70B model
+     adversarial_reviewer = "laptop_m3"           # Local 50 tok/s instant zero-cost audit
+     remediator           = "office_dgx"          # DeepSeek-R1 reasoning for fixes
+     ```
+3. **Universal Structured Error Schema (`NextActionGuidance`)**:
    * Wrap all MCP and controller error outputs with actionable recovery fields:
      ```json
      {
@@ -48,16 +79,13 @@ When LLM agents (Claude 3.7 Sonnet, GPT-4o, DeepSeek) encounter strict state mac
        "reason": "Deterministic gate requires an authoritative test receipt before review can be requested."
      }
      ```
-   * Update `slice_orchestrator/tools.py` and `slice_orchestrator/mcp_server.py` to systematically wrap exceptions with `recovery_hint` and `next_recommended_tool`.
-2. **Compact Agent Instruction Manifesto (`.slice/AGENT_RULES.md` / System Prompt)**:
-   * Provide a hyper-dense (<40 lines) deterministic state sequence algorithm for agents.
-   * Auto-inject this instruction file into MCP tool descriptions or project context during `slice init`.
-3. **Macro-Tools / Fast-Track Compression**:
-   * For non-critical bug fixes, empower `slice_fast_track_certify` to combine candidate capture, test receipt execution, and commit gate in a single round-trip.
+4. **Compact Agent Instruction Manifesto (`.slice/AGENT_RULES.md`)**:
+   * Provide a hyper-dense (<35 lines) deterministic state sequence algorithm for agents. Auto-injected during `slice init`.
 
 ### 4. Definition of Done (Exit Criteria)
-* Automated test verifying that every invalid transition error returns a valid `recommended_next_tool` and `recovery_hint`.
-* Token benchmark demonstrating a zero-panic recovery on intentional state errors.
+* Unit tests proving that `LocalWorkerAdapter` executes tasks against Ollama/OpenAI-compatible endpoints.
+* Successful demonstration of a slice where `IMPLEMENTER` runs on Claude/Cursor and `ADVERSARIAL_REVIEWER` runs on local Qwen 2.5 with zero cloud tokens consumed for the review.
+* 100% of state-machine errors return valid `recommended_next_tool` guidance.
 
 ---
 

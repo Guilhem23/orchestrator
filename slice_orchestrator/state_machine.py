@@ -51,6 +51,7 @@ class SliceRunState:
     latest_review_record_id: str | None = None
     latest_remediation_packet_id: str | None = None
     open_remediation_packet_ids: list[str] = field(default_factory=list)
+    slice_dependencies: list[str] = field(default_factory=list)
 
     committed_implementation_oid: str | None = None
     committed_governance_oid: str | None = None
@@ -114,10 +115,14 @@ def project_slice_run_state(events: list[dict[str, Any]], control_store: Any = N
             proj.plan_revision = payload.get("plan_revision", proj.plan_revision + 1)
             if "profile" in payload:
                 proj.profile = payload["profile"]
+            if "slice_dependencies" in payload:
+                proj.slice_dependencies = list(payload["slice_dependencies"])
             rec = payload.get("record", {})
             if rec:
                 if "profile" in rec:
                     proj.profile = rec["profile"]
+                if "slice_dependencies" in rec:
+                    proj.slice_dependencies = list(rec["slice_dependencies"])
                 plan_rec_id = rec.get("record_id")
                 proj.approved_plan_digest = rec.get("record_digest")
                 if control_store and plan_rec_id:
@@ -125,6 +130,8 @@ def project_slice_run_state(events: list[dict[str, Any]], control_store: Any = N
                     if plan_obj:
                         if "profile" in plan_obj:
                             proj.profile = plan_obj["profile"]
+                        if "slice_dependencies" in plan_obj:
+                            proj.slice_dependencies = list(plan_obj["slice_dependencies"])
                         proj.scope_manifest_digest = plan_obj.get("scope_manifest_digest")
                         proj.required_test_plan_digest = plan_obj.get("test_plan_digest")
 
@@ -134,13 +141,19 @@ def project_slice_run_state(events: list[dict[str, Any]], control_store: Any = N
         elif ev_type == "PLAN_REVISED":
             proj.state = "PLAN_READY"
             proj.plan_revision = payload.get("plan_revision", proj.plan_revision + 1)
+            if "slice_dependencies" in payload:
+                proj.slice_dependencies = list(payload["slice_dependencies"])
             rec = payload.get("record", {})
             if rec:
+                if "slice_dependencies" in rec:
+                    proj.slice_dependencies = list(rec["slice_dependencies"])
                 plan_rec_id = rec.get("record_id")
                 proj.approved_plan_digest = rec.get("record_digest")
                 if control_store and plan_rec_id:
                     plan_obj = control_store.get_record(plan_rec_id)
                     if plan_obj:
+                        if "slice_dependencies" in plan_obj:
+                            proj.slice_dependencies = list(plan_obj["slice_dependencies"])
                         proj.scope_manifest_digest = plan_obj.get("scope_manifest_digest")
                         proj.required_test_plan_digest = plan_obj.get("test_plan_digest")
             proj.architecture_approved = False

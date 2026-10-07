@@ -409,6 +409,54 @@ def cmd_verify_pr(args: argparse.Namespace) -> int:
     return 0 if res["passed"] else 1
 
 
+def cmd_graph(args: argparse.Namespace) -> int:
+    ctrl = get_controller(
+        repo_dir=getattr(args, "repo_dir", None),
+        control_home=getattr(args, "control_home", None),
+    )
+    slices: set[str] = set()
+    runs_dir = ctrl.store.control_home / "runs"
+    if runs_dir.is_dir():
+        for d in runs_dir.iterdir():
+            if d.is_dir():
+                slices.add(d.name)
+    try:
+        events = ctrl.store.verify_store_integrity()
+        for ev in events:
+            if "slice" in ev:
+                slices.add(ev["slice"])
+    except Exception:
+        pass
+
+    if not slices:
+        print("No slices found in repository.")
+        return 0
+
+    nodes = []
+    edges = []
+    for s_name in sorted(slices):
+        st = ctrl.get_slice_state(s_name)
+        status_str = st.state if st else "UNKNOWN"
+        deps = getattr(st, "slice_dependencies", []) if st else []
+        nodes.append({
+            "slice": s_name,
+            "status": status_str,
+            "dependencies": deps,
+        })
+        for dep in deps:
+            edges.append({"from": dep, "to": s_name})
+
+    if getattr(args, "json", False):
+        print(json.dumps({"nodes": nodes, "edges": edges}, indent=2))
+        return 0
+
+    print("=== Multi-Slice Dependency DAG ===")
+    for node in nodes:
+        dep_str = f" (depends on: {', '.join(node['dependencies'])})" if node["dependencies"] else ""
+        print(f"[{node['status']:14s}] {node['slice']}{dep_str}")
+    return 0
+
+
 def main(sys_args: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="slice",
@@ -531,6 +579,10 @@ def main(sys_args: list[str] | None = None) -> int:
     p_vpr.add_argument("--base", default=None, help="Base commit/branch for PR diff (e.g. origin/main, HEAD~1)")
     p_vpr.add_argument("--json", action="store_true", help="Machine-readable JSON output for CI")
 
+    # graph
+    p_graph = subparsers.add_parser("graph", help="Display multi-slice dependency DAG and progression")
+    p_graph.add_argument("--json", action="store_true", help="Machine-readable JSON output")
+
     parsed = parser.parse_args(sys_args)
 
     cmd_map = {
@@ -553,6 +605,7 @@ def main(sys_args: list[str] | None = None) -> int:
         "compare": cmd_compare,
         "metrics": cmd_metrics,
         "verify-pr": cmd_verify_pr,
+        "graph": cmd_graph,
     }
 
     try:

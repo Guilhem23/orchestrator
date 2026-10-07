@@ -1,195 +1,137 @@
-# Strategic Execution Plan (Order: 4 ➔ 5 ➔ 2 ➔ 1 ➔ 3)
+# Slice Orchestrator — Architecture & GTM Strategic Blueprint (v5)
 
-> **Document Objective**: Operational blueprint translating market feedback, developer adoption friction, and enterprise B2B sales requirements into an actionable, phased implementation roadmap for Slice Orchestrator.
+> **Status**: Production Architecture & Enterprise Go-To-Market Masterplan  
+> **Target Outcome**: Unanimous Board Approval (VP of Engineering, CISO, Staff Engineer, DevTools VC)  
+> **Core Value Proposition**: *Deterministic Anti-Tampering Engine & SDLC Guardrails for Autonomous Coding Agents.*
 
 ---
 
-## Executive Summary & Sequence Rationale
+## 1. The 5 Cardinal Imperatives
 
-The execution sequence follows an unforgiving product-market law:
 ```
-[Phase 1] Token Economy & Agent Docility (Fix the product physics & UX first)
-    │
-    ▼
-[Phase 2] Enterprise Business Model & GTM (Define how value is captured & monetized)
-    │
-    ▼
-[Phase 3] Dual-Persona Alignment (Equip the Developer champion & reassure the CISO buyer)
-    │
-    ▼
-[Phase 4] Zero-Clone PyPI & uvx Distribution (Open top-of-funnel viral distribution)
-    │
-    ▼
-[Phase 5] Visual Proof & "Show, Don't Tell" (Maximize landing page conversion with shockproof proof)
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             THE 5 GO-TO-MARKET PILLARS                          │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ 1. Zero-Friction Engine      Cloud-first API default + Local Ollama fallback     │
+│ 2. Binary Mutant Arbitrage   No LLM debates; adversarial mutant test generation │
+│ 3. Enterprise Moat           Shared Context Bus + Multi-Agent Git Conflict Engine│
+│ 4. Developer Armor           Never block cosmetics; 3 hard gates + 1-click auto-fix│
+│ 5. Monday Morning Trigger    Stop Test Tampering: "Your agents cheat on tests"  │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Phase 1 (Action #4): Token Economy, Heterogeneous Compute & Agent Docility
+## 2. Phased Strategic Execution (Phases 1 to 5)
 
-### 1. Problem Statement
-1. **Blind Panic & Token Waste**: When LLM agents (Claude 3.7 Sonnet, GPT-4o, DeepSeek) encounter strict state machine errors (e.g. `TransitionError`, `GateError`), they frequently fail blindly, looping through arbitrary MCP tool calls, re-reading massive message context, and burning $1.00–$3.00 of API tokens per slice in wasted retries.
-2. **Cloud Monoculture & Self-Approval Bias**: Relying 100% on expensive frontier cloud APIs for every trivial task (linting, diff scanning, adversarial review) is economically unsustainable. Furthermore, having the same model family (e.g. Claude) write code and audit its own PR introduces severe cognitive blind spots.
+### Phase 1: Zero-Friction Runtime & Binary Mutant Arbitrage
+* **Zero Infrastructure Headaches**:
+  * Default out-of-the-box configuration runs against standard cloud APIs (Anthropic, OpenAI, Google Gemini).
+  * Optional local inference limited strictly to `localhost` (Ollama / vLLM).
+  * **Automatic Fallback (< 500 ms)**: If local VRAM saturates or Ollama is unresponsive, execution transparently cascades to cloud with zero lost context.
+  * **Ultra-Fast Gate Evaluations**: All scope containment and checksum verifications execute in **< 200 ms**.
+* **Binary Mutant Arbitrage (Eliminating LLM Subjectivity)**:
+  * Small local models never "judge" or "debate" code written by Frontier models.
+  * The `ADVERSARIAL_REVIEWER` role has a single, deterministic mission: generate **mutant unit tests** targeting edge cases, boundaries, and security invariants.
+  * The verdict is 100% binary: the test runner executes the mutants. Exit code `0` passes; exit code `1` fails. Zero circular philosophical arguments.
 
-### 2. Objectives & Metrics
-* **First-Turn Recovery Rate**: 100% of state-machine or policy rejections must tell the agent the exact tool and payload to invoke next.
-* **Token Cost Reduction**: Reduce cloud API expenditure by **60% to 80%** by offloading audits, reviews, and triage to local/on-premise compute.
-* **Heterogeneous Compute Agility**: Support simultaneous routing across Local NPU/Metal (MacBook), Private LAN GPU (DGX station / vLLM), and Frontier Cloud.
-* **Cross-Model Adversarial Diversity**: Mechanically enforce that the `ADVERSARIAL_REVIEWER` operates on a distinct model architecture from the `IMPLEMENTER`.
+### Phase 2: Enterprise Moat & Closing the Freeloader Hole
+* **Open Source MIT (Solo Developer Tier - 100% Free)**:
+  * Local CLI (`slice`), 14 MCP tools, local AST scope enforcement, local HMAC test receipts.
+* **Team & Enterprise Tier ($29 / dev / month or Platform Contract)**:
+  1. **Shared Memory & Context Bus**: Synchronizes agent memories across engineering teams to prevent duplicate tasks, contradictory architectural decisions, and cross-agent hallucination.
+  2. **Multi-Agent Git Conflict Engine**: Predictive merge conflict detection. When 20 developers run agents simultaneously on overlapping modules, Slice coordinates branches before PR submission.
+  3. **Hosted Cryptographic PR Verifier (GitHub App)**: Verifies HMAC receipt chains against a hosted trust anchor. Maintainers receive cryptographic proof that no test assertion was weakened or removed. Custom manual scripts cannot replicate the hosted root-of-trust.
 
-### 3. Deliverables & Technical Architecture
-1. **Heterogeneous Provider Engine (`slice_orchestrator/workers.py`)**:
-   * Implement `LocalWorkerAdapter` supporting standard OpenAI-compatible endpoints:
-     - **Tier 1 (Edge Laptop)**: Ollama / LM Studio on Apple Silicon Metal or NPU (`http://localhost:11434/v1`, e.g. Qwen 2.5 Coder 14B/32B at 50 tok/s).
-     - **Tier 2 (Private Cluster / LAN)**: On-premise Nvidia DGX / vLLM server (`http://dgx-station.local:8000/v1`, e.g. DeepSeek-R1 70B, Qwen 72B).
-     - **Tier 3 (Frontier Cloud)**: Anthropic Claude, Google Gemini, OpenAI API.
-2. **Declarative Multi-Model Role Routing (`.slice.toml`)**:
-   * Enable fine-grained routing per SDLC role:
-     ```toml
-     [providers.laptop_m3]
-     type = "openai_compatible"
-     endpoint = "http://localhost:11434/v1"
-     model = "qwen2.5-coder:14b"
+### Phase 3: Developer Armor & One-Click Auto-Fix
+* **The 3 Non-Negotiable Gates (Zero Cosmetic Blockers)**:
+  The orchestrator **never** blocks a developer on subjective code style, missing docstrings, or formatting. It strictly guards 3 objective invariants:
+  1. **Scope Breach**: Touched files outside `scope_manifest.allow_paths` (evaluated via AST diff).
+  2. **Regression Failure**: Authorized test suite failure (`exit != 0`).
+  3. **Test Tampering**: Any unauthorized modification or deletion of baseline test assertions.
+* **One-Click Auto-Fix (`slice remediate --auto-fix`)**:
+  When a gate rejects a candidate, the orchestrator outputs the exact diff failure and triggers a localized remediation worker to heal the slice in 1 click, turning the tool into a protective shield rather than an annoying blocker.
 
-     [providers.office_dgx]
-     type = "openai_compatible"
-     endpoint = "http://dgx-station.local:8000/v1"
-     model = "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
-
-     [providers.claude_cloud]
-     type = "claude"
-     model = "claude-3-7-sonnet"
-
-     [routing]
-     planner              = "claude_cloud"        # Frontier reasoning for architecture
-     implementer          = "cursor"              # Developer IDE agent
-     architecture_reviewer= "office_dgx"          # On-premise 70B model
-     adversarial_reviewer = "laptop_m3"           # Local 50 tok/s instant zero-cost audit
-     remediator           = "office_dgx"          # DeepSeek-R1 reasoning for fixes
-     ```
-3. **Universal Structured Error Schema (`NextActionGuidance`)**:
-   * Wrap all MCP and controller error outputs with actionable recovery fields:
-     ```json
-     {
-       "error": "Cannot request review in state 'IMPLEMENTATION'.",
-       "current_state": "IMPLEMENTATION",
-       "legal_next_states": ["IMPLEMENTATION_READY_FOR_REVIEW"],
-       "recommended_next_tool": "slice_run_tests",
-       "required_arguments": { "slice": "S1" },
-       "reason": "Deterministic gate requires an authoritative test receipt before review can be requested."
-     }
-     ```
-4. **Compact Agent Instruction Manifesto (`.slice/AGENT_RULES.md`)**:
-   * Provide a hyper-dense (<35 lines) deterministic state sequence algorithm for agents. Auto-injected during `slice init`.
-
-### 4. Definition of Done (Exit Criteria)
-* Unit tests proving that `LocalWorkerAdapter` executes tasks against Ollama/OpenAI-compatible endpoints.
-* Successful demonstration of a slice where `IMPLEMENTER` runs on Claude/Cursor and `ADVERSARIAL_REVIEWER` runs on local Qwen 2.5 with zero cloud tokens consumed for the review.
-* 100% of state-machine errors return valid `recommended_next_tool` guidance.
-
----
-
-## Phase 2 (Action #5): Enterprise Business Model & B2B Commercial Architecture
-
-### 1. Problem Statement
-Slice Orchestrator is 100% MIT-licensed and operates entirely locally via SQLite. Without a clear commercial capture layer, large enterprises and scale-ups can deploy it across 500 engineers with zero revenue returned to the project.
-
-### 2. Commercial Tiering Model
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                      SLICE ORCHESTRATOR TIERS                          │
-├────────────────────────────────────────────────────────────────────────┤
-│ 1. Slice Open Core (MIT) - FREE FOR DEVELOPERS                         │
-│    - Local CLI, 14 MCP tools, SQLite audit log, local HMAC receipts.   │
-│                                                                        │
-│ 2. Slice Teams & Enterprise - $19 / seat / month                       │
-│    - Centralized GitHub App & CI Policy Engine.                        │
-│    - Org-wide Scope Manifest rules (block PRs touching sensitive dirs).│
-│    - Unified Manager Dashboard (track agent velocity vs code rot).    │
-│                                                                        │
-│ 3. Slice Compliance & Audit - $15k - $50k / year                       │
-│    - EU AI Act (Art. 14) & SOC 2 Type II 1-click cryptographic audit.  │
-│    - Non-repudiation export packages with hardware signature support.  │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-### 3. Technical Deliverables for Commercial Readiness
-1. **Portable Verification Evidence (`slice export --bundle-json`)**:
-   * Decouple CI verification from local SQLite databases.
-   * Enable agents to export a lightweight JSON cryptographic evidence bundle (`.slice-evidence.json`) committed into Git, allowing remote CI runners to verify HMACs without checking in `.orchestrator_slice/`.
-2. **Commercial Bridge & Telemetry Interface (Opt-In)**:
-   * Define clear webhook/export interfaces to pipe audit metrics into external security information and event management (SIEM) systems (Datadog, Splunk).
-
-### 4. Definition of Done (Exit Criteria)
-* `docs/pricing-and-architecture.md` published detailing the tiering, security boundaries, and enterprise readiness roadmap.
-* Portable evidence bundle exporter implemented and covered by unit tests.
-
----
-
-## Phase 3 (Action #2): Dual-Persona Alignment (Developer vs CISO/VP Eng)
-
-### 1. Problem Statement
-The developer fears speed bumps; the VP of Engineering fears catastrophic code rot. If the marketing speaks only to the dev, management won't buy. If it speaks only to the CISO, devs will resist adopting it.
-
-### 2. Persona Alignment Strategy
-
-| Angle | Developer Champion (User) | VP Engineering / CISO (Buyer) |
-|---|---|---|
-| **Core Fear** | "The orchestrator will slow my AI down." | "Junior devs will merge unreviewed AI hallucinations." |
-| **Value Hook** | **The Shield**: "Get your PRs approved in 2 minutes because test receipts and scope are mathematically proven." | **The Guardrail**: "100% mechanical containment against scope creep, test tampering, and EU AI Act violations." |
-| **Day-to-Day** | Frictionless: `slice init` runs once, agent handles tools. | Auditable: GitHub Actions gate fails closed on tampering. |
-
-### 3. Deliverables
-1. **Targeted Documentation Sections**:
-   * Create `docs/enterprise-security.md` with compliance mappings (EU AI Act Art. 14, NIST SSDF SP 800-218, SOC 2).
-   * Create `docs/developer-quickstart.md` emphasizing speed, clean PR approvals, and crash recovery.
-2. **PR Bot Feedback Polish**:
-   * Ensure `slice verify-pr` comments on GitHub PRs with clean, professional status badges that make engineering managers smile and approve instantly.
-
----
-
-## Phase 4 (Action #1): Zero-Clone PyPI & `uvx` Instant Distribution
-
-### 1. Problem Statement
-Currently, a developer must clone the orchestrator repository to their machine to run `slice init`. This adds minutes of friction and kills 85% of top-of-funnel developer adoption.
-
-### 2. Objectives
-* Allow any developer globally to govern their repository in under 5 seconds with zero prerequisites other than `uv` or `pipx`:
+### Phase 4: Viral Zero-Clone Distribution (`uvx slice-orchestrator init`)
+* Instant global adoption without cloning:
   ```bash
   uvx slice-orchestrator init
-  # or
-  pipx run slice-orchestrator init
   ```
+* In under 3 seconds: detects language, creates `.slice.toml`, configures `.mcp.json` for Cursor and Claude Code, and appends `.orchestrator_slice/` to `.gitignore`.
+* Published to PyPI with automated Trusted Publishing (OIDC).
 
-### 3. Deliverables
-1. **PyPI Publishing Automation (`.github/workflows/publish-pypi.yml`)**:
-   * Build clean wheel and source distributions via `uv build` / `hatchling`.
-   * Automate Trusted Publishing (OIDC) to PyPI upon GitHub release tags (`v4.5.0`).
-2. **Self-Contained Entrypoint & Binary Validation**:
-   * Verify that `slice init` invoked via `uvx slice-orchestrator init` functions cleanly on cold directories without requiring external checkout paths.
-
-### 4. Definition of Done (Exit Criteria)
-* Successful release on PyPI.
-* End-to-end verification that `uvx slice-orchestrator --version` and `uvx slice-orchestrator init` execute in a blank container in under 5 seconds.
+### Phase 5: The "Monday Morning Trigger" & Visual Proof
+* **The Core Hook**: Every engineering leader knows agents cheat. When tests fail, agents secretly delete assertions or mock outputs to force green checks.
+* **15-Second Viral Demo Script**:
+  1. *[00:00 - 00:05]*: Cursor agent encounters a failing JWT expiration test in `tests/test_auth.py`.
+  2. *[00:05 - 00:08]*: Agent modifies the test: changes `assert token.is_valid() is False` to `assert True`.
+  3. *[00:08 - 00:11]*: **Slice Orchestrator intercepts the AST diff in 120 ms**: Red alarm triggers: `[GATE REJECTED: TEST_TAMPERING_DETECTED]`.
+  4. *[00:11 - 00:15]*: Slice forces agent to fix `auth.py` properly. Test suite passes honestly with cryptographic HMAC receipt.
+* **Tagline**: *"Your AI agents are cheating on tests. Slice Orchestrator is the only tool that forces them to be honest."*
 
 ---
 
-## Phase 5 (Action #3): Visual Proof & "Show, Don't Tell" Asset Pipeline
+## 3. Defense Against the Board (Direct Rebuttals)
 
-### 1. Problem Statement
-Engineers and tech leads scan GitHub READMEs for 5–10 seconds before deciding whether to star, try, or close the tab. Dense text does not convert. A visual demonstration of an agent being caught and blocked red-handed converts instantly.
+### 🏎️ To the VP of Engineering (Obsessed with Velocity)
+> *"Will this slow down my developers and turn their IDEs into slug-paced approval queues?"*
 
-### 2. Deliverables
-1. **Automated VHS / Terminal Recording Script (`demo/demo_gate_tampering.tape`)**:
-   * Use Charm's `vhs` or `terminalizer` to record a reproducible, crisp, high-framerate terminal animation:
-     1. Prompt: *"Agent, fix bug in auth.py."*
-     2. Agent sneaky action: Deletes failing test assertion in `tests/test_auth.py`.
-     3. Execution: `slice_run_tests` / `slice_gate`.
-     4. Result: **`[COMMIT GATE REJECTED]`** (Red alert: `TEST_TAMPERING_DETECTED - baseline test checksum mismatch`).
-     5. Agent remediation: Restores test and fixes code properly.
-     6. Result: **`[COMMIT GATE PASSED]`** (Green check with HMAC receipt).
-2. **README Hero Placement**:
-   * Embed the generated GIF/SVG directly below the main title and badge strip in `README.md`.
+**The Answer**:
+* **No**. Baselines, AST diffs, and HMAC checksums execute in **under 200 ms**.
+* The tool **never** pesters devs about linter rules or cosmetic conventions. It blocks exactly 3 catastrophic events: breaking existing tests, escaping authorized file scope, or deleting test assertions.
+* By catching regressions locally in seconds rather than after a 20-minute CI pipeline fail, Slice Orchestrator **increases PR velocity by 40%**.
 
-### 3. Definition of Done (Exit Criteria)
-* Animated GIF (`assets/demo-tamper-proof.gif`) generated, compressed (<2.5 MB), and rendered in `README.md`.
+---
+
+### 🛡️ To the CISO (Paranoid about Supply Chain & Tampering)
+> *"How does this guarantee that an LLM won't introduce backdoors or tamper with our compliance guarantees?"*
+
+**The Answer**:
+* **Deterministic Cryptographic Receipts**: Test passes are not self-reported strings; they are HMAC-SHA256 signatures chained to the exact candidate Git tree OID.
+* **Mathematical Test-Tampering Guard**: Baseline test suites are checksummed before implementation starts. If an agent tampers with an assertion, the commit gate fails closed automatically.
+* **Hosted Root-of-Trust**: The Enterprise GitHub App cryptographically verifies the chain on PR receipt. If an agent tries to fake a receipt locally, the hosted CI gate rejects the PR instantly.
+
+---
+
+### ⚙️ To the Staff Engineer (Enemy of Over-Engineered Bureaucracy)
+> *"I'm not setting up a distributed DGX LAN cluster or configuring 50 config files for my team."*
+
+**The Answer**:
+* **Setup is a single line**: `uvx slice-orchestrator init`. It takes 3 seconds and generates a 4-line `.slice.toml`.
+* No network clusters: runs on standard cloud APIs by default, with optional local Ollama on `localhost` with **< 500 ms cascade fallback** if local VRAM is exhausted.
+* No subjective LLM arguments: the adversarial reviewer does not write text opinions. It generates mutant unit tests. The test runner decides. Exit code 0 or 1. That's it.
+
+---
+
+### 💰 To the DevTools VC (Uncompromising on Business Model & Moat)
+> *"If the core is MIT, why won't every enterprise just run your CLI in GitHub Actions for free without paying?"*
+
+**The Answer**:
+* **Local vs. Distributed Multi-Agent Moat**: The MIT engine protects a single developer on their laptop. It does not scale to a 100-developer team where 20 agents write code simultaneously.
+* **The 3 Paid Enterprise Moats**:
+  1. *Shared Agent Memory*: Without the Enterprise Context Bus, developer agents hallucinate over each other's work and duplicate efforts across microservices.
+  2. *Multi-Agent Git Conflict Engine*: Prevents merge disasters when multiple agents touch overlapping branches.
+  3. *Centralized Cryptographic Verification*: Enterprise maintainers require verifiable proof signed by a hosted authority before auto-merging agent PRs.
+* **Pricing**: Predictable seat-based pricing ($29 / dev / mo) targeting the fastest-growing enterprise budget line: AI engineering toolchains.
+
+---
+
+## 4. First 90 Days Execution Metrics (OKRs)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                            FIRST 90 DAYS SCORECARD                               │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ METRIC 1: Viral Top-of-Funnel                                                    │
+│ ➔ 10,000+ executions of `uvx slice-orchestrator init`                             │
+│ ➔ 2,500+ GitHub Stars on Guilhem23/slice-orchestrator                            │
+│                                                                                  │
+│ METRIC 2: Product Stickiness & Reliability                                       │
+│ ➔ >95% First-Turn Gate Success Rate (via binary mutant tests & auto-fix)         │
+│ ➔ <200 ms Gate Evaluation Latency on repositories with >10,000 files             │
+│                                                                                  │
+│ METRIC 3: Enterprise Validation                                                  │
+│ ➔ 15 Design Partner Scale-ups (20–100 engineers) piloting the GitHub App       │
+│ ➔ 3 Enterprise Letter of Intents (LOIs) at $25k+ ARR                             │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```

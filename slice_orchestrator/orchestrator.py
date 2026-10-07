@@ -1104,10 +1104,16 @@ class SliceRunController:
         return self.get_slice_state(slice_name)  # type: ignore
 
     def _authorized_test_def(self) -> dict[str, Any]:
+        import os
         import sys
+        py_bin = sys.executable
+        repo_venv = self.repo_dir / ".venv" / "bin" / "python"
+        if repo_venv.is_file():
+            py_bin = str(repo_venv)
+        extra_args = [a for a in os.environ.get("SLICE_TEST_ARGS", "").split() if a]
         return {
             "test_id": "test_unit",
-            "command": [sys.executable, "-m", "pytest", "-q"],
+            "command": [py_bin, "-m", "pytest", "-q"] + extra_args,
             "expected_exit_code": 0,
         }
 

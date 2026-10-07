@@ -1,0 +1,46 @@
+name: 'Slice Orchestrator Gatekeeper'
+description: 'Enforce deterministic scope, cryptographic test receipts, and review compliance on AI-authored PRs'
+author: 'Guilhem Imberton <guilhem.imberton@gmail.com>'
+
+inputs:
+  base-ref:
+    description: 'Base branch or commit for diff verification (defaults to origin/main or HEAD~1)'
+    required: false
+    default: ''
+  slice-name:
+    description: 'Target slice identifier (auto-detected if omitted)'
+    required: false
+    default: ''
+  if-no-slice:
+    description: 'Behavior when no slice run is found in .orchestrator_slice/ (skip, fail, or warn)'
+    required: false
+    default: 'skip'
+
+outputs:
+  passed:
+    description: 'true if all gate checks passed, false otherwise'
+    value: ${{ steps.run-gate.outputs.passed }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Run Slice CI Verification
+      id: run-gate
+      shell: bash
+      run: |
+        ARGS="--if-no-slice ${{ inputs.if-no-slice }}"
+        if [ -n "${{ inputs.base-ref }}" ]; then
+          ARGS="$ARGS --base ${{ inputs.base-ref }}"
+        fi
+        if [ -n "${{ inputs.slice-name }}" ]; then
+          ARGS="$ARGS --slice ${{ inputs.slice-name }}"
+        fi
+        uv run python3 -m slice_orchestrator.cli verify-pr $ARGS

@@ -1,0 +1,21 @@
+name: "Agent PR Governance Gate"
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  slice-gatekeeper:
+    name: "Enforce AI Agent Governance"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify Slice Governance
+        uses: ./
+        with:
+          base-ref: "origin/${{ github.base_ref }}"
+          if-no-slice: "skip"

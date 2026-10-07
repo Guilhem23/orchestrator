@@ -33,15 +33,16 @@ from slice_orchestrator.observability.logging import OperationalLogger
 from slice_orchestrator.observability.metrics import MetricsEngine
 from slice_orchestrator.observability.timeline import build_timeline
 from slice_orchestrator.tools import slice_remediate
+from slice_orchestrator.ci_gate import verify_pr_governance
 
 
 def get_controller(
-    repo_dir: Path | None = None,
-    control_home: Path | None = None,
+    repo_dir: Path | str | None = None,
+    control_home: Path | str | None = None,
     adapter_id: str = "dummy",
 ) -> SliceRunController:
-    cwd = (repo_dir or Path.cwd()).resolve()
-    home = (control_home or cwd / ".orchestrator_slice").resolve()
+    cwd = (Path(repo_dir) if repo_dir else Path.cwd()).resolve()
+    home = (Path(control_home) if control_home else cwd / ".orchestrator_slice").resolve()
     return SliceRunController(repo_dir=cwd, control_home=home, configured_adapter_id=adapter_id)
 
 
@@ -104,6 +105,7 @@ def cmd_remediate(args: argparse.Namespace) -> int:
         return 1
     res = slice_remediate(
         slice=args.slice,
+        work_item_id=getattr(args, "work_item_id", None),
         repo_dir=ctrl.repo_dir,
         control_home=ctrl.store.control_home,
     )
@@ -117,7 +119,12 @@ def cmd_remediate(args: argparse.Namespace) -> int:
             req = f.get("required_remediation", "")
             print(f" - [{fid}] {desc}" + (f" -> {req}" if req else ""))
     print()
-    print(f"Next action: {res['next_action']}")
+    if getattr(args, "prompt", False):
+        print("=== Copy-Paste Prompt for Agent ===")
+        print(res.get("prompt", ""))
+        print("===================================")
+    else:
+        print(f"Next action: {res['next_action']}")
     return 0
 
 
@@ -165,10 +172,40 @@ def cmd_pause(args: argparse.Namespace) -> int:
 
 
 def cmd_resume(args: argparse.Namespace) -> int:
-    ctrl = get_controller(adapter_id=args.adapter)
+    ctrl = get_controller(
+        repo_dir=getattr(args, "repo_dir", None),
+        control_home=getattr(args, "control_home", None),
+        adapter_id=getattr(args, "adapter", "dummy"),
+    )
+    current_state = ctrl.get_slice_state(args.slice)
+    if current_state and current_state.state == "REMEDIATION":
+        print(f"Slice {args.slice} is currently in REMEDIATION. Initiating remediation workflow...")
+        return cmd_remediate(args)
+
     state = ctrl.resume_slice(args.slice)
     print(f"Slice {args.slice} execution mode updated: {state.execution_mode}")
-    if args.run:
+    if getattr(args, "with_packet", False):
+        try:
+            packets = ctrl.store.list_records_by_type("REMEDIATION_PACKET")
+            slice_packets = [p for p in packets if p.get("slice") == args.slice]
+            if slice_packets:
+                packet = slice_packets[-1]
+                cycle = packet.get("remediation_cycle", 1)
+                run_id = packet.get("run_id", "N/A")
+                findings = packet.get("findings", [])
+                failed_tests = packet.get("failed_tests", [])
+                print("\n=== Remediation Context Packet ===")
+                print(f"Cycle: {cycle} | Run ID: {run_id}")
+                if findings:
+                    print(f"Findings ({len(findings)}):")
+                    for f in findings:
+                        print(f" - [{f.get('finding_id', 'F')}] {f.get('description', '')}")
+                if failed_tests:
+                    print(f"Failed Tests: {', '.join(failed_tests)}")
+                print("==================================")
+        except Exception:
+            pass
+    if getattr(args, "run", False):
         return cmd_run(args)
     return 0
 
@@ -356,6 +393,93 @@ def cmd_metrics(args: argparse.Namespace) -> int:
     return 0 if report.get("metrics") else 1
 
 
+def cmd_verify_pr(args: argparse.Namespace) -> int:
+    repo = Path(args.repo_dir).resolve() if getattr(args, "repo_dir", None) else Path.cwd().resolve()
+    home = Path(args.control_home).resolve() if getattr(args, "control_home", None) else (repo / ".orchestrator_slice").resolve()
+    res = verify_pr_governance(
+        repo_dir=repo,
+        control_home=home,
+        base_ref=getattr(args, "base", None),
+        slice_name=getattr(args, "slice", None),
+        if_no_slice=getattr(args, "if_no_slice", "fail"),
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(res["summary_markdown"])
+    return 0 if res["passed"] else 1
+
+
+def cmd_graph(args: argparse.Namespace) -> int:
+    ctrl = get_controller(
+        repo_dir=getattr(args, "repo_dir", None),
+        control_home=getattr(args, "control_home", None),
+    )
+    slices: set[str] = set()
+    runs_dir = ctrl.store.control_home / "runs"
+    if runs_dir.is_dir():
+        for d in runs_dir.iterdir():
+            if d.is_dir():
+                slices.add(d.name)
+    try:
+        events = ctrl.store.verify_store_integrity()
+        for ev in events:
+            if "slice" in ev:
+                slices.add(ev["slice"])
+    except Exception:
+        pass
+
+    if not slices:
+        print("No slices found in repository.")
+        return 0
+
+    nodes = []
+    edges = []
+    for s_name in sorted(slices):
+        st = ctrl.get_slice_state(s_name)
+        status_str = st.state if st else "UNKNOWN"
+        deps = getattr(st, "slice_dependencies", []) if st else []
+        nodes.append({
+            "slice": s_name,
+            "status": status_str,
+            "dependencies": deps,
+        })
+        for dep in deps:
+            edges.append({"from": dep, "to": s_name})
+
+    if getattr(args, "json", False):
+        print(json.dumps({"nodes": nodes, "edges": edges}, indent=2))
+        return 0
+
+    print("=== Multi-Slice Dependency DAG ===")
+    for node in nodes:
+        dep_str = f" (depends on: {', '.join(node['dependencies'])})" if node["dependencies"] else ""
+        print(f"[{node['status']:14s}] {node['slice']}{dep_str}")
+    return 0
+
+
+def cmd_init(args: argparse.Namespace) -> int:
+    repo = Path(args.repo_dir).resolve() if getattr(args, "repo_dir", None) else Path.cwd().resolve()
+    from slice_orchestrator.initializer import initialize_project
+    res = initialize_project(
+        repo_dir=repo,
+        orchestrator_project_path=getattr(args, "orchestrator_path", None),
+        force=getattr(args, "force", False),
+    )
+    print("🎉 Slice Orchestrator initialized successfully!")
+    print(f" - Detected Ecosystem: {res['ecosystem'].upper()}")
+    if res['slice_toml_created']:
+        print(" - Created .slice.toml with optimized test command")
+    else:
+        print(" - .slice.toml already present (preserved)")
+    if res['mcp_json_updated']:
+        print(" - Configured .mcp.json (Claude Code / Cursor MCP integration)")
+    if res['gitignore_updated']:
+        print(" - Added .orchestrator_slice/ to .gitignore")
+    print("\nNext step: Run 'slice plan S1' or start prompting your AI agent in Cursor / Claude Code!")
+    return 0
+
+
 def main(sys_args: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="slice",
@@ -384,6 +508,8 @@ def main(sys_args: list[str] | None = None) -> int:
     # remediate
     p_remediate = subparsers.add_parser("remediate", help="Transition from REMEDIATION to IMPLEMENTATION with active findings")
     p_remediate.add_argument("slice", help="Slice identifier")
+    p_remediate.add_argument("--prompt", action="store_true", help="Print copy-paste Markdown remediation prompt")
+    p_remediate.add_argument("--work-item-id", default=None, help="Target specific work item")
 
     # inspect
     p_inspect = subparsers.add_parser("inspect", help="Inspect event stream for a slice")
@@ -405,6 +531,9 @@ def main(sys_args: list[str] | None = None) -> int:
     p_resume = subparsers.add_parser("resume", help="Resume a paused slice run")
     p_resume.add_argument("slice", help="Slice identifier")
     p_resume.add_argument("--run", action="store_true", help="Drive to completion after resuming")
+    p_resume.add_argument("--with-packet", action="store_true", help="Display remediation packet context on resume")
+    p_resume.add_argument("--prompt", action="store_true", help="If slice is in REMEDIATION, output prompt")
+    p_resume.add_argument("--work-item-id", default=None, help="If slice is in REMEDIATION, target specific work item")
 
     # stop
     p_stop = subparsers.add_parser("stop", help="Stop a slice run")
@@ -467,6 +596,22 @@ def main(sys_args: list[str] | None = None) -> int:
     p_metrics = subparsers.add_parser("metrics", help="Compute authoritative metrics with provenance")
     p_metrics.add_argument("slice", help="Slice identifier")
 
+    # verify-pr
+    p_vpr = subparsers.add_parser("verify-pr", help="Authoritative CI / PR gate verification")
+    p_vpr.add_argument("--slice", default=None, help="Specific slice identifier to verify (default: latest active)")
+    p_vpr.add_argument("--base", default=None, help="Base commit/branch for PR diff (e.g. origin/main, HEAD~1)")
+    p_vpr.add_argument("--if-no-slice", choices=["fail", "skip", "warn"], default="fail", help="Behavior when no slice run is found (fail, skip, or warn)")
+    p_vpr.add_argument("--json", action="store_true", help="Machine-readable JSON output for CI")
+
+    # graph
+    p_graph = subparsers.add_parser("graph", help="Display multi-slice dependency DAG and progression")
+    p_graph.add_argument("--json", action="store_true", help="Machine-readable JSON output")
+
+    # init
+    p_init = subparsers.add_parser("init", help="Zero-friction 60-second onboarding for any project")
+    p_init.add_argument("--force", action="store_true", help="Overwrite existing configuration")
+    p_init.add_argument("--orchestrator-path", default=None, help="Absolute path to Slice Orchestrator installation")
+
     parsed = parser.parse_args(sys_args)
 
     cmd_map = {
@@ -488,6 +633,9 @@ def main(sys_args: list[str] | None = None) -> int:
         "export": cmd_export,
         "compare": cmd_compare,
         "metrics": cmd_metrics,
+        "verify-pr": cmd_verify_pr,
+        "graph": cmd_graph,
+        "init": cmd_init,
     }
 
     try:

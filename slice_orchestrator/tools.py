@@ -471,6 +471,7 @@ def slice_plan(
             "verification_strategy": plan.get("verification_strategy", "independent_control_test"),
             "risks": plan.get("risks", []),
             "open_questions": plan.get("open_questions", []),
+            "slice_dependencies": plan.get("slice_dependencies", []),
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -501,11 +502,13 @@ def slice_plan(
                 "record_type": "PLAN",
                 "record_id": plan_id,
                 "record_digest": plan_digest,
+                "slice_dependencies": plan.get("slice_dependencies", []),
             },
             "plan_id": plan_id,
             "plan_digest": plan_digest,
             "plan_revision": new_rev,
             "profile": prof,
+            "slice_dependencies": plan.get("slice_dependencies", []),
         }
 
         controller.store.append_event(

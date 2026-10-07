@@ -1,8 +1,8 @@
 # Slice Orchestrator
 
 <p align="center">
-  <strong>Deterministic Zero-Trust Governance for AI Coding Agents</strong><br>
-  <em>Never let an AI agent hallucinate test passes, modify unapproved files, or tamper with your test suite again.</em>
+  <strong>Deterministic Full-Lifecycle SDLC Governance for AI Coding Agents</strong><br>
+  <em>From Specification and Multi-Slice DAG to Tamper-Proof Cryptographic PR Gating.</em>
 </p>
 
 <p align="center">
@@ -27,23 +27,27 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 ---
 
-## ⚡ The Solution: Deterministic Control Plane
+## ⚡ The Solution: Deterministic Full-Lifecycle SDLC
 
-**Slice Orchestrator** is an out-of-process, deterministic control plane that sits between your AI assistant and your Git repository. It replaces wishful prompts with **mechanically enforced quality gates**:
+**Slice Orchestrator** is an out-of-process, deterministic control plane that sits between your AI assistant and your Git repository. It replaces wishful prompts with **mechanically enforced quality gates across the entire software development lifecycle**:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        GOVERNED SLICE LIFECYCLE                        │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   PLANNING ──► ARCHITECTURE_REVIEW ──► IMPLEMENTATION                  │
-│                                              │                         │
-│                                              ▼                         │
-│   COMPLETE ◄── COMMIT_GATE ◄── COMMIT_READY ◄── ADVERSARIAL_REVIEW     │
-│                    ▲                                                   │
-│                    └──── HMAC-signed test receipt bound to tree OID    │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                        THE GOVERNED AGENTIC SDLC                               │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│  1. SPECIFICATION & SCOPE     ──► 2. ARCHITECTURE REVIEW ──► 3. IMPLEMENTATION │
+│     (Goal, non-goals, allow_paths)  (Independent review gate)   (Strict sandbox)│
+│                                                                       │        │
+│                                                                       ▼        │
+│  6. MULTI-SLICE DAG & CI GATE ◄── 5. ADVERSARIAL REVIEW  ◄── 4. VERIFICATION   │
+│     (slice graph / action.yml)      (Anti-hallucination)        (HMAC receipt) │
+│            │                                                                   │
+│            ▼                                                                   │
+│  7. ATOMIC MERGE & RELEASE                                                     │
+│     (COMPLETE state / reproducible provenance)                                 │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Key Guarantees
@@ -52,6 +56,9 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 * 📜 **Authoritative HMAC Test Receipts**: Test execution runs strictly through the control plane (`slice_run_tests`). Receipts are cryptographically bound to the exact candidate Git tree OID and workspace revision digest. Self-reported agent claims are treated as inert text.
 * 🛡️ **Test-Tampering Guards**: Modifying or deleting existing baseline test files without plan re-approval triggers an immediate gate failure.
 * 🕵️ **Independent Adversarial Review**: Work must be reviewed by an independent reviewer role before commit readiness. Self-approval by the implementer is rejected.
+* 🔄 **Automated Remediation Loop**: Review blockers automatically generate structured remediation packets and copy-paste prompts (`slice remediate --prompt`).
+* 🕸️ **Multi-Slice Dependency DAG**: Coordinate complex epics where Slice S2 depends on Slice S1; downstream slices are blocked from commit until prerequisites reach `COMPLETE`.
+* 🤖 **CI & Pull Request Gatekeeper**: Includes a native GitHub Action (`action.yml`) and CLI command (`slice verify-pr`) to enforce governance before merge.
 * 💾 **Crash-Proof Event Sourcing**: Every state transition is recorded in an append-only, HMAC-chained SQLite log. If your IDE restarts, the slice resumes instantly with zero lost context.
 * 🔌 **Host-Agnostic Model Context Protocol (MCP)**: Exposes 14 standardized tools over stdio. Works identically with Cursor Chat and Claude Code.
 
@@ -65,6 +72,9 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 | **Test Verification** | Agent claims *"Tests pass"* in markdown | **HMAC-Signed Receipts**: Verified execution via control-plane runner |
 | **Test Integrity** | Agent can weaken or delete failing tests | **Tamper Detection**: Baseline tests are checksummed and protected |
 | **Review Process** | Agent approves its own work | **Adversarial Separation**: Implementer cannot self-approve |
+| **Bug Fixing** | Ad-hoc iterative prompt loops | **Structured Remediation**: Tracked cycles with context packets |
+| **Complex Epics** | Fragile mega-prompts that hallucinate | **Multi-Slice DAG**: Explicit dependency tracking (`slice graph`) |
+| **CI / PR Enforcement**| Manual code review fatigue | **Zero-Trust CI Gate**: Automated PR verification (`action.yml`) |
 | **Crash Recovery** | Session lost on IDE quit or reload | **Durable SQLite State**: Resumes from exact state and sequence |
 | **Audit Trail** | Ephemeral, lossy chat logs | **Immutable Event Stream**: Cryptographically chained audit trail |
 
@@ -72,21 +82,37 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 ## 🚀 One-Time Setup: Govern ANY Project in 60 Seconds
 
-You do **not** need to install Slice Orchestrator as a dependency in your application, nor do you need to rewrite your project.
+You do **not** need to rewrite your application or add vendor locks. Slice Orchestrator lives out-of-process.
 
-### Step 1: Clone Slice Orchestrator (Once on your machine)
+### Option A: The 10-Second Instant Setup (`slice init`)
+
+In your target project's root directory:
+```bash
+uv run --project ~/slice-orchestrator slice init
+```
+This automatically:
+1. Detects your language ecosystem (Python, TypeScript/Node, Rust, Go).
+2. Generates an optimized `.slice.toml` polyglot config.
+3. Generates `.mcp.json` for immediate Cursor & Claude Code discovery.
+4. Appends `.orchestrator_slice/` to `.gitignore`.
+
+---
+
+### Option B: Manual Setup
+
+#### Step 1: Clone Slice Orchestrator (Once on your machine)
 
 ```bash
-git clone https://github.com/Guilhem23/orchestrator.git ~/slice-orchestrator
+git clone https://github.com/Guilhem23/slice-orchestrator.git ~/slice-orchestrator
 cd ~/slice-orchestrator
 uv sync --extra test
 uv run slice doctor
 ```
 *(Confirms `19/19 passed`.)*
 
-### Step 2: Enable Governance in Your Target Project
+#### Step 2: Enable Governance in Your Target Project
 
-In the root of **any** existing project (Python, TypeScript, Go, Rust, etc.) where you want AI governance, add a project-scoped `.mcp.json`:
+In the root of your existing project, add `.mcp.json`:
 
 ```json
 {
@@ -110,19 +136,18 @@ In the root of **any** existing project (Python, TypeScript, Go, Rust, etc.) whe
 }
 ```
 
-### Step 3: Add Runtime State to `.gitignore`
+#### Step 3: Add Runtime State to `.gitignore`
 
-In your target project's `.gitignore`, add:
+In your target project's `.gitignore`:
 ```gitignore
 .orchestrator_slice/
 ```
-*(This is where the target project's SQLite state store, local HMAC keys, and locks are kept.)*
 
-### Step 4: Prompt Your Agent!
+#### Step 4: Prompt Your Agent!
 
-Open **Cursor** or **Claude Code** in your target project. Your assistant now has access to the 14 `slice_*` tools! Simply prompt:
+Open **Cursor** or **Claude Code** in your target project:
 
-> *"Use Slice Orchestrator to plan and implement slice S1: Add JWT authentication. Strictly follow the governed lifecycle from planning to commit gate."*
+> *"Use Slice Orchestrator to plan and implement slice S1: Add user authentication. Strictly follow the governed lifecycle from planning to commit gate."*
 
 👉 *For an automated copy-paste setup prompt, see [docs/integration-prompt.md](docs/integration-prompt.md).*
 
@@ -151,37 +176,74 @@ Slice Orchestrator exposes a disciplined toolkit covering every phase of enginee
 
 ---
 
-## 💻 CLI Reference
+## 💻 CLI Command Reference
 
-When you want to inspect or manage slices directly from your terminal:
+Manage slices, inspect event streams, and visualize dependencies directly from your terminal:
 
 ```bash
-# Sanity check your environment and cryptographic trust anchors
-slice doctor
+# Setup & Health
+slice init                        # 60-second zero-friction onboarding
+slice doctor                      # Check trust anchors and toolchain health
 
-# Plan and inspect slices
-slice plan S1 --repo-dir /path/to/repo
-slice status S1
-slice explain S1
+# Planning & Execution
+slice plan S1                     # Initialize and validate plan
+slice status S1                   # Show state machine status
+slice run S1                      # Autonomously drive slice to completion
+slice resume S1 --with-packet     # Resume with full remediation context
 
-# Drive slice autonomously
-slice run S1
+# Remediation & Quality
+slice remediate S1 --prompt       # Export copy-paste Markdown remediation prompt
 
-# Inspect governance, audit events, and metrics
-slice inspect S1
-slice diagnostics S1
-slice timeline S1
-slice export S1
-slice metrics S1
+# Multi-Slice DAG
+slice graph                       # Display ASCII dependency tree of all slices
+slice graph --json                # Machine-readable DAG nodes & edges
+
+# CI & Pull Request Verification
+slice verify-pr                   # Authoritative CI gatekeeper (diff, scope, HMAC)
+
+# Audit, Observability & Metrics
+slice explain S1                  # Deep diagnostic explain dump
+slice timeline S1                 # Ordered event timeline with durations
+slice inspect S1                  # Raw JSON event stream
+slice export S1                   # Export reproducible run package
+slice metrics S1                  # Authoritative provenance metrics
 ```
 
 Run `slice <command> --help` for full options.
 
 ---
 
-## 🏢 Enterprise & Compliance Value
+## 🛡️ GitHub Action CI Gatekeeper
 
-Slice Orchestrator was designed from the ground up to address emerging software supply chain and AI compliance standards:
+Enforce zero-trust governance on AI-generated pull requests in CI by adding `.github/workflows/slice-gate.yml`:
+
+```yaml
+name: "Agent PR Governance Gate"
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  slice-gatekeeper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify Slice Governance
+        uses: Guilhem23/slice-orchestrator@main
+        with:
+          base-ref: "origin/${{ github.base_ref }}"
+```
+
+---
+
+## 🏢 Enterprise & Compliance Standards
+
+Slice Orchestrator addresses emerging software supply chain and AI compliance frameworks out of the box:
 
 * **EU AI Act & GPAI (Article 14 - Human Oversight & Traceability)**: Full auditability of all agent decisions, tools invoked, and verified diffs.
 * **NIST Secure Software Development Framework (SSDF / SP 800-218)**: Prevents test tampering and verifies that delivered software strictly matches authorized change sets.
@@ -198,13 +260,14 @@ tests/                  262 tests (security, MCP protocol, cross-host isolation,
 docs/                   Architecture, host integration guides, and observability specs
 docs/archive/           Curated historical validation & remediation audit reports
 test-project/           Adversarial test fixtures for automated security regression suites
+action.yml              Reusable GitHub Action composite gatekeeper
 ```
 
 ---
 
 ## 🧪 Running the Test Suite
 
-Slice Orchestrator is backed by a comprehensive regression test suite (262 tests):
+Slice Orchestrator is backed by an automated regression test suite (262 tests):
 
 ```bash
 uv sync --extra test
@@ -213,17 +276,6 @@ uv run python3 -m pytest tests/ -q
 ```text
 ======================== 262 passed in 114.58s ========================
 ```
-
----
-
-## 🗺️ Roadmap & Implemented Features
-
-See [docs/roadmap.md](docs/roadmap.md) and [docs/proposed-improvements.md](docs/proposed-improvements.md) for the active development plan:
-* [x] **v4.1**: Universal Polyglot Engine (`.slice.toml` for TypeScript/Node, Rust, Go, Python).
-* [x] **v4.2**: One-Click Automated Remediation Dispatch (`slice remediate --prompt`, `slice resume --with-packet`).
-* [x] **v4.3**: GitHub Action Zero-Trust PR Gatekeeper (`action.yml`, `slice verify-pr`).
-* [x] **v4.4**: Enterprise Multi-Slice DAG Coordination (`slice_dependencies`, `slice graph`).
-* [x] **v4.5**: Zero-Friction 60-Second Onboarding (`slice init`).
 
 ---
 

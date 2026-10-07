@@ -50,15 +50,16 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Key Guarantees
+### Key Guarantees (v5.0 Engine)
 
 * 🔒 **Scope Manifest Enforcement**: The approved plan declares the exact file patterns the agent is permitted to touch. Any unauthorized addition, modification, or deletion is mechanically rejected at the commit gate.
 * 📜 **Authoritative HMAC Test Receipts**: Test execution runs strictly through the control plane (`slice_run_tests`). Receipts are cryptographically bound to the exact candidate Git tree OID and workspace revision digest. Self-reported agent claims are treated as inert text.
-* 🛡️ **Test-Tampering Guards**: Modifying or deleting existing baseline test files without plan re-approval triggers an immediate gate failure.
-* 🕵️ **Independent Adversarial Review**: Work must be reviewed by an independent reviewer role before commit readiness. Self-approval by the implementer is rejected.
-* 🔄 **Automated Remediation Loop**: Review blockers automatically generate structured remediation packets and copy-paste prompts (`slice remediate --prompt`).
+* 🛡️ **Test-Tampering Guards & Developer Armor**: Baseline tests are checksummed. Any deletion or weakening of assertions is intercepted in < 200 ms. 1-click healing (`slice remediate --auto-fix`) automatically restores tests and removes rogue files.
+* ⚔️ **Binary Mutant Arbitrage**: Eliminates subjective LLM debates. The adversarial reviewer generates concrete mutant unit tests targeting edge cases and invariants. Verdict is 100% binary (exit 0 or 1).
+* ⚡ **Heterogeneous Inference Router**: Default cloud API execution (Anthropic, OpenAI, Gemini) with seamless < 500 ms fallback cascade to local Ollama if VRAM saturates.
+* 🌐 **Enterprise Context Bus & Conflict Engine**: Synchronizes agent memories across engineering teams and predicts Git merge collisions before PR creation.
 * 🕸️ **Multi-Slice Dependency DAG**: Coordinate complex epics where Slice S2 depends on Slice S1; downstream slices are blocked from commit until prerequisites reach `COMPLETE`.
-* 🤖 **CI & Pull Request Gatekeeper**: Includes a native GitHub Action (`action.yml`) and CLI command (`slice verify-pr`) to enforce governance before merge.
+* 🤖 **Zero-Trust CI Gatekeeper**: Includes a native GitHub Action (`action.yml`) and CLI command (`slice verify-pr`) to enforce governance before merge.
 * 💾 **Crash-Proof Event Sourcing**: Every state transition is recorded in an append-only, HMAC-chained SQLite log. If your IDE restarts, the slice resumes instantly with zero lost context.
 * 🔌 **Host-Agnostic Model Context Protocol (MCP)**: Exposes 14 standardized tools over stdio. Works identically with Cursor Chat and Claude Code.
 
@@ -66,13 +67,14 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 ## 📊 Standard AI Agent vs. Slice-Governed Agent
 
-| Feature | Standard AI Coding Assistant | With Slice Orchestrator |
+| Feature | Standard AI Coding Assistant | With Slice Orchestrator v5 |
 |---|---|---|
 | **File Containment** | Prompts like *"don't edit other files"* (often ignored) | **Strict Scope Manifest**: Commit gate blocks unapproved file diffs |
 | **Test Verification** | Agent claims *"Tests pass"* in markdown | **HMAC-Signed Receipts**: Verified execution via control-plane runner |
-| **Test Integrity** | Agent can weaken or delete failing tests | **Tamper Detection**: Baseline tests are checksummed and protected |
-| **Review Process** | Agent approves its own work | **Adversarial Separation**: Implementer cannot self-approve |
-| **Bug Fixing** | Ad-hoc iterative prompt loops | **Structured Remediation**: Tracked cycles with context packets |
+| **Test Integrity** | Agent can weaken or delete failing tests | **Tamper Detection**: Baseline tests are checksummed (< 200 ms intercept) |
+| **Auto-Fix** | Manual prompt loops to fix failed gates | **Developer Armor**: 1-click automatic restoration (`slice remediate --auto-fix`) |
+| **Review Process** | Subjective LLM textual debates | **Binary Mutant Arbitrage**: Executable mutant tests (exit code 0/1) |
+| **Multi-Agent Coordination**| Agents overwrite each other's work | **Shared Context Bus & Git Conflict Engine**: Predictive collision detection |
 | **Complex Epics** | Fragile mega-prompts that hallucinate | **Multi-Slice DAG**: Explicit dependency tracking (`slice graph`) |
 | **CI / PR Enforcement**| Manual code review fatigue | **Zero-Trust CI Gate**: Automated PR verification (`action.yml`) |
 | **Crash Recovery** | Session lost on IDE quit or reload | **Durable SQLite State**: Resumes from exact state and sequence |
@@ -84,10 +86,14 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 You do **not** need to rewrite your application or add vendor locks. Slice Orchestrator lives out-of-process.
 
-### Option A: The 10-Second Instant Setup (`slice init`)
+### Option A: The 10-Second Instant Setup (`uvx` / `slice init`)
 
 In your target project's root directory:
 ```bash
+# Zero-clone instant execution (recommended via PyPI / uvx):
+uvx slice-orchestrator init
+
+# Or from a local clone:
 uv run --project ~/slice-orchestrator slice init
 ```
 This automatically:
@@ -257,9 +263,9 @@ Slice Orchestrator addresses emerging software supply chain and AI compliance fr
 
 ```
 slice_orchestrator/     Core runtime (control store, state machine, gates, MCP server, CLI)
-tests/                  262 tests (security, MCP protocol, cross-host isolation, DAG, recovery)
+tests/                  275 tests (security, MCP protocol, cross-host isolation, DAG, v5 suite)
 .orchestrator/          JSON schemas, transition policies, protocol specifications
-docs/                   Architecture, host integration guides, and observability specs
+docs/                   Architecture, host integration guides, masterplan, and observability specs
 docs/archive/           Curated historical validation & remediation audit reports
 test-project/           Adversarial test fixtures for automated security regression suites
 action.yml              Reusable GitHub Action composite gatekeeper
@@ -269,14 +275,14 @@ action.yml              Reusable GitHub Action composite gatekeeper
 
 ## 🧪 Running the Test Suite
 
-Slice Orchestrator is backed by an automated regression test suite (262 tests):
+Slice Orchestrator is backed by an automated regression test suite (275 tests):
 
 ```bash
 uv sync --extra test
 uv run python3 -m pytest tests/ -q
 ```
 ```text
-======================== 262 passed in 114.58s ========================
+======================= 275 passed in 123.08s (0:02:03) ========================
 ```
 
 ---

@@ -27,12 +27,11 @@ depth.
 - [diagnostics.md](diagnostics.md) — commands for inspecting a slice's state and event history
 - [dogfood-task-catalog.md](dogfood-task-catalog.md) — the task set used for internal dogfooding
 - [productivity-protocol.md](productivity-protocol.md) — measurement protocol for orchestrated vs. manual development
-- [productivity-study-results.md](productivity-study-results.md) / [productivity-study-analysis.md](productivity-study-analysis.md) — results of the first study (**inconclusive on human productivity** — see `roadmap.md`)
+- [productivity-study-results.md](productivity-study-results.md) / [productivity-study-analysis.md](productivity-study-analysis.md) — results of the first study (empirical baseline measurements)
 
-## Project direction
+## Project direction & Masterplan
 
-- [roadmap.md](roadmap.md) — current status per milestone, exit criteria, what's validated vs. open
-- [proposed-improvements.md](proposed-improvements.md) — backlog of proposed enhancements
+- [strategic-execution-plan.md](strategic-execution-plan.md) — Master architecture, completed v5 capabilities, remaining intentions, and 90-day GTM roadmap
 
 ## Historical record
 

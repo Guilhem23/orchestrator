@@ -8,7 +8,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11+" />
   <img src="https://img.shields.io/badge/MCP-14%20Tools%20Ready-6851FF?style=flat" alt="Model Context Protocol" />
-  <img src="https://img.shields.io/badge/Tests-262%20Passed-brightgreen?style=flat" alt="262 Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-275%20Passed-brightgreen?style=flat" alt="275 Tests Passed" />
   <img src="https://img.shields.io/badge/Security-HMAC--SHA256%20Chained-success?style=flat" alt="Cryptographic Security" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="MIT License" />
 </p>
@@ -184,6 +184,7 @@ Manage slices, inspect event streams, and visualize dependencies directly from y
 # Setup & Health
 slice init                        # 60-second zero-friction onboarding
 slice doctor                      # Check trust anchors and toolchain health
+slice demo                        # 15-second viral Monday Morning Trigger demo (< 200 ms)
 
 # Planning & Execution
 slice plan S1                     # Initialize and validate plan
@@ -191,8 +192,9 @@ slice status S1                   # Show state machine status
 slice run S1                      # Autonomously drive slice to completion
 slice resume S1 --with-packet     # Resume with full remediation context
 
-# Remediation & Quality
+# Remediation & Quality (Developer Armor)
 slice remediate S1 --prompt       # Export copy-paste Markdown remediation prompt
+slice remediate S1 --auto-fix      # 1-Click automated healing (tamper & scope revert)
 
 # Multi-Slice DAG
 slice graph                       # Display ASCII dependency tree of all slices

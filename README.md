@@ -8,7 +8,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11+" />
   <img src="https://img.shields.io/badge/MCP-14%20Tools%20Ready-6851FF?style=flat" alt="Model Context Protocol" />
-  <img src="https://img.shields.io/badge/Tests-240%20Passed-brightgreen?style=flat" alt="240 Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-262%20Passed-brightgreen?style=flat" alt="262 Tests Passed" />
   <img src="https://img.shields.io/badge/Security-HMAC--SHA256%20Chained-success?style=flat" alt="Cryptographic Security" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="MIT License" />
 </p>
@@ -193,7 +193,7 @@ Slice Orchestrator was designed from the ground up to address emerging software 
 
 ```
 slice_orchestrator/     Core runtime (control store, state machine, gates, MCP server, CLI)
-tests/                  240 tests (security, MCP protocol, cross-host isolation, recovery)
+tests/                  262 tests (security, MCP protocol, cross-host isolation, DAG, recovery)
 .orchestrator/          JSON schemas, transition policies, protocol specifications
 docs/                   Architecture, host integration guides, and observability specs
 docs/archive/           Curated historical validation & remediation audit reports
@@ -204,26 +204,26 @@ test-project/           Adversarial test fixtures for automated security regress
 
 ## 🧪 Running the Test Suite
 
-Slice Orchestrator is backed by a comprehensive regression test suite (240 tests):
+Slice Orchestrator is backed by a comprehensive regression test suite (262 tests):
 
 ```bash
 uv sync --extra test
 uv run python3 -m pytest tests/ -q
 ```
 ```text
-======================== 240 passed in 90.56s ========================
+======================== 262 passed in 114.58s ========================
 ```
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap & Implemented Features
 
 See [docs/roadmap.md](docs/roadmap.md) and [docs/proposed-improvements.md](docs/proposed-improvements.md) for the active development plan:
-* **v4.1**: Universal Polyglot Engine (`.slice.toml` for TypeScript/Node, Rust, Go).
-* **v4.2**: One-Click Automated Remediation Dispatch.
-* **v4.3**: GitHub Action Zero-Trust PR Gatekeeper (`action.yml`).
-* **v4.4**: Enterprise Multi-Slice DAG Coordination.
-* **v4.5**: Distribution via `uvx` / `pipx` for zero-clone 60-second onboarding.
+* [x] **v4.1**: Universal Polyglot Engine (`.slice.toml` for TypeScript/Node, Rust, Go, Python).
+* [x] **v4.2**: One-Click Automated Remediation Dispatch (`slice remediate --prompt`, `slice resume --with-packet`).
+* [x] **v4.3**: GitHub Action Zero-Trust PR Gatekeeper (`action.yml`, `slice verify-pr`).
+* [x] **v4.4**: Enterprise Multi-Slice DAG Coordination (`slice_dependencies`, `slice graph`).
+* [x] **v4.5**: Zero-Friction 60-Second Onboarding (`slice init`).
 
 ---
 

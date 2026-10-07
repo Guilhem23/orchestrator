@@ -33,6 +33,7 @@ from slice_orchestrator.observability.logging import OperationalLogger
 from slice_orchestrator.observability.metrics import MetricsEngine
 from slice_orchestrator.observability.timeline import build_timeline
 from slice_orchestrator.tools import slice_remediate
+from slice_orchestrator.ci_gate import verify_pr_governance
 
 
 def get_controller(
@@ -392,6 +393,22 @@ def cmd_metrics(args: argparse.Namespace) -> int:
     return 0 if report.get("metrics") else 1
 
 
+def cmd_verify_pr(args: argparse.Namespace) -> int:
+    repo = Path(args.repo_dir).resolve() if getattr(args, "repo_dir", None) else Path.cwd().resolve()
+    home = Path(args.control_home).resolve() if getattr(args, "control_home", None) else (repo / ".orchestrator_slice").resolve()
+    res = verify_pr_governance(
+        repo_dir=repo,
+        control_home=home,
+        base_ref=getattr(args, "base", None),
+        slice_name=getattr(args, "slice", None),
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(res["summary_markdown"])
+    return 0 if res["passed"] else 1
+
+
 def main(sys_args: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="slice",
@@ -508,6 +525,12 @@ def main(sys_args: list[str] | None = None) -> int:
     p_metrics = subparsers.add_parser("metrics", help="Compute authoritative metrics with provenance")
     p_metrics.add_argument("slice", help="Slice identifier")
 
+    # verify-pr
+    p_vpr = subparsers.add_parser("verify-pr", help="Authoritative CI / PR gate verification")
+    p_vpr.add_argument("--slice", default=None, help="Specific slice identifier to verify (default: latest active)")
+    p_vpr.add_argument("--base", default=None, help="Base commit/branch for PR diff (e.g. origin/main, HEAD~1)")
+    p_vpr.add_argument("--json", action="store_true", help="Machine-readable JSON output for CI")
+
     parsed = parser.parse_args(sys_args)
 
     cmd_map = {
@@ -529,6 +552,7 @@ def main(sys_args: list[str] | None = None) -> int:
         "export": cmd_export,
         "compare": cmd_compare,
         "metrics": cmd_metrics,
+        "verify-pr": cmd_verify_pr,
     }
 
     try:

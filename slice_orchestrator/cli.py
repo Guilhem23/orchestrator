@@ -457,6 +457,28 @@ def cmd_graph(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_init(args: argparse.Namespace) -> int:
+    repo = Path(args.repo_dir).resolve() if getattr(args, "repo_dir", None) else Path.cwd().resolve()
+    from slice_orchestrator.initializer import initialize_project
+    res = initialize_project(
+        repo_dir=repo,
+        orchestrator_project_path=getattr(args, "orchestrator_path", None),
+        force=getattr(args, "force", False),
+    )
+    print("🎉 Slice Orchestrator initialized successfully!")
+    print(f" - Detected Ecosystem: {res['ecosystem'].upper()}")
+    if res['slice_toml_created']:
+        print(" - Created .slice.toml with optimized test command")
+    else:
+        print(" - .slice.toml already present (preserved)")
+    if res['mcp_json_updated']:
+        print(" - Configured .mcp.json (Claude Code / Cursor MCP integration)")
+    if res['gitignore_updated']:
+        print(" - Added .orchestrator_slice/ to .gitignore")
+    print("\nNext step: Run 'slice plan S1' or start prompting your AI agent in Cursor / Claude Code!")
+    return 0
+
+
 def main(sys_args: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="slice",
@@ -583,6 +605,11 @@ def main(sys_args: list[str] | None = None) -> int:
     p_graph = subparsers.add_parser("graph", help="Display multi-slice dependency DAG and progression")
     p_graph.add_argument("--json", action="store_true", help="Machine-readable JSON output")
 
+    # init
+    p_init = subparsers.add_parser("init", help="Zero-friction 60-second onboarding for any project")
+    p_init.add_argument("--force", action="store_true", help="Overwrite existing configuration")
+    p_init.add_argument("--orchestrator-path", default=None, help="Absolute path to Slice Orchestrator installation")
+
     parsed = parser.parse_args(sys_args)
 
     cmd_map = {
@@ -606,6 +633,7 @@ def main(sys_args: list[str] | None = None) -> int:
         "metrics": cmd_metrics,
         "verify-pr": cmd_verify_pr,
         "graph": cmd_graph,
+        "init": cmd_init,
     }
 
     try:

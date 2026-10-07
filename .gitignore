@@ -22,6 +22,12 @@ __pycache__/
 .venv/
 *.egg-info/
 
+# IDE / Editors
+.vscode/
+*.code-workspace
+.idea/
+.DS_Store
+
 # Build
 build/
 dist/

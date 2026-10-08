@@ -332,6 +332,23 @@ class GateEvaluator:
                         passed=False, reason=f"Open remediation packet {pkt_id} is not verified resolved"
                     )
 
+        # Multi-slice DAG dependencies check (v4.4)
+        if getattr(state, "slice_dependencies", None):
+            from slice_orchestrator.state_machine import project_slice_run_state
+            for dep_slice in state.slice_dependencies:
+                dep_state = None
+                try:
+                    events = [e for e in self.control_store.verify_store_integrity() if e.get("slice") == dep_slice]
+                    dep_state = project_slice_run_state(events, self.control_store)
+                except Exception:
+                    pass
+                if not dep_state or dep_state.state != "COMPLETE":
+                    curr_st = dep_state.state if dep_state else "NONEXISTENT"
+                    return GateEvaluationResult(
+                        passed=False,
+                        reason=f"DAG_DEPENDENCY_UNSATISFIED: Prerequisite slice '{dep_slice}' is in state '{curr_st}', expected 'COMPLETE'",
+                    )
+
         pb = self.control_store.load_and_verify_policy_bundle()
 
         builder = CandidateTreeBuilder(self.repo_dir, self.control_store.control_home)

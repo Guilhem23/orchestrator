@@ -471,6 +471,7 @@ def slice_plan(
             "verification_strategy": plan.get("verification_strategy", "independent_control_test"),
             "risks": plan.get("risks", []),
             "open_questions": plan.get("open_questions", []),
+            "slice_dependencies": plan.get("slice_dependencies", []),
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -501,11 +502,13 @@ def slice_plan(
                 "record_type": "PLAN",
                 "record_id": plan_id,
                 "record_digest": plan_digest,
+                "slice_dependencies": plan.get("slice_dependencies", []),
             },
             "plan_id": plan_id,
             "plan_digest": plan_digest,
             "plan_revision": new_rev,
             "profile": prof,
+            "slice_dependencies": plan.get("slice_dependencies", []),
         }
 
         controller.store.append_event(
@@ -1294,6 +1297,7 @@ def slice_remediate(
     slice: str | None = None,
     slice_name: str | None = None,
     work_item_id: str | None = None,
+    auto_fix: bool = False,
     repo_dir: str | Path | None = None,
     control_home: str | Path | None = None,
     host: str | None = None,
@@ -1302,10 +1306,18 @@ def slice_remediate(
     Resume an implementation thread from REMEDIATION state after a review was blocked.
     Transitions REMEDIATION -> IMPLEMENTATION, binds active remediation findings,
     and returns instructions/prompt for the implementer worker.
+    Supports auto_fix=True for Developer Armor 1-click healing.
     """
     s_name = _get_slice_name(slice, slice_name)
     r_dir, c_home = _resolve_paths(repo_dir, control_home)
     controller = SliceRunController(repo_dir=r_dir, control_home=c_home)
+
+    auto_fix_summary = None
+    if auto_fix:
+        from slice_orchestrator.auto_fix import AutoFixEngine
+        fixer = AutoFixEngine(repo_dir=r_dir, control_home=c_home)
+        fix_res = fixer.auto_fix_slice(s_name)
+        auto_fix_summary = fix_res.summary
 
     with controller._get_lock(s_name):
         state = controller.get_slice_state(s_name)
@@ -1416,6 +1428,7 @@ def slice_remediate(
         "remediation_packet_id": pkt_id,
         "findings": findings,
         "prompt": prompt,
+        "auto_fix_summary": auto_fix_summary,
         "next_action": "Apply the requested fixes in the workspace, run tests, and record implementation results.",
         "message": f"Remediation assignment {asgn_data['assignment_id']} issued for slice {s_name}.",
     }

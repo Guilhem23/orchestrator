@@ -1,6 +1,6 @@
 """
-Slice Orchestrator Runtime Method v4
+Slice Orchestrator Runtime
 A deterministic control-plane orchestrator for governed vertical slices.
 """
 
-__version__ = "4.0.0"
+__version__ = "0.5.0"

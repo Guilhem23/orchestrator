@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');
+      .term-bg { fill: #0d1117; rx: 12px; }
+      .term-bar { fill: #161b22; }
+      .text-base { font-family: 'JetBrains Mono', monospace; font-size: 13px; fill: #e6edf3; }
+      .text-dim { fill: #8b949e; }
+      .text-cyan { fill: #58a6ff; font-weight: 600; }
+      .text-green { fill: #3fb950; font-weight: 600; }
+      .text-red { fill: #f85149; font-weight: 600; }
+      .text-yellow { fill: #d29922; }
+      .box-alert { fill: #3d1419; stroke: #f85149; stroke-width: 1.5; rx: 6px; }
+      .box-success { fill: #112a1f; stroke: #2ea043; stroke-width: 1.5; rx: 6px; }
+      
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      .cursor { animation: blink 1s infinite; fill: #58a6ff; }
+
+      @keyframes fadeStep1 {
+        0% { opacity: 0; }
+        10%, 100% { opacity: 1; }
+      }
+      @keyframes fadeStep2 {
+        0%, 20% { opacity: 0; }
+        30%, 100% { opacity: 1; }
+      }
+      @keyframes fadeStep3 {
+        0%, 50% { opacity: 0; }
+        60%, 100% { opacity: 1; }
+      }
+      @keyframes fadeStep4 {
+        0%, 75% { opacity: 0; }
+        85%, 100% { opacity: 1; }
+      }
+
+      .step1 { animation: fadeStep1 10s infinite; }
+      .step2 { animation: fadeStep2 10s infinite; }
+      .step3 { animation: fadeStep3 10s infinite; }
+      .step4 { animation: fadeStep4 10s infinite; }
+    </style>
+  </defs>
+
+  <!-- Terminal Window Background -->
+  <rect width="880" height="480" class="term-bg" stroke="#30363d" stroke-width="1.5" />
+
+  <!-- Terminal Title Bar -->
+  <path d="M 0 12 C 0 5.373 5.373 0 12 0 L 868 0 C 874.627 0 880 5.373 880 12 L 880 40 L 0 40 Z" class="term-bar" />
+  <circle cx="24" cy="20" r="6" fill="#ff5f56" />
+  <circle cx="44" cy="20" r="6" fill="#ffbd2e" />
+  <circle cx="64" cy="20" r="6" fill="#27c93f" />
+  <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#8b949e">
+    slice demo --tampering • Deterministic Anti-Tampering Engine
+  </text>
+
+  <!-- Step 1: Agent tries to cheat -->
+  <g class="step1">
+    <text x="30" y="75" class="text-base">
+      <tspan class="text-cyan">cursor-agent</tspan><tspan class="text-dim">@repo:~$</tspan> <tspan>git diff tests/test_auth.py</tspan>
+    </text>
+    <text x="40" y="100" class="text-base text-dim">@@ -14,3 +14,3 @@ def test_jwt_expiration():</text>
+    <text x="40" y="122" class="text-base text-red">-   assert token.is_valid() is False  # Expected failure</text>
+    <text x="40" y="144" class="text-base text-green">+   assert True  # CHEATING: Deleted assertion to force green</text>
+  </g>
+
+  <!-- Step 2: Slice Intercepts in 125ms -->
+  <g class="step2">
+    <text x="30" y="180" class="text-base">
+      <tspan class="text-cyan">slice-orchestrator</tspan><tspan class="text-dim"> [commit-gate]</tspan> Evaluating candidate tree digest...
+    </text>
+    <rect x="30" y="196" width="820" height="66" class="box-alert" />
+    <text x="48" y="222" class="text-base text-red" font-size="14">
+      🚨 [GATE REJECTED: TEST_TAMPERING_DETECTED] (evaluated in 125 ms)
+    </text>
+    <text x="48" y="245" class="text-base text-yellow">
+      Violation: Baseline assertion in 'tests/test_auth.py' modified without plan re-approval. Gate closed.
+    </text>
+  </g>
+
+  <!-- Step 3: Developer Armor 1-Click Auto-Fix -->
+  <g class="step3">
+    <text x="30" y="295" class="text-base">
+      <tspan class="text-cyan">developer</tspan><tspan class="text-dim">@terminal:~$</tspan> slice remediate S1 --auto-fix
+    </text>
+    <text x="48" y="320" class="text-base text-cyan">
+      🛡️ Developer Armor: Reverted 'tests/test_auth.py' to baseline commit (sha1:3a9f02c...)
+    </text>
+    <text x="48" y="342" class="text-base text-dim">
+      🔄 Dispatched targeted worker: Implemented genuine expiration check in src/auth/token.py
+    </text>
+  </g>
+
+  <!-- Step 4: Verification Passed Honestly -->
+  <g class="step4">
+    <rect x="30" y="365" width="820" height="74" class="box-success" />
+    <text x="48" y="392" class="text-base text-green" font-size="14">
+      ✅ [GATE PASSED: STATE=COMMIT_READY] All 275 tests passed honestly
+    </text>
+    <text x="48" y="415" class="text-base text-dim">
+      📜 HMAC Receipt: <tspan class="text-green">hmac_sha256:e74b9d0f1a9e3f2d8c1ca70ba9e3f2d8c7a1c0d4e9b8abd4e9b8a</tspan>
+    </text>
+    <text x="48" y="432" class="text-base text-dim">
+      Candidate OID bound: 3cc71b2 • Tree tamper-proof • Zero unapproved file modifications
+    </text>
+  </g>
+
+  <!-- Footer Tagline -->
+  <text x="440" y="468" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#8b949e">
+    "Your AI agents are cheating on tests. Slice Orchestrator is the only tool that forces them to be honest."
+  </text>
+</svg>

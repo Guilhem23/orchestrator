@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from slice_orchestrator.canonical import compute_record_digest
+from slice_orchestrator.config import load_project_config
 from slice_orchestrator.control_store import ControlStore, SliceLockManager
 from slice_orchestrator.convergence import ConvergenceEngine
 from slice_orchestrator.dispatch import DispatchManager
@@ -94,6 +95,7 @@ class SliceRunController:
             self.policy_bundle.transitions,
             self.policy_bundle.slice_policy,
         )
+        self.project_config = load_project_config(self.repo_dir)
 
     def _get_lock(self, slice_name: str) -> SliceLockManager:
         return SliceLockManager(self.store.locks_dir / f"{slice_name}.lock")
@@ -1104,17 +1106,11 @@ class SliceRunController:
         return self.get_slice_state(slice_name)  # type: ignore
 
     def _authorized_test_def(self) -> dict[str, Any]:
-        import os
-        import sys
-        py_bin = sys.executable
-        repo_venv = self.repo_dir / ".venv" / "bin" / "python"
-        if repo_venv.is_file():
-            py_bin = str(repo_venv)
-        extra_args = [a for a in os.environ.get("SLICE_TEST_ARGS", "").split() if a]
         return {
             "test_id": "test_unit",
-            "command": [py_bin, "-m", "pytest", "-q"] + extra_args,
-            "expected_exit_code": 0,
+            "command": self.project_config.get_test_command_argv(self.repo_dir),
+            "expected_exit_code": self.project_config.expected_exit_code,
+            "timeout_sec": self.project_config.test_timeout_seconds,
         }
 
     def _capture_and_verify_tests(self, slice_name: str, state: SliceRunState) -> dict[str, Any]:

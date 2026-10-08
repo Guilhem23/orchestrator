@@ -40,22 +40,35 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 **Slice Orchestrator** is an out-of-process, deterministic control plane that sits between your AI assistant and your Git repository. It replaces wishful prompts with **mechanically enforced quality gates across the entire software development lifecycle**:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                        THE GOVERNED AGENTIC SDLC                               │
-├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                │
-│  1. SPECIFICATION & SCOPE     ──► 2. ARCHITECTURE REVIEW ──► 3. IMPLEMENTATION │
-│     (Goal, non-goals, allow_paths)  (Independent review gate)   (Strict sandbox)│
-│                                                                       │        │
-│                                                                       ▼        │
-│  6. MULTI-SLICE DAG & CI GATE ◄── 5. ADVERSARIAL REVIEW  ◄── 4. VERIFICATION   │
-│     (slice graph / action.yml)      (Anti-hallucination)        (HMAC receipt) │
-│            │                                                                   │
-│            ▼                                                                   │
-│  7. ATOMIC MERGE & RELEASE                                                     │
-│     (COMPLETE state / reproducible provenance)                                 │
-│                                                                                │
-└────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          THE GOVERNED AGENTIC SDLC (V5 ENGINE)                              │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  1. SPEC & SCOPE              2. ARCH REVIEW               3. GOVERNED IMPLEMENTATION       │
+│  ┌──────────────────────┐     ┌──────────────────────┐     ┌────────────────────────────┐   │
+│  │ • Objectives & Grill ├────►│ • Independent Review ├────►│ • Strict Sandbox Scope     │   │
+│  │ • Scope Manifest AST │     │ • Invariant Baseline │     │ • Dual-Engine Router       │   │
+│  │ • Baseline Checksums │     │ • Plan Pre-Approval  │     │ • (Cloud ➔ Ollama <500ms)  │   │
+│  └──────────────────────┘     └──────────────────────┘     └─────────────┬──────────────┘   │
+│                                                                          │                  │
+│                                                                          ▼                  │
+│  6. BINARY MUTANT ARBITRAGE   5. DEVELOPER ARMOR           4. TEST VERIFICATION             │
+│  ┌──────────────────────┐     ┌──────────────────────┐     ┌────────────────────────────┐   │
+│  │ • Boundary Mutants   │◄────┤ • 1-Click Auto-Fix   │◄────┤ • Control-Plane Runner     │   │
+│  │ • Binary Exit 0 or 1 │     │ • Revert Scope Drift │     │ • Anti-Tampering (<125ms)  │   │
+│  │ • No LLM Debates     │     │ • Restore Base Tests │     │ • Cryptographic HMAC-SHA256│   │
+│  └──────────┬───────────┘     └──────────┬───────────┘     └────────────────────────────┘   │
+│             │                            ▲ (On Gate Rejection)                          │   │
+│             │ (Mutants Pass)             └──────────────────────────────────────────────┘   │
+│             ▼                                                                               │
+│  7. MULTI-SLICE DAG           8. ZERO-TRUST CI GATE        9. ATOMIC COMMIT & RELEASE       │
+│  ┌──────────────────────┐     ┌──────────────────────┐     ┌────────────────────────────┐   │
+│  │ • Prereq Resolution  ├────►│ • GitHub Action Gate ├────►│ • Non-Divergent Git Tree   │   │
+│  │ • Predictive Conflicts│    │ • Scope Diff & HMAC  │     │ • Immutable SQLite Log     │   │
+│  │ • `slice graph`      │     │ • Hosted Trust Anchor│     │ • Provenance Metrics       │   │
+│  └──────────────────────┘     └──────────────────────┘     └────────────────────────────┘   │
+│                                                                                             │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Key Guarantees (v5.0 Engine)

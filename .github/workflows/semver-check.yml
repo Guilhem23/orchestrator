@@ -1,0 +1,26 @@
+name: "Enforce Semantic Versioning"
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  semver-enforcement:
+    name: "Validate SemVer 2.0.0 & Release Consistency"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify Semantic Versioning Consistency
+        run: python3 scripts/verify_semver.py

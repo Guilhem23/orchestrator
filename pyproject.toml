@@ -1,6 +1,6 @@
 [project]
 name = "slice-orchestrator"
-version = "5.0.0"
+version = "0.5.0"
 description = "Deterministic control-plane orchestrator for governed vertical slices"
 authors = [
     { name = "Guilhem Imberton", email = "guilhem.imberton@gmail.com" }

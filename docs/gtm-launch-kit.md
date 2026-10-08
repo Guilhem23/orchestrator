@@ -1,6 +1,6 @@
 # Slice Orchestrator — Go-To-Market (GTM) Launch Kit
 
-This kit contains all pre-formatted visual assets, copy-paste launch announcements, and distribution templates for the **v5.0.0 public launch**.
+This kit contains all pre-formatted visual assets, copy-paste launch announcements, and distribution templates for the **v0.5.0 public launch**.
 
 ---
 

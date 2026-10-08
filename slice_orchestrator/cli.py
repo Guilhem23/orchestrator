@@ -521,7 +521,7 @@ def main(sys_args: list[str] | None = None) -> int:
     from slice_orchestrator import __version__
     parser = argparse.ArgumentParser(
         prog="slice",
-        description="Slice Orchestrator v5 CLI",
+        description="Slice Orchestrator CLI — Deterministic SDLC Guardrails for AI Coding Agents",
     )
     parser.add_argument("--version", action="version", version=f"slice-orchestrator {__version__}")
     parser.add_argument("--adapter", default="dummy", help="Worker adapter ID (dummy, cursor, claude, gemini, manual)")

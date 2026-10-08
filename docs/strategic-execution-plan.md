@@ -1,7 +1,7 @@
-# Slice Orchestrator — Master Architecture, Roadmap & Strategic Execution Plan (v5.0)
+# Slice Orchestrator — Master Architecture, Roadmap & Strategic Execution Plan
 
 > **Status**: Production Reference & Master Blueprint (Unified)  
-> **Version**: 5.0.0  
+> **Version**: 0.5.0 (Semantic Versioning)  
 > **Tests**: 275 passed (100% green regression suite)  
 > **Core Value Proposition**: *Deterministic Anti-Tampering Engine, Binary Mutant Arbitrage & Full-Lifecycle Guardrails for Autonomous Coding Agents.*
 
@@ -31,7 +31,7 @@ Slice Orchestrator replaces prompt wishful thinking with an out-of-process, dete
 
 ---
 
-## 2. Delivered & Operational Capabilities (v1.0 → v5.0.0)
+## 2. Delivered & Operational Capabilities (SemVer 0.1.0 → 0.5.0)
 
 All foundational and strategic components are fully implemented, tested, and passing the 275-test regression suite:
 
@@ -82,7 +82,7 @@ With the codebase and automated tests 100% complete, the remaining execution foc
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │ Milestone 1: Distribution & Release Packaging                                    │
 │ ➔ Merge feature/v5-strategic-suite into main                                     │
-│ ➔ Git tag v5.0.0 and initial PyPI publication via OIDC                           │
+│ ➔ Git tag v0.5.0 and initial PyPI publication via OIDC (Target 1.0.0 for GA)     │
 │                                                                                  │
 │ Milestone 2: GTM Proof & Viral Assets                                            │
 │ ➔ 15-second screen recording / GIF of `slice demo` for README and social launch  │
@@ -95,8 +95,8 @@ With the codebase and automated tests 100% complete, the remaining execution foc
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Milestone 1: Official PyPI Release & Git Tag
-* **Deliverable**: Fast-forward merge to `main`, git tag `v5.0.0`, PyPI Trusted Publishing activation.
+### Milestone 1: Official PyPI Release & Git Tag (v0.5.0)
+* **Deliverable**: Fast-forward merge to `main`, git tag `v0.5.0`, PyPI Trusted Publishing activation.
 * **Validation**: Running `uvx slice-orchestrator init` on a clean machine without cloning the repository.
 
 ### Milestone 2: Viral Go-To-Market Assets

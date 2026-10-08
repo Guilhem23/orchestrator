@@ -36,7 +36,16 @@ jobs:
       - name: Build Distribution Packages
         run: uv build
 
-      - name: Publish to PyPI
+      - name: Publish to PyPI (API Token if configured)
+        if: "${{ secrets.PYPI_API_TOKEN != '' }}"
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist/
+          skip-existing: true
+
+      - name: Publish to PyPI (OIDC Trusted Publishing)
+        if: "${{ secrets.PYPI_API_TOKEN == '' }}"
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/

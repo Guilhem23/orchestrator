@@ -78,14 +78,21 @@ def verify_semver(repo_dir: Path | None = None) -> int:
             )
 
     # 4. Check Git Tag (if triggered by a release tag in CI)
+    tag_name = ""
     github_ref = os.environ.get("GITHUB_REF", "")
     if github_ref.startswith("refs/tags/"):
         tag_name = github_ref.removeprefix("refs/tags/").strip()
+    elif os.environ.get("GITHUB_REF_TYPE") == "tag" or os.environ.get("GITHUB_REF_NAME", "").startswith("v"):
+        tag_name = os.environ.get("GITHUB_REF_NAME", "").strip()
+
+    if tag_name:
         expected_tag = f"v{pyproject_version}"
         if tag_name != expected_tag:
             errors.append(
                 f"Release Git tag '{tag_name}' does not match expected version tag '{expected_tag}'."
             )
+        else:
+            print(f"  • Git Tag validated: {tag_name}")
 
     # Report results
     step_summary_path = os.environ.get("GITHUB_STEP_SUMMARY")

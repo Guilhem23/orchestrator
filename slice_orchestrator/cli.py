@@ -518,10 +518,12 @@ def cmd_demo(args: argparse.Namespace) -> int:
 
 
 def main(sys_args: list[str] | None = None) -> int:
+    from slice_orchestrator import __version__
     parser = argparse.ArgumentParser(
         prog="slice",
-        description="Method v4 Slice Orchestrator CLI",
+        description="Slice Orchestrator v5 CLI",
     )
+    parser.add_argument("--version", action="version", version=f"slice-orchestrator {__version__}")
     parser.add_argument("--adapter", default="dummy", help="Worker adapter ID (dummy, cursor, claude, gemini, manual)")
     parser.add_argument("--repo-dir", default=None, help="Repository root (default: cwd)")
     parser.add_argument("--control-home", default=None, help="Control home override (default: .orchestrator_slice)")

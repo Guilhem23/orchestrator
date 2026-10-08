@@ -13,6 +13,10 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="MIT License" />
 </p>
 
+<p align="center">
+  <img src="assets/hero-banner.jpg" alt="Slice Orchestrator Hero Banner" width="100%" />
+</p>
+
 ---
 
 ## 🛑 The Problem with Modern Coding Agents
@@ -24,6 +28,10 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 * 🧪 **Test Tampering**: When a test fails, the agent secretly deletes assertions or mocks them out to turn the suite green.
 * 💥 **Context Amnesia**: Your IDE crashes or you switch chat sessions, and the agent loses track of work items, re-doing changes or breaking Git history.
 * 🛡️ **Failing Prompt Guardrails**: Natural language prompts like *"Please only touch file X"* or *"Never commit broken code"* routinely fail against prompt injection, context exhaustion, or instruction drift.
+
+<p align="center">
+  <img src="assets/monday_morning_demo.svg" alt="Monday Morning Trigger Demo" width="100%" />
+</p>
 
 ---
 

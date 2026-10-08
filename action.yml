@@ -1,6 +1,9 @@
 name: 'Slice Orchestrator Gatekeeper'
 description: 'Enforce deterministic scope, cryptographic test receipts, and review compliance on AI-authored PRs'
 author: 'Guilhem Imberton <guilhem.imberton@gmail.com>'
+branding:
+  icon: 'shield'
+  color: 'purple'
 
 inputs:
   base-ref:

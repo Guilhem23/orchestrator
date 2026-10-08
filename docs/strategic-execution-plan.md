@@ -112,7 +112,55 @@ With the codebase and automated tests 100% complete, the remaining execution foc
 
 ---
 
-## 4. First 90 Days Execution Metrics (OKRs)
+## 4. Next-Gen Engineering Evolution: The Specification-First Engine
+
+To transform Slice Orchestrator from an anti-tampering safety gate into an **indispensable enterprise engineering control plane**, the development roadmap integrates four core pillars:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│             SPECIFICATION-FIRST CONTROL PLANE (ROADMAP TO 1.0.0 GA)              │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ Milestone 4: Specification-to-Slice Traceability Graph                           │
+│ ➔ Formal requirements schema (`requirements.json` / `slice spec`)                │
+│ ➔ Automated mapping: Specification ➔ Acceptance Criteria ➔ Vertical Slices        │
+│ ➔ Fail-closed coverage check: alerts on orphan criteria or uncovered slices      │
+│                                                                                  │
+│ Milestone 5: Rigorous Redefinition of `COMPLETE` (Proof Chain)                   │
+│ ➔ 4-stage state pipeline: PROPOSED ➔ IMPLEMENTED ➔ INDEPENDENTLY_VERIFIED ➔ DONE  │
+│ ➔ Independent verifier gate decoupling agent claims from final verdict           │
+│ ➔ Cryptographic HMAC receipt binding exact Git Tree OID to all passed ACs        │
+│                                                                                  │
+│ Milestone 6: Enterprise Reference Demonstrator & Value Proof (e.g. Arteris)     │
+│ ➔ Representative engineering demonstrator (IP metadata / complex constraints)    │
+│ ➔ Empirical benchmark: review rework rate, defect leakage, cost per slice        │
+│ ➔ Cursor-native headless worker stability & resource budget enforcement         │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Milestone 4: Specification-to-Slice Traceability Graph (`slice spec`)
+* **Formal Requirement Model**: Each requirement carries an immutable ID (`REQ-XXX`), source URI, version, dependencies, and testable Acceptance Criteria (AC).
+* **Coverage Matrix Engine**: Evaluates slice decomposition against requirements. Fails closed before dispatch if:
+  1. Any requirement has zero slices mapped.
+  2. Any slice lacks concrete acceptance criteria.
+  3. Cyclic dependencies exist in the slice graph.
+* **Slice Contract**: Binds `Requirement ID ➔ Scope Manifest ➔ Acceptance Invariants ➔ Test Suite`.
+
+### Milestone 5: Rigorous Redefinition of `COMPLETE` (Proof of Outcome)
+* **Distinction**: `COMPLETE` strictly signifies *All agreed acceptance criteria objectively verified by independent execution*, never *The agent completed its turn and exited*.
+* **Decoupled Verification Authority**: The implementing agent produces candidate code; an independent evaluator (Mutant Arbitrage + Control-Plane Test Runner) executes the proof.
+* **Holistic HMAC Receipt**: Cryptographically signs the tuple: `(Git Tree OID, Slice ID, Requirement ID, Passed AC Checklist, Zero Out-Of-Scope Diffs)`.
+
+### Milestone 6: Enterprise Reference Demonstrator & Empirical Study
+* **Representative Complex Codebase**: Implements a full vertical slice in a domain-rich enterprise scenario (e.g., semiconductor IP metadata, complex state machines).
+* **Empirical Value Measurement**:
+  * First-pass review acceptance rate vs. unconstrained agents.
+  * Human reviewer time saved (zero need to audit scope drift or test tampering).
+  * Post-delivery defect escape rate.
+* **Worker Hardening**: Zero-friction Cursor MCP session recovery with execution time and token budgets.
+
+---
+
+## 5. First 90 Days Execution Metrics (OKRs)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐

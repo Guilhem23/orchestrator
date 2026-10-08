@@ -2,7 +2,7 @@
 
 > **Status**: Production Reference & Master Blueprint (Unified)  
 > **Version**: 0.5.0 (Semantic Versioning)  
-> **Tests**: 275 passed (100% green regression suite)  
+> **Tests**: 278 passed (100% green regression suite)  
 > **Core Value Proposition**: *Deterministic Anti-Tampering Engine, Binary Mutant Arbitrage & Full-Lifecycle Guardrails for Autonomous Coding Agents.*
 
 ---

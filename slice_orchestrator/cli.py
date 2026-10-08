@@ -491,7 +491,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 
 def cmd_demo(args: argparse.Namespace) -> int:
     import time
-    print("🎬 Running Slice Orchestrator v5 Monday Morning Trigger Demo...")
+    print("🎬 Running Slice Orchestrator Monday Morning Trigger Demo...")
     print("----------------------------------------------------------------------")
     print("Scenario: Cursor AI coding assistant attempts to pass test suite by cheating.")
     print("Target test: tests/test_auth.py (JWT Expiration Test)\n")

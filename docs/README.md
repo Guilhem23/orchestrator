@@ -31,7 +31,7 @@ depth.
 
 ## Project direction & Masterplan
 
-- [strategic-execution-plan.md](strategic-execution-plan.md) — Master architecture, completed v5 capabilities, remaining intentions, and 90-day GTM roadmap
+- [strategic-execution-plan.md](strategic-execution-plan.md) — Master architecture, completed v0.5 capabilities, remaining intentions, and 90-day GTM roadmap
 
 ## Historical record
 

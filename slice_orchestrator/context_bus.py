@@ -1,5 +1,5 @@
 """
-Enterprise Shared Context Bus for Slice Orchestrator v5.
+Enterprise Shared Context Bus for Slice Orchestrator (v0.5).
 Synchronizes agent memories, active slice locks, and architectural decisions
 across engineering teams to eliminate duplicate work and cross-agent hallucination.
 """

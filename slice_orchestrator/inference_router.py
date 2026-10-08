@@ -1,5 +1,5 @@
 """
-Inference Router and Transparent Fallback Cascade for Slice Orchestrator v5.
+Inference Router and Transparent Fallback Cascade for Slice Orchestrator (v0.5).
 Supports Cloud-first API default (Anthropic, OpenAI, Gemini) and localhost Ollama/vLLM fallback.
 Guarantees < 500 ms automatic cascade fallback on local VRAM saturation or timeout.
 """
@@ -87,7 +87,7 @@ class InferenceRouter:
             return InferenceResult(
                 text=mock_resp,
                 provider="mock",
-                model="mock-v5",
+                model="mock-router",
                 latency_ms=latency,
                 fallback_occurred=False,
             )
@@ -119,7 +119,7 @@ class InferenceRouter:
                 return InferenceResult(
                     text=cloud_res,
                     provider=self.cloud_provider,
-                    model=f"{self.cloud_provider}-v5",
+                    model=f"{self.cloud_provider}-router",
                     latency_ms=cloud_latency,
                     fallback_occurred=True,
                     fallback_reason=f"Local Ollama failure ({type(exc).__name__}: {exc})",
@@ -132,7 +132,7 @@ class InferenceRouter:
         return InferenceResult(
             text=cloud_res,
             provider=self.cloud_provider,
-            model=f"{self.cloud_provider}-v5",
+            model=f"{self.cloud_provider}-router",
             latency_ms=cloud_latency,
             fallback_occurred=False,
         )

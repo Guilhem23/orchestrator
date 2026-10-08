@@ -1,5 +1,5 @@
 """
-One-Click Auto-Fix Engine for Slice Orchestrator v5 (Developer Armor).
+One-Click Auto-Fix Engine for Slice Orchestrator (Developer Armor).
 Heals slices rejected by quality gates in 1 click:
 1. Reverses unauthorized test tampering by restoring authoritative baseline tests.
 2. Reverts scope breaches by removing or restoring unapproved touched files.

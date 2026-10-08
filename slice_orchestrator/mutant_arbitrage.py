@@ -1,5 +1,5 @@
 """
-Binary Mutant Arbitrage Engine for Slice Orchestrator v5.
+Binary Mutant Arbitrage Engine for Slice Orchestrator (v0.5).
 Replaces subjective LLM debates with deterministic, executable mutant unit tests.
 Target outcome: Binary pass/fail (exit 0 or 1). No circular text arguments.
 """
@@ -162,7 +162,7 @@ def test_custom_invariant_{idx}():
         mutant_file = test_dir / "_slice_mutant_suite.py"
 
         header = [
-            "# Auto-generated Binary Mutant Suite (Slice Orchestrator v5)",
+            "# Auto-generated Binary Mutant Suite (Slice Orchestrator)",
             "import pytest",
             "",
         ]

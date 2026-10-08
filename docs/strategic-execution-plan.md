@@ -81,8 +81,8 @@ With the codebase and automated tests 100% complete, the remaining execution foc
 │                            REMAINING INTENTIONS (ROADMAP)                        │
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │ Milestone 1: Distribution & Release Packaging                                    │
-│ ➔ Merge feature/v5-strategic-suite into main                                     │
-│ ➔ Git tag v0.5.0 and initial PyPI publication via OIDC (Target 1.0.0 for GA)     │
+│ ➔ Merged release branch into main (Done)                                         │
+│ ➔ Git tag v0.5.0 and SemVer enforcement workflow active (Target 1.0.0 for GA)    │
 │                                                                                  │
 │ Milestone 2: GTM Proof & Viral Assets                                            │
 │ ➔ 15-second screen recording / GIF of `slice demo` for README and social launch  │

@@ -1,5 +1,5 @@
 """
-Tests for Slice Orchestrator v5 Phase 2:
+Tests for Slice Orchestrator v0.5 Phase 2:
 - Shared Context Bus (SharedContextBus)
 - Predictive Multi-Agent Git Conflict Engine (MultiAgentConflictEngine)
 - Enterprise Hosted Trust Anchor validation

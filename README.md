@@ -41,7 +41,7 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│                          THE GOVERNED AGENTIC SDLC (V5 ENGINE)                              │
+│                      THE GOVERNED AGENTIC SDLC (ENGINE ARCHITECTURE)                        │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                             │
 │  1. SPEC & SCOPE              2. ARCH REVIEW               3. GOVERNED IMPLEMENTATION       │
@@ -71,7 +71,7 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Key Guarantees (v5.0 Engine)
+### Key Guarantees (v0.5 Engine)
 
 * 🔒 **Scope Manifest Enforcement**: The approved plan declares the exact file patterns the agent is permitted to touch. Any unauthorized addition, modification, or deletion is mechanically rejected at the commit gate.
 * 📜 **Authoritative HMAC Test Receipts**: Test execution runs strictly through the control plane (`slice_run_tests`). Receipts are cryptographically bound to the exact candidate Git tree OID and workspace revision digest. Self-reported agent claims are treated as inert text.
@@ -88,7 +88,7 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 
 ## 📊 Standard AI Agent vs. Slice-Governed Agent
 
-| Feature | Standard AI Coding Assistant | With Slice Orchestrator v5 |
+| Feature | Standard AI Coding Assistant | With Slice Orchestrator (v0.5) |
 |---|---|---|
 | **File Containment** | Prompts like *"don't edit other files"* (often ignored) | **Strict Scope Manifest**: Commit gate blocks unapproved file diffs |
 | **Test Verification** | Agent claims *"Tests pass"* in markdown | **HMAC-Signed Receipts**: Verified execution via control-plane runner |
@@ -284,7 +284,7 @@ Slice Orchestrator addresses emerging software supply chain and AI compliance fr
 
 ```
 slice_orchestrator/     Core runtime (control store, state machine, gates, MCP server, CLI)
-tests/                  275 tests (security, MCP protocol, cross-host isolation, DAG, v5 suite)
+tests/                  278 tests (security, MCP protocol, cross-host isolation, DAG, governance suite)
 .orchestrator/          JSON schemas, transition policies, protocol specifications
 docs/                   Architecture, host integration guides, masterplan, and observability specs
 docs/archive/           Curated historical validation & remediation audit reports

@@ -1,5 +1,5 @@
 """
-Tests for Slice Orchestrator v5 Phase 1:
+Tests for Slice Orchestrator v0.5 Phase 1:
 - Binary Mutant Arbitrage Engine (MutantArbitrageEngine)
 - Inference Router & <500ms Fallback Cascade (InferenceRouter)
 """

@@ -1,5 +1,5 @@
 """
-Tests for Slice Orchestrator v5 Phase 3:
+Tests for Slice Orchestrator v0.5 Phase 3:
 - Developer Armor & One-Click Auto-Fix Engine (AutoFixEngine)
 - Reversion of test tampering and scope breaches
 - CLI `slice remediate --auto-fix`

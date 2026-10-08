@@ -1,5 +1,5 @@
 """
-Tests for Slice Orchestrator v5 Phase 5:
+Tests for Slice Orchestrator v0.5 Phase 5:
 - Monday Morning Trigger Demo & Test Tampering Interceptor
 - Intercept latency benchmark (< 200 ms)
 - CLI `slice demo`

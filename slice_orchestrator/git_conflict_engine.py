@@ -1,5 +1,5 @@
 """
-Predictive Multi-Agent Git Conflict Engine for Slice Orchestrator v5.
+Predictive Multi-Agent Git Conflict Engine for Slice Orchestrator (v0.5).
 Simulates and predicts merge conflicts across parallel agent branches before PR creation.
 """
 

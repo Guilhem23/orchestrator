@@ -6,15 +6,16 @@
 </p>
 
 <p align="center">
+  <a href="https://pypi.org/project/slice-orchestrator/"><img src="https://img.shields.io/pypi/v/slice-orchestrator.svg?logo=pypi&logoColor=white" alt="PyPI version" /></a>
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11+" />
   <img src="https://img.shields.io/badge/MCP-14%20Tools%20Ready-6851FF?style=flat" alt="Model Context Protocol" />
-  <img src="https://img.shields.io/badge/Tests-275%20Passed-brightgreen?style=flat" alt="275 Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-278%20Passed-brightgreen?style=flat" alt="278 Tests Passed" />
   <img src="https://img.shields.io/badge/Security-HMAC--SHA256%20Chained-success?style=flat" alt="Cryptographic Security" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="MIT License" />
 </p>
 
 <p align="center">
-  <img src="assets/hero-banner.jpg" alt="Slice Orchestrator Hero Banner" width="100%" />
+  <img src="https://raw.githubusercontent.com/Guilhem23/slice-orchestrator/main/assets/hero-banner.jpg" alt="Slice Orchestrator Hero Banner" width="100%" />
 </p>
 
 ---
@@ -30,7 +31,7 @@ AI coding assistants (Cursor, Claude Code, Devin, Copilot) are remarkably produc
 * 🛡️ **Failing Prompt Guardrails**: Natural language prompts like *"Please only touch file X"* or *"Never commit broken code"* routinely fail against prompt injection, context exhaustion, or instruction drift.
 
 <p align="center">
-  <img src="assets/monday_morning_demo.svg" alt="Monday Morning Trigger Demo" width="100%" />
+  <img src="https://raw.githubusercontent.com/Guilhem23/slice-orchestrator/main/assets/monday_morning_demo.svg" alt="Monday Morning Trigger Demo" width="100%" />
 </p>
 
 ---
@@ -176,7 +177,7 @@ Open **Cursor** or **Claude Code** in your target project:
 
 > *"Use Slice Orchestrator to plan and implement slice S1: Add user authentication. Strictly follow the governed lifecycle from planning to commit gate."*
 
-👉 *For an automated copy-paste setup prompt, see [docs/integration-prompt.md](docs/integration-prompt.md).*
+👉 *For an automated copy-paste setup prompt, see [integration-prompt.md](https://github.com/Guilhem23/slice-orchestrator/blob/main/docs/integration-prompt.md).*
 
 ---
 
@@ -310,11 +311,11 @@ uv run python3 -m pytest tests/ -q
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a PR.
+Contributions are welcome! Please read [CONTRIBUTING.md](https://github.com/Guilhem23/slice-orchestrator/blob/main/CONTRIBUTING.md) before submitting a PR.
 All control-plane changes must include automated regression tests and maintain fail-closed guarantees.
 
 ---
 
 ## 📄 License
 
-Distributed under the [MIT License](LICENSE).
+Distributed under the [MIT License](https://github.com/Guilhem23/slice-orchestrator/blob/main/LICENSE).

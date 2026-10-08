@@ -13,6 +13,34 @@ dependencies = [
     "jsonschema>=4.17.0",
     "mcp>=1.2.0,<2.0.0",
 ]
+keywords = [
+    "ai-agents",
+    "mcp",
+    "model-context-protocol",
+    "cursor",
+    "claude-code",
+    "sdlc",
+    "quality-gates",
+    "testing",
+    "orchestrator",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/Guilhem23/slice-orchestrator"
+Documentation = "https://github.com/Guilhem23/slice-orchestrator#readme"
+Repository = "https://github.com/Guilhem23/slice-orchestrator"
+Changelog = "https://github.com/Guilhem23/slice-orchestrator/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/Guilhem23/slice-orchestrator/issues"
 
 [project.optional-dependencies]
 test = [

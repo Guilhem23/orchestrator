@@ -114,49 +114,89 @@ With the codebase and automated tests 100% complete, the remaining execution foc
 
 ## 4. Next-Gen Engineering Evolution: The Specification-First Engine
 
-To transform Slice Orchestrator from an anti-tampering safety gate into an **indispensable enterprise engineering control plane**, the development roadmap integrates four core pillars:
+To transform Slice Orchestrator from an anti-tampering safety gate into an **indispensable enterprise engineering control plane**, the development roadmap integrates three state-of-the-art pillars:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │             SPECIFICATION-FIRST CONTROL PLANE (ROADMAP TO 1.0.0 GA)              │
 ├──────────────────────────────────────────────────────────────────────────────────┤
-│ Milestone 4: Specification-to-Slice Traceability Graph                           │
-│ ➔ Formal requirements schema (`requirements.json` / `slice spec`)                │
-│ ➔ Automated mapping: Specification ➔ Acceptance Criteria ➔ Vertical Slices        │
-│ ➔ Fail-closed coverage check: alerts on orphan criteria or uncovered slices      │
+│ Milestone 4: SARA Spec-as-Code & Jira Dual-Track Triage                          │
+│ ➔ SARA (Rust / Markdown-first) native requirement & architecture graph           │
+│ ➔ Dual-Track Input: Direct fast-track for Bugs vs. SARA-governed Epics/Stories   │
+│ ➔ Automated graph validation: `sara check` fails closed on orphan requirements   │
 │                                                                                  │
-│ Milestone 5: Rigorous Redefinition of `COMPLETE` (Proof Chain)                   │
-│ ➔ 4-stage state pipeline: PROPOSED ➔ IMPLEMENTED ➔ INDEPENDENTLY_VERIFIED ➔ DONE  │
-│ ➔ Independent verifier gate decoupling agent claims from final verdict           │
-│ ➔ Cryptographic HMAC receipt binding exact Git Tree OID to all passed ACs        │
+│ Milestone 5: The Scientific Acceptance Harness (SOTA Deterministic Oracle)       │
+│ ➔ Asymmetric Invariant Sieve (Reasoning model synthesizes ∀x properties)         │
+│ ➔ Property-Based Testing (Hypothesis: 1,000+ edge cases, zero LLM execution)     │
+│ ➔ Metamorphic Relations: verifies structural input/output transformations        │
+│ ➔ Mutation Score Enforcement: test suite must kill ≥ 85% of AST mutants          │
 │                                                                                  │
-│ Milestone 6: Enterprise Reference Demonstrator & Value Proof (e.g. Arteris)     │
-│ ➔ Representative engineering demonstrator (IP metadata / complex constraints)    │
-│ ➔ Empirical benchmark: review rework rate, defect leakage, cost per slice        │
-│ ➔ Cursor-native headless worker stability & resource budget enforcement         │
+│ Milestone 6: Git Rebase Resilience & Enterprise Reference Study (Arteris)        │
+│ ➔ Invariant semantic patch identity (`git patch-id`) survives branch rebasing    │
+│ ➔ Instant zero-token re-certification (`slice re-certify` < 2s without LLM)      │
+│ ➔ Representative enterprise benchmark (IP-XACT / hardware-software co-design)   │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Milestone 4: Specification-to-Slice Traceability Graph (`slice spec`)
-* **Formal Requirement Model**: Each requirement carries an immutable ID (`REQ-XXX`), source URI, version, dependencies, and testable Acceptance Criteria (AC).
-* **Coverage Matrix Engine**: Evaluates slice decomposition against requirements. Fails closed before dispatch if:
-  1. Any requirement has zero slices mapped.
-  2. Any slice lacks concrete acceptance criteria.
-  3. Cyclic dependencies exist in the slice graph.
-* **Slice Contract**: Binds `Requirement ID ➔ Scope Manifest ➔ Acceptance Invariants ➔ Test Suite`.
+### Milestone 4: SARA Spec-as-Code Integration & Dual-Track Jira Triage
 
-### Milestone 5: Rigorous Redefinition of `COMPLETE` (Proof of Outcome)
-* **Distinction**: `COMPLETE` strictly signifies *All agreed acceptance criteria objectively verified by independent execution*, never *The agent completed its turn and exited*.
-* **Decoupled Verification Authority**: The implementing agent produces candidate code; an independent evaluator (Mutant Arbitrage + Control-Plane Test Runner) executes the proof.
-* **Holistic HMAC Receipt**: Cryptographically signs the tuple: `(Git Tree OID, Slice ID, Requirement ID, Passed AC Checklist, Zero Out-Of-Scope Diffs)`.
+* **Upstream Specification Authority ([SARA](https://github.com/cledouarec/sara))**:
+  * Adopts SARA's Markdown-first and Git-native model schema (`system_requirement`, `software_requirement`, `system_architecture`, `architecture_decision_record`).
+  * Requirements live in plain text (`docs/specs/REQ-*.md`) with YAML frontmatter versioned alongside code.
+  * Eliminates JSON specification bureaucracy: developers write natural Markdown with testable checkboxes (`- [ ] AC-1: ...`).
+  * `sara check` enforces graph integrity (detects broken references, orphan requirements, and cyclic dependencies) before any agent dispatch.
 
-### Milestone 6: Enterprise Reference Demonstrator & Empirical Study
-* **Representative Complex Codebase**: Implements a full vertical slice in a domain-rich enterprise scenario (e.g., semiconductor IP metadata, complex state machines).
-* **Empirical Value Measurement**:
-  * First-pass review acceptance rate vs. unconstrained agents.
-  * Human reviewer time saved (zero need to audit scope drift or test tampering).
-  * Post-delivery defect escape rate.
-* **Worker Hardening**: Zero-friction Cursor MCP session recovery with execution time and token budgets.
+* **Dual-Track Triage (Pragmatic Engineering Ergonomics)**:
+  1. **Fast-Track Slices (Bugs / 1-line hotfixes)**:
+     * Does **not** require formal SARA architecture documentation.
+     * Invoked via `slice start --jira BUG-123 --fast-track`.
+     * Strict sandbox: bounded scope manifest on target file + mandatory pre-existing regression test.
+  2. **Governed Slices (Stories & Epics)**:
+     * SARA decomposes Epics into cohesive vertical requirements and ADRs.
+     * `slice start --from-sara REQ-IP-01`: MCP server automatically injects requirement context, upstream ADR constraints, and acceptance criteria into the agent's context pack.
+
+---
+
+### Milestone 5: The Scientific Acceptance Harness (Solving the Oracle Problem)
+
+Eliminates the subjective "LLM-as-a-judge" fallacy by implementing four evidence-based methods from recent software engineering literature (ICSE / ACM TOSEM):
+
+* **1. Asymmetric Invariant Sieve (Dual-Model Architecture)**:
+  * The implementing agent in Cursor produces the candidate code.
+  * A separate formal reasoning model (e.g., DeepSeek-R1, OpenAI o3) synthesizes **universal mathematical properties ($\forall x, P(x) = \text{true}$)** from the SARA specification.
+
+* **2. Property-Based Testing (Hypothesis Engine)**:
+  * Replaces fragile example-based unit tests (`assert add(2, 3) == 5`) with parameterized invariant fuzzing.
+  * The control-plane test runner executes 1,000+ pseudo-randomized boundary payloads (null buffers, maximum integers, malformed packets, concurrency races).
+  * Verdict is 100% deterministic (exit code 0/1); zero stochastic LLM evaluation.
+
+* **3. Metamorphic Testing (MT)**:
+  * Solves the oracle problem when exact outputs are complex (e.g., EDA netlists, compilers, IP-XACT exports).
+  * Verifies structural metamorphic relations between inputs and outputs (isomorphism, monotonicity, commutativity) without needing human-computed answers.
+
+* **4. Mutation Score Enforcement ($\ge 85\%$)**:
+  * Injects 20 deliberate AST faults (operator inversion, branch short-circuiting, boundary mutations).
+  * **Fail-Closed Rule**: If the agent's test suite fails to kill at least 85% of mutants, the tests are classified as tautological/complacent (`assert True`), and the gate **mechanically rejects** `COMPLETE`.
+
+---
+
+### Milestone 6: Git Rebase Resilience & Enterprise Reference Study
+
+* **Git Rebase Invariance (`git patch-id`)**:
+  * **The Problem**: Running `git rebase origin/main` rewrites commit SHAs and tree OIDs, which would otherwise invalidate cryptographic HMAC receipts.
+  * **The Solution**: Cryptographic receipts are indexed by the semantic patch identity (`git patch-id`) and normalized tree delta, which remain mathematically invariant across rebases.
+  * **Zero-Token Re-Certification (`slice re-certify`)**:
+    * When a rebase occurs, the orchestrator detects the matching `patch-id`.
+    * Re-runs the deterministic test suite and PBT invariants against the new local tree in < 2 seconds.
+    * Re-mints an updated HMAC receipt **without making any LLM API calls** (zero token cost, zero latency).
+    * Precludes malicious tampering while guaranteeing zero friction for developers rebasing before PR.
+
+* **Enterprise Reference Demonstrator (Arteris / Semiconductor IP Context)**:
+  * End-to-end reference implementation on complex enterprise tooling (IP metadata, hardware register maps, memory alignment).
+  * Empirical measurement against unconstrained AI agents:
+    1. First-pass PR acceptance rate.
+    2. Elimination of silent test-tampering and scope drift.
+    3. Human review time saved per delivered feature.
 
 ---
 
